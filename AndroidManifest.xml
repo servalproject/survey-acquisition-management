@@ -27,6 +27,20 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="15" />
+    
+    <!-- uses features -->
+    <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
+    <uses-feature android:required="true" android:name="android.hardware.wifi"/>
+    
+    <!-- uses permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/> <!-- access IOIO -->
+    <uses-permission android:name="android.permission.INTERNET"/> <!-- access IOIO -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- write files on external storage -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/> <!-- derive the device id -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- derive the device id -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- geocode sensor readings -->
+    
+    <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/> <!-- add files to the Rhizome store for sharing -->
 
     <application
         android:icon="@drawable/ic_launcher"
