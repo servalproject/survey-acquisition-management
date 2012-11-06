@@ -19,9 +19,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical">
+    
+    <!-- header -->
+    <TextView
+        android:id="@+id/launcher_ui_lbl_header"
+        style="@style/ui_elem_header"
+        android:text="@string/launcher_ui_lbl_header" />
+     
+    <!-- buttons -->
+    <LinearLayout
+        android:id="@+id/launcher_ui_layout_buttons"
+        style="@style/ui_elem_layout_default" >
 
-</RelativeLayout>
+     <Button
+         android:id="@+id/launcher_ui_btn_settings"
+         style="@style/ui_elem_button_default"
+         android:text="@string/launcher_ui_btn_settings" />
+     
+     <Button
+            android:id="@+id/launcher_ui_btn_contact"
+            style="@style/ui_elem_button_default"
+            android:text="@string/launcher_ui_btn_contact" />
+
+    </LinearLayout>
+     
+</LinearLayout>

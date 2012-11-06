@@ -20,5 +20,10 @@
  */
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+	<item android:id="@+id/launcher_menu_acknowledgements"
+          android:enabled="true"
+          android:title="@string/launcher_menu_acknowledgements"
+          android:visible="true"
+          android:icon="@drawable/ic_menu_browser">
+    </item>
 </menu>
