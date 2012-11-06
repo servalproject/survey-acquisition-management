@@ -20,6 +20,7 @@
 package org.magdaaproject.sam;
 
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
+import org.magdaaproject.utils.DeviceUtils;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.OpenDataKitUtils;
 import org.magdaaproject.utils.serval.ServalUtils;
@@ -36,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * the main activity for the application
@@ -61,6 +63,11 @@ public class LauncherActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
+		
+		// populate the device id field
+		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_device_id);
+		mTextView.setText(String.format(getString(R.string.launcher_ui_lbl_device_id), DeviceUtils.getDeviceId(getApplicationContext())));
+		mTextView = null;
 
 		// check on external storage
 		if(FileUtils.isExternalStorageAvailable() == false) {

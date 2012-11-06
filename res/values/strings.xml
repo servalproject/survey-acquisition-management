@@ -40,6 +40,8 @@
     <string name="launcher_ui_dialog_no_odk_collect_message">The ODK Collect software is not installed, please install it before using this application</string>
     <string name="launcher_ui_dialog_no_odk_collect_title">ODK Collect</string>
     
+    <string name="launcher_ui_lbl_device_id">Device ID: $1%s</string>
+    
     <string name="launcher_menu_acknowledgements">Acknowledgements</string>
     
     <!-- preferences related strings -->

@@ -46,5 +46,9 @@
             android:text="@string/launcher_ui_btn_contact" />
 
     </LinearLayout>
+    
+    <TextView
+        android:id="@+id/launcher_ui_lbl_device_id"
+        style="@style/ui_elem_sub_header_1" />
      
 </LinearLayout>
