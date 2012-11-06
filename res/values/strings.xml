@@ -42,11 +42,19 @@
     
     <string name="launcher_menu_acknowledgements">Acknowledgements</string>
     
+    <!-- preferences related strings -->
+    <string name="preferences_sharing_title">Data Sharing</string>
+    
+    <string name="preferences_sharing_bundles_title">Create Bundles</string>
+    <string name="preferences_sharing_bundles_description">Create MaGDAA bundles of finalised survey forms</string>
+    
+    <string name="preferences_sharing_rhizome_title">Share Bundles</string>
+    <string name="preferences_sharing_rhizome_description">Share MaGDAA bundles on the mesh network</string>
     
     <!-- file system related strings -->
     <string name="system_file_path_parent">/magdaaproject/</string>
     <string name="system_file_path_debug_output">/magdaaproject/debug/</string>
-    <string name="system_file_path_rhizome_data">/magdaaproject/rhizome/mem/</string>
+    <string name="system_file_path_rhizome_data">/magdaaproject/rhizome/sam/</string>
     <string name="system_file_path_odk_instances">/odk/instances/</string>
     
     <!-- system contact strings -->

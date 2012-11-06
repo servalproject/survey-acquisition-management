@@ -41,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity 
+            android:name=".PreferencesActivity"
+            android:label="@string/system_application_default_label"> 
+        </activity>
     </application>
 
 </manifest>

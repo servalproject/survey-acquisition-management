@@ -26,8 +26,10 @@ import org.magdaaproject.utils.serval.ServalUtils;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +45,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 	/*
 	 * private class level constants
 	 */
+	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "LauncherActivity";
 
 	/*
@@ -70,16 +73,21 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			mAlert.show(getFragmentManager(), "no-external-storage");
 			
 		}
+		
+		// get the shared preferences object
+		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 		// check that Serval Mesh is installed
-		if(ServalUtils.isServalMeshInstalled(getApplicationContext()) == false) {
-			allowStart = false;
-			
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_no_serval_mesh_title),
-					getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
-			
-			mAlert.show(getFragmentManager(), "no-serval");
+		if(mPreferences.getBoolean("preferences_sharing_rhizome", true) == true) {
+			if(ServalUtils.isServalMeshInstalled(getApplicationContext()) == false) {
+				allowStart = false;
+				
+				BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+						getString(R.string.launcher_ui_dialog_no_serval_mesh_title),
+						getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
+				
+				mAlert.show(getFragmentManager(), "no-serval");
+			}
 		}
 		
 		// check that ODK Collect is installed

@@ -90,6 +90,5 @@ public class BasicAlertDialogFragment extends DialogFragment {
 			}
 		});
 		return mBuilder.create();
-		
 	}
 }
