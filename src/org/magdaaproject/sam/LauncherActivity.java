@@ -63,12 +63,10 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		if(FileUtils.isExternalStorageAvailable() == false) {
 			allowStart = false;
 			
-			Bundle mBundle = new Bundle();
-			mBundle.putString("title", getString(R.string.launcher_ui_dialog_no_external_storage_title));
-			mBundle.putString("message", getString(R.string.launcher_ui_dialog_no_external_storage_message));
-			
-			BasicAlertDialogFragment mAlert = new BasicAlertDialogFragment();
-			mAlert.setArguments(mBundle);
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.launcher_ui_dialog_no_external_storage_title),
+					getString(R.string.launcher_ui_dialog_no_external_storage_message));
+
 			mAlert.show(getFragmentManager(), "no-external-storage");
 			
 		}
@@ -77,12 +75,10 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		if(ServalUtils.isServalMeshInstalled(getApplicationContext()) == false) {
 			allowStart = false;
 			
-			Bundle mBundle = new Bundle();
-			mBundle.putString("title", getString(R.string.launcher_ui_dialog_no_serval_mesh_title));
-			mBundle.putString("message", getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.launcher_ui_dialog_no_serval_mesh_title),
+					getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
 			
-			BasicAlertDialogFragment mAlert = new BasicAlertDialogFragment();
-			mAlert.setArguments(mBundle);
 			mAlert.show(getFragmentManager(), "no-serval");
 		}
 		
@@ -90,12 +86,10 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		if(OpenDataKitUtils.isOdkCollectInstalled(getApplicationContext()) == false) {
 			allowStart = false;
 			
-			Bundle mBundle = new Bundle();
-			mBundle.putString("title", getString(R.string.launcher_ui_dialog_no_odk_collect_title));
-			mBundle.putString("message", getString(R.string.launcher_ui_dialog_no_odk_collect_message));
-			
-			BasicAlertDialogFragment mAlert = new BasicAlertDialogFragment();
-			mAlert.setArguments(mBundle);
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.launcher_ui_dialog_no_odk_collect_title),
+					getString(R.string.launcher_ui_dialog_no_odk_collect_message));
+
 			mAlert.show(getFragmentManager(), "no-odk-collect");
 		}
 		

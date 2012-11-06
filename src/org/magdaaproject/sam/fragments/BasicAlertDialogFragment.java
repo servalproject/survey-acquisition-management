@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 /**
  * a basic alert dialog fragment showing a title, description and an OK button
@@ -33,6 +34,35 @@ import android.os.Bundle;
  * "title" for the title of the message
  */
 public class BasicAlertDialogFragment extends DialogFragment {
+	
+	/**
+	 * factory method to build a new instance of the class
+	 * @param title the title of the dialog
+	 * @param message the message of the dialog
+	 * @return a new instance of the class
+	 * @throws IllegalArgumentException if either of the parameters is missing
+	 */
+	public static BasicAlertDialogFragment newInstance(String title, String message) {
+		
+		if(TextUtils.isEmpty(title) == true) {
+			throw new IllegalArgumentException("the title parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(message) == true) {
+			throw new IllegalArgumentException("the message parameter is required");
+		}
+		
+		BasicAlertDialogFragment mObject = new BasicAlertDialogFragment();
+		
+		// build a new bundle of arguments
+		Bundle mBundle = new Bundle();
+		mBundle.putString("title", title);
+		mBundle.putString("message", message);
+		
+		mObject.setArguments(mBundle);
+		
+		return mObject;
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -62,6 +92,4 @@ public class BasicAlertDialogFragment extends DialogFragment {
 		return mBuilder.create();
 		
 	}
-	
-
 }
