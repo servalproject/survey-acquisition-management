@@ -1,0 +1,131 @@
+<!-- 
+/*
+ * Copyright (C) 2012 The MaGDAA Project
+ *
+ * This file is part of the MaGDAA SAM Software
+ *
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="AppTheme" parent="@android:style/Theme" />
+    
+    <!-- base content styles -->
+    <style name="ui_elem_content" parent="ui_elem_wrap">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+
+    <style name="ui_elem_wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <style name="ui_elem_layout_default">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ui_elem_layout_match">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="ui_elem_layout_fill">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ui_elem_layout_fill_all">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+    </style>
+    
+    <!-- base text style -->
+    <style name="ui_elem_text" parent="ui_elem_content">
+        <item name="android:textSize">13sp</item>
+    </style>
+    
+    <!-- header style -->
+    <style name="ui_elem_header" parent="ui_elem_text">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <style name="ui_elem_sub_header_1" parent="ui_elem_text">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    
+    <style name="ui_elem_sub_header_2" parent="ui_elem_text">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    <style name="ui_elem_reading" parent="ui_elem_text">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">60sp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <style name="ui_elem_reading_img">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">60sp</item>
+    </style>
+    
+    <style name="ui_elem_text_fill" parent="ui_elem_layout_fill">
+        <item name="android:textSize">13sp</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+    
+    <!-- button styles -->
+    <style name="ui_elem_button_default">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+    
+    <!-- chart styles -->
+    <style name="ui_elem_chart" parent="ui_elem_layout_fill_all">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+    
+</resources>
