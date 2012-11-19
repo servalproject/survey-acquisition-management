@@ -26,7 +26,7 @@
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="16" />
     
     <!-- uses features -->
     <uses-feature android:required="true" android:name="android.hardware.location.gps"/>

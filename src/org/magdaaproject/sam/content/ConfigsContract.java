@@ -59,7 +59,7 @@ public class ConfigsContract {
 		/**
 		 * name of the database table
 		 */
-		public static final String TABLE_NAME = FormsContract.CONTENT_URI_PATH;
+		public static final String TABLE_NAME = ConfigsContract.CONTENT_URI_PATH;
 		
 		/**
 		 * unique id column

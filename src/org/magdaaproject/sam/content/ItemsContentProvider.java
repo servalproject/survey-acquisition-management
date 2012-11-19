@@ -145,6 +145,7 @@ public class ItemsContentProvider extends ContentProvider {
 
 		// get a connection to the database
 		database = databaseHelper.getReadableDatabase();
+		//database = databaseHelper.getWritableDatabase();
 		
 		// get the datable table from the URI
 		String mTableName = uri.getPathSegments().get(0);
