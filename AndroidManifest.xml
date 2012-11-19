@@ -45,7 +45,8 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/system_application_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        android:allowBackup="false">
         <activity
             android:name=".LauncherActivity"
             android:label="@string/system_application_default_label" >
@@ -59,6 +60,12 @@
             android:name=".PreferencesActivity"
             android:label="@string/system_application_default_label"> 
         </activity>
+        <provider 
+            android:enabled="true" 
+            android:name=".content.ItemsContentProvider" 
+            android:exported="false" 
+            android:authorities="org.magdaaproject.sam.provider.items">
+        </provider>
     </application>
 
 </manifest>
