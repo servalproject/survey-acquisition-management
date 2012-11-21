@@ -51,9 +51,6 @@ public class ItemsContentProvider extends ContentProvider {
 	private static final int sConfigsListUri = 1;
 	private static final int sConfigsItemUri = 2;
 	
-	private static final int sCategoriesListUri = 3;
-	private static final int sCategoriesItemUri = 4;
-	
 	private static final int sFormsListUri = 5;
 	private static final int sFormsItemUri = 6;
 	
@@ -76,9 +73,6 @@ public class ItemsContentProvider extends ContentProvider {
 		//define which URIs to match
 		sUriMatcher.addURI(AUTHORITY, ConfigsContract.CONTENT_URI_PATH, sConfigsListUri);
 		sUriMatcher.addURI(AUTHORITY, ConfigsContract.CONTENT_URI_PATH + "/#", sConfigsItemUri);
-		
-		sUriMatcher.addURI(AUTHORITY, CategoriesContract.CONTENT_URI_PATH, sCategoriesListUri);
-		sUriMatcher.addURI(AUTHORITY, CategoriesContract.CONTENT_URI_PATH + "/#", sCategoriesItemUri);
 
 		// create the database if necessary
 		databaseHelper = new MainDatabaseHelper(getContext());
@@ -107,20 +101,6 @@ public class ItemsContentProvider extends ContentProvider {
 				selection = ConfigsContract.Table._ID + " = " + uri.getLastPathSegment();
 			} else {
 				selection += " AND " + ConfigsContract.Table._ID + " = " + uri.getLastPathSegment();
-			}
-			break;
-		case sCategoriesListUri:
-			// uri matches the entire table
-			if(TextUtils.isEmpty(sortOrder) == true) {
-				sortOrder = CategoriesContract.Table.TITLE + " ASC";
-			}
-			break;
-		case sCategoriesItemUri:
-			// uri matches a single item
-			if(TextUtils.isEmpty(selection) == true) {
-				selection = CategoriesContract.Table._ID + " = " + uri.getLastPathSegment();
-			} else {
-				selection += " AND " + CategoriesContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
 			break;
 		case sFormsListUri:
@@ -172,10 +152,6 @@ public class ItemsContentProvider extends ContentProvider {
 			mTable = ConfigsContract.Table.TABLE_NAME;
 			mContentUri = ConfigsContract.CONTENT_URI;
 			break;
-		case sCategoriesListUri:
-			mTable = CategoriesContract.Table.TABLE_NAME;
-			mContentUri = CategoriesContract.CONTENT_URI;
-			break;
 		case sFormsListUri:
 			mTable = FormsContract.Table.TABLE_NAME;
 			mContentUri = FormsContract.CONTENT_URI;
@@ -226,17 +202,6 @@ public class ItemsContentProvider extends ContentProvider {
 			}
 			mCount = database.delete(ConfigsContract.Table.TABLE_NAME, selection, selectionArgs);
 			break;
-		case sCategoriesListUri:
-			mCount = database.delete(CategoriesContract.Table.TABLE_NAME, selection, selectionArgs);
-			break;
-		case sCategoriesItemUri:
-			if(TextUtils.isEmpty(selection) == true) {
-				selection = CategoriesContract.Table._ID + " = ?";
-				selectionArgs = new String[0];
-				selectionArgs[0] = uri.getLastPathSegment();
-			}
-			mCount = database.delete(CategoriesContract.Table.TABLE_NAME, selection, selectionArgs);
-			break;
 		case sFormsListUri:
 			mCount = database.delete(FormsContract.Table.TABLE_NAME, selection, selectionArgs);
 			break;
@@ -272,10 +237,6 @@ public class ItemsContentProvider extends ContentProvider {
 			return ConfigsContract.CONTENT_TYPE_LIST;
 		case sConfigsItemUri:
 			return ConfigsContract.CONTENT_TYPE_ITEM;
-		case sCategoriesListUri:
-			return CategoriesContract.CONTENT_TYPE_LIST;
-		case sCategoriesItemUri:
-			return CategoriesContract.CONTENT_TYPE_ITEM;
 		case sFormsListUri:
 			return FormsContract.CONTENT_TYPE_LIST;
 		case sFormsItemUri:

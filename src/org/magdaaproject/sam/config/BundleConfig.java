@@ -35,7 +35,6 @@ public class BundleConfig {
 	 * private class level variables
 	 */
 	private HashMap<String, String> metadata;
-	private ArrayList<String> categories;
 	private ArrayList<String> forms;
 	private String rawConfig;
 	
@@ -52,8 +51,7 @@ public class BundleConfig {
 		}
 		
 		metadata = new HashMap<String, String>();
-		
-		categories = new ArrayList<String>();
+
 		forms      = new ArrayList<String>();
 		
 		this.rawConfig = config;
@@ -77,11 +75,7 @@ public class BundleConfig {
 				
 				// parse the command lines
 				if(mToken.startsWith("@") == true) {
-					// this is a command line
-					if(mToken.startsWith("@category") == true) {
-						mToken = mToken.substring(mToken.indexOf("\t")  + 1, mToken.length());
-						categories.add(mToken.trim());
-					} else if(mToken.startsWith("@form") == true) {
+					if(mToken.startsWith("@form") == true) {
 						mToken = mToken.substring(mToken.indexOf("\t")  + 1, mToken.length());
 						forms.add(mToken.trim());
 					} else {
@@ -110,14 +104,6 @@ public class BundleConfig {
 	}
 	
 	/**
-	 * get the list of categories
-	 * @return the list of categories as a string array
-	 */
-	public String[] getCategories() {
-		return (String[]) categories.toArray();
-	}
-	
-	/**
 	 * get the list of forms
 	 * @return the list of forms as a string array
 	 */
@@ -134,10 +120,6 @@ public class BundleConfig {
 		
 		if(forms.size() == 0) {
 			throw new ConfigException("The config requires at least one form definition");
-		}
-		
-		if(categories.size() == 0) {
-			throw new ConfigException("The config requires at least one category definition");
 		}
 		
 		if(metadata.containsKey("title") == false) {

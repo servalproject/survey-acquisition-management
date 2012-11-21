@@ -55,20 +55,11 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			ConfigsContract.Table.AUTHOR_EMAIL + " TEXT, " +
 			ConfigsContract.Table.GENERATED_DATE + " TEXT)";
 	
-	private static final String sCategoriesTableCreate = "CREATE TABLE " +
-			CategoriesContract.Table.TABLE_NAME + " ( " +
-			CategoriesContract.Table._ID + " INTEGER PRIMARY KEY, " +
-			CategoriesContract.Table.CONFIG_ID + " INTEGER, " +
-			CategoriesContract.Table.CATEGORY_ID + " INTEGER, " +
-			CategoriesContract.Table.TITLE + " TEXT, " + 
-			CategoriesContract.Table.DESCRIPTION + " DESCRIPTION, " +
-			CategoriesContract.Table.ICON + " BLOB)";
-	
 	private static final String sFormsTableCreate = "CREATE TABLE " +
 			FormsContract.Table.TABLE_NAME + " (" +
 			FormsContract.Table._ID + " INTEGER PRIMARY KEY, " +
 			FormsContract.Table.FORM_ID + " INTEGER, " +
-			FormsContract.Table.CATEGORY_ID + " INTEGER, " +
+			FormsContract.Table.CATEGORY_ID + " TEXT, " +
 			FormsContract.Table.TITLE + " TEXT, " +
 			FormsContract.Table.DESCRIPTION + " TEXT, " +
 			FormsContract.Table.XFORMS_FILE + " TEXT, " +
@@ -93,7 +84,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
 		// create the table and index
 		db.execSQL(sConfigsTableCreate);
-		db.execSQL(sCategoriesTableCreate);
 		db.execSQL(sFormsTableCreate);
 	}
 
