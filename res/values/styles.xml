@@ -50,42 +50,41 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    
+    <style name="ui_elem_layout_fill_with_margins">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
 
     <style name="ui_elem_layout_fill_all">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">fill_parent</item>
     </style>
     
-    <!-- base text style -->
-    <style name="ui_elem_text" parent="ui_elem_content">
-        <item name="android:textSize">13sp</item>
-    </style>
-    
     <!-- header style -->
-    <style name="ui_elem_header" parent="ui_elem_text">
+    <style name="ui_elem_header" parent="ui_elem_content">
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:textSize">24sp</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
-    <style name="ui_elem_sub_header_1" parent="ui_elem_text">
+    <style name="ui_elem_sub_header_1" parent="ui_elem_content">
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
+         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
-    <style name="ui_elem_sub_header_2" parent="ui_elem_text">
+    <style name="ui_elem_sub_header_2" parent="ui_elem_content">
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
-    </style>
-    
-    <style name="ui_elem_text_fill" parent="ui_elem_layout_fill">
-        <item name="android:textSize">13sp</item>
-        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
-        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
-        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
     <!-- button styles -->
@@ -102,12 +101,22 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
     </style>
     
-    <!-- chart styles -->
-    <style name="ui_elem_chart" parent="ui_elem_layout_fill_all">
-        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+    <!-- text styles -->
+    <style name="ui_elem_text_default" parent="ui_elem_wrap">
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="ui_elem_text_label" parent="ui_elem_text_default">
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="ui_elem_text_fill" parent="ui_elem_layout_fill">
+        <item name="android:textSize">14sp</item>
         <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
-        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_xl_margin_right</item>
     </style>
     
 </resources>

@@ -21,10 +21,10 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
-    <!-- display preferences -->
+    <!-- sharing preferences -->
 	<PreferenceCategory 
 	    android:title="@string/preferences_sharing_title"
-		android:key="preferences_key_display_settings">
+		android:key="preferences_sharing">
 		
 	<CheckBoxPreference
 	        android:key="preferences_sharing_bundles"
@@ -39,6 +39,19 @@
 	        android:defaultValue="true"
 	        android:dependency="preferences_sharing_bundles" />
 		
+	</PreferenceCategory>
+	
+	<!-- config preferences -->
+	<PreferenceCategory 
+	    android:title="@string/preferences_config_title"
+		android:key="preferences_config">
+	
+	    <Preference android:title="@string/preferences_view_config_title" >
+		    <intent
+		        android:targetPackage="org.magdaaproject.sam"
+		        android:targetClass="org.magdaaproject.sam.ConfigManagerActivity" />
+		</Preference>
+	    
 	</PreferenceCategory>
     
 

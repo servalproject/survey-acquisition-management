@@ -59,9 +59,20 @@
     <string name="launcher_ui_dialog_invalid_config_title">Config File Error</string>
     
     
-    <string name="launcher_ui_lbl_device_id">Device ID: $1%s</string>
+    <string name="launcher_ui_lbl_device_id">Device ID: %s</string>
     
     <string name="launcher_menu_acknowledgements">Acknowledgements</string>
+    
+    <!-- config manager activity strings -->
+    <string name="config_manager_ui_lbl_header">Configuration Manager</string>
+    <string name="config_manager_ui_lbl_subheader">Currently Loaded Configuration</string>
+    
+    <string name="config_manager_ui_lbl_title">Title:</string>
+    <string name="config_manager_ui_lbl_description">Description:</string>
+    <string name="config_manager_ui_lbl_version">Version:</string>
+    <string name="config_manager_ui_lbl_author">Author:</string>
+    <string name="config_manager_ui_lbl_author_email">Author Email:</string>
+    <string name="config_manager_ui_lbl_last_updated">Last Updated:</string>
     
     <!-- preferences related strings -->
     <string name="preferences_sharing_title">Data Sharing</string>
@@ -71,6 +82,9 @@
     
     <string name="preferences_sharing_rhizome_title">Share Bundles</string>
     <string name="preferences_sharing_rhizome_description">Share MaGDAA bundles on the mesh network</string>
+    
+    <string name="preferences_config_title">Configuration</string>
+    <string name="preferences_view_config_title">View Configuration Details</string>
     
     <!-- file system related strings -->
     <string name="system_file_path_parent">/magdaaproject/</string>

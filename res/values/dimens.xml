@@ -29,4 +29,7 @@
     <!-- extra big margins -->
     <dimen name="ui_elem_xl_margin_top">50sp</dimen>
     <dimen name="ui_elem_xxl_margin_top">150sp</dimen>
+    
+    <dimen name="ui_elem_xl_margin_right">25sp</dimen>
+    <dimen name="ui_elem_xxl_margin_right">35sp</dimen>
 </resources>
