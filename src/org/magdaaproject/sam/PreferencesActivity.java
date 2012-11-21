@@ -34,8 +34,8 @@ public class PreferencesActivity extends Activity implements OnSharedPreferenceC
 	/*
 	 * private class level constants
 	 */
-	private static final boolean sVerboseLog = true;
-	private static final String sTag = "PreferencesActivity";
+//	private static final boolean sVerboseLog = true;
+//	private static final String sTag = "PreferencesActivity";
 	
 	/*
 	 * (non-Javadoc)

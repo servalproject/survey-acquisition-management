@@ -36,7 +36,8 @@
 	        android:key="preferences_sharing_rhizome"
 	        android:title="@string/preferences_sharing_rhizome_title"
 	        android:summary="@string/preferences_sharing_rhizome_description"
-	        android:defaultValue="true" />
+	        android:defaultValue="true"
+	        android:dependency="preferences_sharing_bundles" />
 		
 	</PreferenceCategory>
     
