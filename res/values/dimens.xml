@@ -20,8 +20,13 @@
  */
 -->
 <resources>
+    <!-- default margins -->
     <dimen name="ui_elem_margin_top">5dp</dimen>
     <dimen name="ui_elem_margin_bottom">10sp</dimen>
     <dimen name="ui_elem_margin_left">5sp</dimen>
     <dimen name="ui_elem_margin_right">5sp</dimen>
+    
+    <!-- extra big margins -->
+    <dimen name="ui_elem_xl_margin_top">50sp</dimen>
+    <dimen name="ui_elem_xxl_margin_top">150sp</dimen>
 </resources>

@@ -118,7 +118,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			mAlert.show(getFragmentManager(), "no-odk-collect");
 		}
 		
-		//setup the buttons
+		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
 		mButton.setOnClickListener(this);
 

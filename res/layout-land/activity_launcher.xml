@@ -34,7 +34,7 @@
     <Button
         android:id="@+id/launcher_ui_btn_site_survey"
         style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_ui_lbl_header"
         android:contentDescription="@string/launcher_ui_btn_event_survey"
@@ -42,7 +42,7 @@
         android:textSize="18sp"
         android:drawableTop="@drawable/ic_site_survey"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/ui_elem_xxl_margin_top"
+        android:layout_marginTop="@dimen/ui_elem_margin_top"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right" />
@@ -50,7 +50,7 @@
      <Button
         android:id="@+id/launcher_ui_btn_audience"
         style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_ui_btn_site_survey"
         android:contentDescription="@string/launcher_ui_btn_audience"
@@ -58,7 +58,7 @@
         android:textSize="18sp"
         android:drawableTop="@drawable/ic_crowds"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/ui_elem_xxl_margin_top"
+        android:layout_marginTop="@dimen/ui_elem_margin_top"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right" />

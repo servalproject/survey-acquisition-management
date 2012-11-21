@@ -31,6 +31,9 @@
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email MaGDAA</string>
     
+    <string name="launcher_ui_btn_audience">Audience Surveys</string>
+    <string name="launcher_ui_btn_event_survey">Event Surveys</string>
+    
     <string name="launcher_ui_dialog_no_external_storage_message">External storage, such as an SD Card, must be enabled before using this application</string>
     <string name="launcher_ui_dialog_no_external_storage_title">External Storage</string>
     
