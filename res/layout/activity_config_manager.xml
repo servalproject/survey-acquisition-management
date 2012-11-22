@@ -107,7 +107,8 @@
                 android:text="@string/config_manager_ui_lbl_author_email"/>
             <TextView
                 android:id="@+id/config_manager_ui_lbl_author_email_text"
-                style="@style/ui_elem_text_default"/>
+                style="@style/ui_elem_text_default"
+                android:autoLink="email"/>
         </TableRow>
         
         <TableRow
