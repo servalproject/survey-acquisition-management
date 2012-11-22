@@ -99,7 +99,5 @@
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right" />
-    
-    <!-- layout_alignParentLeft 
-    android:layout_toRightOf="@id/launcher_ui_btn_contact"-->
+
 </RelativeLayout>

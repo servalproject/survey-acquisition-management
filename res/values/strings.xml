@@ -66,6 +66,7 @@
     <!-- config manager activity strings -->
     <string name="config_manager_ui_lbl_header">Configuration Manager</string>
     <string name="config_manager_ui_lbl_subheader">Currently Loaded Configuration</string>
+    <string name="config_manager_ui_lbl_subheader_alt">No Configuration Currently Available</string>
     
     <string name="config_manager_ui_lbl_title">Title:</string>
     <string name="config_manager_ui_lbl_description">Description:</string>
@@ -73,6 +74,10 @@
     <string name="config_manager_ui_lbl_author">Author:</string>
     <string name="config_manager_ui_lbl_author_email">Author Email:</string>
     <string name="config_manager_ui_lbl_last_updated">Last Updated:</string>
+    
+    <string name="config_manager_ui_btn_load">Load Configuration</string>
+    
+    <string name="config_manager_ui_lbl_last_progress">Loading Configuration&#8230;</string>
     
     <!-- preferences related strings -->
     <string name="preferences_sharing_title">Data Sharing</string>

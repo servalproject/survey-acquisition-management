@@ -19,10 +19,6 @@
  */
 package org.magdaaproject.sam;
 
-import java.io.IOException;
-
-import org.magdaaproject.sam.config.BundleConfig;
-import org.magdaaproject.sam.config.ConfigException;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.DeviceUtils;
@@ -32,11 +28,9 @@ import org.magdaaproject.utils.serval.ServalUtils;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -58,12 +52,13 @@ public class LauncherActivity extends Activity implements OnClickListener {
 	 */
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "LauncherActivity";
+	
+	private static final int sReturnFromConfigManager = 0;
 
 	/*
 	 * private class level variables
 	 */
 	private boolean allowStart = true;
-	private BundleConfig newConfig = null;
 
 	/*
 	 * (non-Javadoc)
@@ -118,6 +113,11 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			mAlert.show(getFragmentManager(), "no-odk-collect");
 		}
 		
+		// check to see if we should continue
+		if(allowStart == false) {
+			return;
+		}
+		
 		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
 		mButton.setOnClickListener(this);
@@ -125,14 +125,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
 		mButton.setOnClickListener(this);
 		
-		// check to see if we should continue
-		if(allowStart) {
-			buildLauncherUI();
-		}
-	}
-	
-	private void buildLauncherUI() {
-		
+		// check for an available config
 		ContentResolver mContentResolver = this.getContentResolver();
 		
 		String[] mProjection = new String[1];
@@ -147,145 +140,57 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		
 		if(mCursor == null || mCursor.getCount() == 0) {
 			
-			// try to load a config file
-			loadConfigFile();
-			
+			// send user to config manager screen
+			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
+			startActivityForResult(mIntent, sReturnFromConfigManager);
 		} else {
 			
+			// update the header
 			mCursor.moveToFirst();
-			TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
+			mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
 			mTextView.setText(mCursor.getString(0));
-			
-			// build the rest of the UI
 		}
 		
 		// play nice and tidy up
 		if(mCursor != null) {
 			mCursor.close();
 		}
-		
 	}
 	
-	private void loadConfigFile() {
-		String[] mConfigFiles = null;
-		String mConfigIndex = null;
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		String mConfigPath = Environment.getExternalStorageDirectory().getPath();
-		mConfigPath += getString(R.string.system_file_path_configs);
-		
-		// get list of config files
-		try {
-			 mConfigFiles = FileUtils.listFilesInDir(
-					mConfigPath, 
-					getString(R.string.system_file_config_extension)
-				);
-		} catch (IOException e) {
-			// unable to get the list of config files
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_no_config_files_title),
-					getString(R.string.launcher_ui_dialog_no_config_files_message));
-
-			mAlert.show(getFragmentManager(), "no-config-files");
-			return;
-		}
-		
-		// check to see if at least one config file was found
-		if(mConfigFiles == null || mConfigFiles.length == 0) {
-			// unable to get the list of config files
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_no_config_files_title),
-					getString(R.string.launcher_ui_dialog_no_config_files_message));
-
-			mAlert.show(getFragmentManager(), "no-config-files");
-			return;
-		}
-		
-		// check if there is more than one file
-		if(mConfigFiles.length > 1) {
-			// unable to get the list of config files
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_too_many_config_files_title),
-					getString(R.string.launcher_ui_dialog_too_many_config_files_message));
-
-			mAlert.show(getFragmentManager(), "too-many-config-files");
-			return;
-		}
-		
-		// load the index
-		try {
-			mConfigIndex = FileUtils.getMagdaaBundleIndex(mConfigFiles[0]);
-		} catch (IOException e) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_unable_open_config_title),
-					getString(R.string.launcher_ui_dialog_unable_open_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-open-config-file");
+		if(requestCode == sReturnFromConfigManager) {
 			
-			Log.e(sLogTag, "unable to open the index file", e);
-			Log.v(sLogTag, "file path :'" + mConfigFiles[0] + "'");
-			return;
-		}
-		
-		// check to see if the index was loaded
-		if(mConfigIndex == null) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_unable_open_config_title),
-					getString(R.string.launcher_ui_dialog_unable_open_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-open-config-files");
-			return;
-		}
-		
-		// parse the config
-		try {
-			newConfig = new BundleConfig(mConfigIndex);
-			newConfig.parseConfig();
-		} catch (ConfigException e) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_unable_parse_config_title),
-					getString(R.string.launcher_ui_dialog_unable_parse_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-parse-config-file");
+			// check for an available config
+			ContentResolver mContentResolver = this.getContentResolver();
 			
-			Log.e(sLogTag, "configException thrown:", e);
-			return;
-		}
-		
-		try {
-			newConfig.validateConfig();
-		} catch (ConfigException e) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_invalid_config_title),
-					getString(R.string.launcher_ui_dialog_invalid_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-parse-config-file");
+			String[] mProjection = new String[1];
+			mProjection[0] = ConfigsContract.Table.TITLE;
 			
-			Log.e(sLogTag, "configException thrown:", e);
-			return;
+			Cursor mCursor = mContentResolver.query(
+					ConfigsContract.CONTENT_URI, 
+					mProjection, 
+					null, 
+					null, 
+					null);
+			
+			if(mCursor != null && mCursor.getCount() > 0) {
+				// update the header
+				mCursor.moveToFirst();
+				TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
+				mTextView.setText(mCursor.getString(0));
+			}
+			
+			// play nice and tidy up
+			if(mCursor != null) {
+				mCursor.close();
+			}	
 		}
-		
-		/*
-		 *  import the content
-		 */
-		
-		// build the list of values
-		ContentValues mValues = new ContentValues();
-		mValues.put(ConfigsContract.Table.TITLE, newConfig.getMetadataValue("title"));
-		mValues.put(ConfigsContract.Table.DESCRIPTION, newConfig.getMetadataValue("description"));
-		mValues.put(ConfigsContract.Table.VERSION, newConfig.getMetadataValue("version"));
-		mValues.put(ConfigsContract.Table.AUTHOR, newConfig.getMetadataValue("author"));
-		mValues.put(ConfigsContract.Table.AUTHOR_EMAIL, newConfig.getMetadataValue("email"));
-		mValues.put(ConfigsContract.Table.GENERATED_DATE, newConfig.getMetadataValue("generated"));
-		
-		// save them to the database
-		ContentResolver mContentResolver = this.getContentResolver();
-		
-		mContentResolver.insert(ConfigsContract.CONTENT_URI, mValues);
-		
-		// add the other config data
-		
-		// rebuild the ui
-		buildLauncherUI();
 	}
 	
 	/*

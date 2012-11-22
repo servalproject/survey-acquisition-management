@@ -124,5 +124,45 @@
                 style="@style/ui_elem_text_default"/>
         </TableRow>
     </TableLayout>
+    
+    <!-- progress bar -->
+    <ProgressBar
+        android:id="@+id/config_manager_ui_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/config_manager_ui_lbl_subheader"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/ui_elem_margin_top"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:visibility="gone"/>
+    
+     <TextView
+        android:id="@+id/config_manager_ui_lbl_progress"
+        style="@style/ui_elem_text_label"
+        android:text="@string/config_manager_ui_lbl_last_progress"
+        android:layout_below="@+id/config_manager_ui_progress_bar"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+    
+    <!-- buttons -->
+    <Button
+        android:id="@+id/config_manager_ui_btn_load"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/config_manager_ui_btn_load"
+        android:text="@string/config_manager_ui_btn_load"
+        android:drawableLeft="@drawable/ic_action_gear"
+        android:layout_marginTop="@dimen/ui_elem_margin_top"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right" />
+
+   
 
 </RelativeLayout>
