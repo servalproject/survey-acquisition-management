@@ -61,9 +61,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			FormsContract.Table.FORM_ID + " INTEGER, " +
 			FormsContract.Table.CATEGORY_ID + " TEXT, " +
 			FormsContract.Table.TITLE + " TEXT, " +
-			FormsContract.Table.DESCRIPTION + " TEXT, " +
-			FormsContract.Table.XFORMS_FILE + " TEXT, " +
-			FormsContract.Table.ICON + " BLOB)";
+			FormsContract.Table.XFORMS_FILE + " TEXT)";
 
 	/**
 	 * constructs a new MainDatabaseHelper object

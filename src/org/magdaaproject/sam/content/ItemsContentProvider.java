@@ -73,6 +73,9 @@ public class ItemsContentProvider extends ContentProvider {
 		//define which URIs to match
 		sUriMatcher.addURI(AUTHORITY, ConfigsContract.CONTENT_URI_PATH, sConfigsListUri);
 		sUriMatcher.addURI(AUTHORITY, ConfigsContract.CONTENT_URI_PATH + "/#", sConfigsItemUri);
+		
+		sUriMatcher.addURI(AUTHORITY, FormsContract.CONTENT_URI_PATH, sFormsListUri);
+		sUriMatcher.addURI(AUTHORITY, FormsContract.CONTENT_URI_PATH + "/#", sFormsListUri);
 
 		// create the database if necessary
 		databaseHelper = new MainDatabaseHelper(getContext());

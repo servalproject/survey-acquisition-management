@@ -1,10 +1,31 @@
+/*
+ * Copyright (C) 2012 The MaGDAA Project
+ *
+ * This file is part of the MaGDAA SAM Software
+ *
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package org.magdaaproject.sam;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.magdaaproject.sam.config.BundleConfig;
 import org.magdaaproject.sam.config.ConfigException;
 import org.magdaaproject.sam.content.ConfigsContract;
+import org.magdaaproject.sam.content.FormsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.FileUtils;
 
@@ -22,6 +43,9 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+/**
+ * activity used to view details of the current config and manage other config related tasks
+ */
 public class ConfigManagerActivity extends Activity implements OnClickListener {
 
 	/*
@@ -262,7 +286,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 					getString(R.string.launcher_ui_dialog_invalid_config_title),
 					getString(R.string.launcher_ui_dialog_invalid_config_message));
 
-			mAlert.show(getFragmentManager(), "unable-parse-config-file");
+			mAlert.show(getFragmentManager(), "invalid-config-file");
 			
 			Log.e(sLogTag, "configException thrown:", e);
 			return false;
@@ -286,7 +310,20 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		
 		mContentResolver.insert(ConfigsContract.CONTENT_URI, mValues);
 		
-		// add the other config data
+		// add the forms
+		ArrayList<String[]> mForms = newConfig.getForms();
+		
+		for(String[] mElements: mForms) {
+			
+			mValues = new ContentValues();
+			
+			mValues.put(FormsContract.Table.FORM_ID, mElements[0]);
+			mValues.put(FormsContract.Table.CATEGORY_ID, mElements[1]);
+			mValues.put(FormsContract.Table.TITLE, mElements[2]);
+			mValues.put(FormsContract.Table.XFORMS_FILE, mElements[3]);
+			
+			mContentResolver.insert(FormsContract.CONTENT_URI, mValues);	
+		}
 		
 		/* 
 		 * update the activity

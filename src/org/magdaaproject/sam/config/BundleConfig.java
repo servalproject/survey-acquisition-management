@@ -35,7 +35,7 @@ public class BundleConfig {
 	 * private class level variables
 	 */
 	private HashMap<String, String> metadata;
-	private ArrayList<String> forms;
+	private ArrayList<String[]> forms;
 	private String rawConfig;
 	
 	/**
@@ -52,7 +52,7 @@ public class BundleConfig {
 		
 		metadata = new HashMap<String, String>();
 
-		forms      = new ArrayList<String>();
+		forms    = new ArrayList<String[]>();
 		
 		this.rawConfig = config;
 	}
@@ -77,7 +77,8 @@ public class BundleConfig {
 				if(mToken.startsWith("@") == true) {
 					if(mToken.startsWith("@form") == true) {
 						mToken = mToken.substring(mToken.indexOf("\t")  + 1, mToken.length());
-						forms.add(mToken.trim());
+						addForm(mToken.trim());
+						//forms.add(mToken.trim());
 					} else {
 						metadata.put(
 							mToken.substring(1, mToken.indexOf("\t")).trim(), 
@@ -89,6 +90,26 @@ public class BundleConfig {
 				throw new ConfigException("unable to parse the config", e);
 			}
 		}
+	}
+	
+	/*
+	 * parse the form line of the configuration
+	 */
+	private void addForm(String token) throws ConfigException {
+		
+		// validate the string
+		if(TextUtils.isEmpty(token) == true) {
+			throw new ConfigException("a token parameter is required");
+		}
+		
+		String[] mElements = token.split("\t");
+		
+		if(mElements.length != 4) {
+			throw new ConfigException("expected 4 elements in the form line got '" + mElements.length + "' \ntoken: '" + token + "'");
+		}
+		
+		forms.add(mElements);
+		
 	}
 	
 	/**
@@ -107,8 +128,8 @@ public class BundleConfig {
 	 * get the list of forms
 	 * @return the list of forms as a string array
 	 */
-	public String[] getForms() {
-		return (String[]) forms.toArray();
+	public ArrayList<String[]> getForms() {
+		return forms;
 	}
 	
 	/**

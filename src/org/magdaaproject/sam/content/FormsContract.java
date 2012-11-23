@@ -82,16 +82,6 @@ public class FormsContract {
 		public static final String TITLE = "title";
 		
 		/**
-		 * category description column
-		 */
-		public static final String DESCRIPTION = "description";
-		
-		/**
-		 * category icon column
-		 */
-		public static final String ICON = "icon";
-		
-		/**
 		 * xforms file name column
 		 */
 		public static final String XFORMS_FILE = "xforms_file";
