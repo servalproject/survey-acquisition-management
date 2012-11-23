@@ -119,19 +119,24 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_xl_margin_right</item>
     </style>
     
-    <style name="ui_elem_text_grid_orange" parent="ui_elem_layout_fill">
-        <item name="android:textColor">#ffffff</item>
+    <style name="ui_elem_text_grid" parent="ui_elem_layout_fill">
         <item name="android:gravity">center</item>
         <item name="android:layout_margin">3dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:shadowColor">#000000</item>
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">2</item>
         <item name="android:paddingLeft">15dp</item>
         <item name="android:paddingRight">15dp</item>
+        <item name="android:width">250dp</item>
+	    <item name="android:height">85dp</item>
+    </style>
+    
+    <style name="ui_elem_text_grid_blue" parent="ui_elem_text_grid">
         <item name="android:background">@drawable/btn_blue_matte</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:textColor">#ffffff</item>
     </style>
     
 </resources>

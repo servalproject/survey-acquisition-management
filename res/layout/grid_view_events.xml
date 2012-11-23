@@ -8,7 +8,6 @@
     
     <TextView
 	    android:id="@+id/grid_view_events_text"
-	    style="@style/ui_elem_text_grid_orange"
-	    android:width="249dp"/>
+	    style="@style/ui_elem_text_grid_blue"/>
 
 </LinearLayout>
