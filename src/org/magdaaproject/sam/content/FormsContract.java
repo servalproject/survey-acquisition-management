@@ -50,6 +50,16 @@ public class FormsContract {
 	 * content type for an individual item
 	 */
 	public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd." + ItemsContentProvider.AUTHORITY + "." + CONTENT_URI_PATH;
+	
+	/**
+	 * constant representing the value of the category field for an event related form
+	 */
+	public static final String CATEGORY_EVENT = "e";
+	
+	/**
+	 * constant representing the value of the category field for an audience related form
+	 */
+	public static final String CATEGORY_AUDIENCE = "a";
 
 	/**
 	 * table definition

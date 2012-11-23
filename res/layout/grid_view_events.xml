@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:id="@+id/grid_view_events" >
+    
+    <TextView
+	    android:id="@+id/grid_view_events_text"
+	    style="@style/ui_elem_text_grid_orange"
+	    android:width="249dp"/>
+
+</LinearLayout>

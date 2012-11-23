@@ -64,6 +64,10 @@
             android:name=".ConfigManagerActivity"
             android:label="@string/system_application_default_label"> 
         </activity>
+        <activity 
+            android:name=".EventSurveysActivity"
+            android:label="@string/system_application_default_label"> 
+        </activity>
         <provider 
             android:enabled="true" 
             android:name=".content.ItemsContentProvider" 

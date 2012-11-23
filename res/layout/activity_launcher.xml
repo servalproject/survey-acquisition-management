@@ -32,7 +32,7 @@
     
     <!-- category launch buttons -->
     <Button
-        android:id="@+id/launcher_ui_btn_site_survey"
+        android:id="@+id/launcher_ui_btn_event_survey"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_ui_btn_site_survey"
+        android:layout_below="@id/launcher_ui_btn_event_survey"
         android:contentDescription="@string/launcher_ui_btn_audience"
         android:text="@string/launcher_ui_btn_audience"
         android:textSize="18sp"

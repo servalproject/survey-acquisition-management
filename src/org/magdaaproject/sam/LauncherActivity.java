@@ -125,6 +125,9 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
 		mButton.setOnClickListener(this);
 		
+		mButton = (Button) findViewById(R.id.launcher_ui_btn_event_survey);
+		mButton.setOnClickListener(this);
+		
 		// check for an available config
 		ContentResolver mContentResolver = this.getContentResolver();
 		
@@ -211,6 +214,11 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		case R.id.launcher_ui_btn_contact:
 			// show the contact information stuff
 			contactUs();
+			break;
+		case R.id.launcher_ui_btn_event_survey:
+			// show the event survey activity
+			mIntent = new Intent(this, org.magdaaproject.sam.EventSurveysActivity.class);
+			startActivity(mIntent);
 			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired an onClick event");
