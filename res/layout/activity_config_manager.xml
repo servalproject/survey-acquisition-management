@@ -151,12 +151,11 @@
     <!-- buttons -->
      <Button
         android:id="@+id/general_ui_btn_back"
-        style="@style/ui_elem_btn_border_green"
+        style="@style/ui_elm_btn_back"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:contentDescription="@string/general_ui_btn_back_desc"
-        android:text="@string/general_ui_btn_back_text"
-        android:drawableLeft="@drawable/ic_action_gmail"/>
+        android:text="@string/general_ui_btn_back_text"/>
      
     <Button
         android:id="@+id/config_manager_ui_btn_load"
