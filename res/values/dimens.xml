@@ -32,4 +32,16 @@
     
     <dimen name="ui_elem_xl_margin_right">25sp</dimen>
     <dimen name="ui_elem_xxl_margin_right">35sp</dimen>
+    
+    <!-- default padding -->
+    <dimen name="ui_elem_padding_top">15sp</dimen>
+    <dimen name="ui_elem_padding_bottom">15sp</dimen>
+    <dimen name="ui_elem_padding_left">15sp</dimen>
+    <dimen name="ui_elem_padding_right">15sp</dimen>
+    
+    <!-- extra big padding -->
+    <dimen name="ui_elem_xl_padding_top">25sp</dimen>
+    <dimen name="ui_elem_xl_padding_bottom">25sp</dimen>
+    <dimen name="ui_elem_xl_padding_left">25sp</dimen>
+    <dimen name="ui_elem_xl_padding_right">25sp</dimen>
 </resources>

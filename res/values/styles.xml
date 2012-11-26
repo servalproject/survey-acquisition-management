@@ -101,6 +101,47 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
     </style>
     
+     <style name="ui_elem_btn_grid" parent="ui_elem_layout_fill">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3sp</item>
+        <item name="android:paddingLeft">15sp</item>
+        <item name="android:paddingRight">15sp</item>
+        <item name="android:width">250dp</item>
+	    <item name="android:height">85dp</item>
+    </style>
+    
+    <style name="ui_elem_btn_grid_blue" parent="ui_elem_btn_grid">
+        <item name="android:background">@drawable/button_blue</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="ui_elem_btn_border">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:paddingRight">@dimen/ui_elem_xl_padding_right</item>
+        <item name="android:paddingLeft">@dimen/ui_elem_xl_padding_left</item> 
+    </style>
+    
+    <style name="ui_elem_btn_border_red" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_red</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_gold" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_gold</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_blue" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_blue</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_blue" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_green</item>
+    </style>
+    
     <!-- text styles -->
     <style name="ui_elem_text_default" parent="ui_elem_wrap">
         <item name="android:textSize">14sp</item>
@@ -118,25 +159,5 @@
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
         <item name="android:layout_marginRight">@dimen/ui_elem_xl_margin_right</item>
     </style>
-    
-    <style name="ui_elem_text_grid" parent="ui_elem_layout_fill">
-        <item name="android:gravity">center</item>
-        <item name="android:layout_margin">3dp</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">1</item>
-        <item name="android:shadowRadius">2</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
-        <item name="android:width">250dp</item>
-	    <item name="android:height">85dp</item>
-    </style>
-    
-    <style name="ui_elem_text_grid_blue" parent="ui_elem_text_grid">
-        <item name="android:background">@drawable/btn_blue_matte</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-    
+      
 </resources>

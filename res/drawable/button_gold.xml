@@ -19,28 +19,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="#ff111111" >
-    
-    <!-- header -->
-    <TextView
-        android:id="@+id/event_surveys_ui_lbl_header"
-        style="@style/ui_elem_header"
-        android:text="@string/event_surveys_ui_lbl_header" />
-    
-    <!-- grid view -->
-    <GridView
-		 android:id="@+id/event_surveys_ui_grid"
-		 android:layout_width="fill_parent"
-		 android:layout_height="fill_parent"
-		 android:numColumns="2"
-		 android:columnWidth="250dp"
-		 android:stretchMode="spacingWidthUniform"
-		 android:gravity="center"
-		 android:layout_below="@id/event_surveys_ui_lbl_header"
-		 android:verticalSpacing="35dp"/>
-
-</RelativeLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:drawable="@drawable/button_gold_pressed"
+          android:state_pressed="true" />
+    <item android:drawable="@drawable/button_gold_focused"
+          android:state_focused="true" />
+    <item android:drawable="@drawable/button_gold_default" />
+</selector>

@@ -96,7 +96,6 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 				0);
 		
 		gridView.setAdapter(mAdapter);
-		
 	}
 	
 
