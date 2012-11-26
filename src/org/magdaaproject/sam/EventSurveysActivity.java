@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 
@@ -44,7 +45,7 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 	 * private class level constants
 	 */
 	//private static final boolean sVerboseLog = true;
-	private static final String sLogTag = "LauncherActivity";
+	//private static final String sLogTag = "LauncherActivity";
 	
 	/*
 	 * (non-Javadoc)
@@ -54,6 +55,17 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_surveys);
+		
+		// complete init of back button
+		Button mButton = (Button) findViewById(R.id.general_ui_btn_back);
+		mButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				EventSurveysActivity.this.finish();
+			}
+			
+		});
 		
 		// get a reference to the grid view
 		gridView = (GridView)findViewById(R.id.event_surveys_ui_grid);
