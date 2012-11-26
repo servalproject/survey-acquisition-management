@@ -149,21 +149,22 @@
         android:visibility="gone"/>
     
     <!-- buttons -->
+     <Button
+        android:id="@+id/general_ui_btn_back"
+        style="@style/ui_elem_btn_border_green"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/general_ui_btn_back_desc"
+        android:text="@string/general_ui_btn_back_text"
+        android:drawableLeft="@drawable/ic_action_gmail"/>
+     
     <Button
         android:id="@+id/config_manager_ui_btn_load"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ui_elem_btn_border_red"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:contentDescription="@string/config_manager_ui_btn_load"
         android:text="@string/config_manager_ui_btn_load"
-        android:drawableLeft="@drawable/ic_action_gear"
-        android:layout_marginTop="@dimen/ui_elem_margin_top"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right" />
-
-   
+        android:drawableLeft="@drawable/ic_action_gear"/>
 
 </RelativeLayout>

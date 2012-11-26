@@ -63,9 +63,19 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_config_manager);
 		
-		// setup ui element
+		// setup ui elements
 		Button mButton = (Button)findViewById(R.id.config_manager_ui_btn_load);
 		mButton.setOnClickListener(this);
+		
+		mButton = (Button) findViewById(R.id.general_ui_btn_back);
+		mButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				ConfigManagerActivity.this.finish();
+			}
+			
+		});
 		
 		//TODO manage multiple configs
 		
