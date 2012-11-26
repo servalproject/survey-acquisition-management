@@ -81,6 +81,9 @@
     
     <!-- event survey activity strings -->
     <string name="event_surveys_ui_lbl_header">Event Surveys</string>
+    
+    <!-- audience survey activity strings -->
+    <string name="audience_surveys_ui_lbl_header">Audience Surveys</string>
         
     <!-- preferences activity strings -->
     <string name="preferences_ui_lbl_header">MaGDAA SAM Preferences</string>

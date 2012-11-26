@@ -50,7 +50,7 @@
         android:background="@drawable/button_gold" />
  
      <Button
-        android:id="@+id/launcher_ui_btn_audience"
+        android:id="@+id/launcher_ui_btn_audience_survey"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
