@@ -22,7 +22,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="#ff111111" >
     
     <!-- header -->
     <TextView
@@ -40,6 +41,15 @@
 		 android:stretchMode="spacingWidthUniform"
 		 android:gravity="center"
 		 android:layout_below="@id/event_surveys_ui_lbl_header"
-		 android:verticalSpacing="45dp"/>
+		 android:verticalSpacing="35dp"/>
+    
+    <!-- buttons -->
+    <Button
+        android:id="@+id/general_ui_btn_back"
+        style="@style/ui_elm_btn_back"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/general_ui_btn_back_desc"
+        android:text="@string/general_ui_btn_back_text"/>
 
 </RelativeLayout>

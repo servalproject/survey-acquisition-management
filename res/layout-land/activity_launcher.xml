@@ -22,7 +22,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="#ff111111" >
     
     <!-- header -->
     <TextView
@@ -32,9 +33,9 @@
     
     <!-- category launch buttons -->
     <Button
-        android:id="@+id/launcher_ui_btn_site_survey"
+        android:id="@+id/launcher_ui_btn_event_survey"
         style="?android:attr/borderlessButtonStyle"
-        android:layout_width="400dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_ui_lbl_header"
         android:contentDescription="@string/launcher_ui_btn_event_survey"
@@ -45,14 +46,15 @@
         android:layout_marginTop="@dimen/ui_elem_margin_top"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right" />
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:background="@drawable/button_gold" />
  
      <Button
         android:id="@+id/launcher_ui_btn_audience"
         style="?android:attr/borderlessButtonStyle"
-        android:layout_width="400dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_ui_btn_site_survey"
+        android:layout_below="@id/launcher_ui_btn_event_survey"
         android:contentDescription="@string/launcher_ui_btn_audience"
         android:text="@string/launcher_ui_btn_audience"
         android:textSize="18sp"
@@ -61,7 +63,8 @@
         android:layout_marginTop="@dimen/ui_elem_margin_top"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right" />
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:background="@drawable/button_gold" />
     
     <!-- device id -->
     <TextView
@@ -69,37 +72,23 @@
         style="@style/ui_elem_sub_header_1"
         android:layout_alignParentBottom="true" />
      
-    <!-- buttons -->
+   <!-- buttons -->
     <Button
         android:id="@+id/launcher_ui_btn_contact"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ui_elem_btn_border_red"
         android:layout_above="@id/launcher_ui_lbl_device_id"
         android:layout_alignParentLeft="true"
         android:contentDescription="@string/launcher_ui_btn_contact"
         android:text="@string/launcher_ui_btn_contact"
-        android:drawableLeft="@drawable/ic_action_gmail"
-        android:layout_marginTop="@dimen/ui_elem_margin_top"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right" />
+        android:drawableLeft="@drawable/ic_action_gmail"/>
     
      <Button
         android:id="@+id/launcher_ui_btn_settings"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ui_elem_btn_border_red"
         android:layout_above="@id/launcher_ui_lbl_device_id"
         android:layout_alignParentRight="true"
         android:contentDescription="@string/launcher_ui_btn_settings"
         android:text="@string/launcher_ui_btn_settings"
-        android:drawableLeft="@drawable/ic_action_settings"
-        android:layout_marginTop="@dimen/ui_elem_margin_top"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right" />
-    
-    <!-- layout_alignParentLeft 
-    android:layout_toRightOf="@id/launcher_ui_btn_contact"-->
+        android:drawableLeft="@drawable/ic_action_settings"/>
+
 </RelativeLayout>
