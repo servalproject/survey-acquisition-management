@@ -138,8 +138,12 @@
         <item name="android:background">@drawable/button_blue</item>
     </style>
     
-    <style name="ui_elem_btn_border_blue" parent="ui_elem_btn_border">
+    <style name="ui_elem_btn_border_green" parent="ui_elem_btn_border">
         <item name="android:background">@drawable/button_green</item>
+    </style>
+    
+    <style name="ui_elm_btn_back" parent="ui_elem_btn_border_green">
+        <item name="android:drawableLeft">@drawable/ic_action_arrow_left</item>
     </style>
     
     <!-- text styles -->

@@ -19,17 +19,18 @@
  */
 package org.magdaaproject.sam;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
 
 /**
  * allow the user to change settings and preferences that control various aspects of the software
  */
-public class PreferencesActivity extends Activity implements OnSharedPreferenceChangeListener {
+public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	
 	/*
 	 * private class level constants
@@ -41,16 +42,28 @@ public class PreferencesActivity extends Activity implements OnSharedPreferenceC
 	 * (non-Javadoc)
 	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		// load and display the preferences UI
-		getFragmentManager().beginTransaction().replace(android.R.id.content, new PreferencesFragment()).commit();
+		setContentView(R.layout.activity_preferences);
+		//TODO adapt code to fragments when deprecated api no longer works
+		addPreferencesFromResource(R.xml.preferences);
 
 		// listen for changes to the preferences
 		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		mPreferences.registerOnSharedPreferenceChangeListener(this);
+		
+		// complete init of back button
+		Button mButton = (Button) findViewById(R.id.general_ui_btn_back);
+		mButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				PreferencesActivity.this.finish();
+			}
+			
+		});
 	}
 
 	/*
@@ -61,24 +74,5 @@ public class PreferencesActivity extends Activity implements OnSharedPreferenceC
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	
-	/**
-	 * a preferences fragment which loads our list of preferences
-	 */
-	public static class PreferencesFragment extends PreferenceFragment {
-		
-		/*
-		 * (non-Javadoc)
-		 * @see android.preference.PreferenceFragment#onCreate(android.os.Bundle)
-		 */
-	    @Override
-	    public void onCreate(Bundle savedInstanceState) {
-	        super.onCreate(savedInstanceState);
-
-	        // Load the preferences from an XML resource
-	        addPreferencesFromResource(R.xml.preferences);
-	    }
 	}
 }
