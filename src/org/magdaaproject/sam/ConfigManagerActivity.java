@@ -303,6 +303,14 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		}
 		
 		/*
+		 * delete any existing config
+		 */
+		ContentResolver mContentResolver = this.getContentResolver();
+		
+		mContentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
+		mContentResolver.delete(FormsContract.CONTENT_URI, null, null);
+		
+		/*
 		 *  import the content
 		 */
 		
@@ -316,7 +324,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		mValues.put(ConfigsContract.Table.GENERATED_DATE, newConfig.getMetadataValue("generated"));
 		
 		// save them to the database
-		ContentResolver mContentResolver = this.getContentResolver();
+		
 		
 		mContentResolver.insert(ConfigsContract.CONTENT_URI, mValues);
 		
