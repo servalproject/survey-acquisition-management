@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.magdaaproject.sam.config.BundleConfig;
 import org.magdaaproject.sam.config.ConfigException;
+import org.magdaaproject.sam.config.ConfigLoaderTask;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.content.FormsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
@@ -128,21 +129,26 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			TextView mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_progress);
 			mTextView.setVisibility(View.VISIBLE);
 			
+			TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
+			mLayout.setVisibility(View.GONE);
+			
 			// load the config file
-			boolean mStatus = loadConfigFile();
+			new ConfigLoaderTask(mProgressBar, mTextView, this).execute();
 			
-			// update the UI as appropriate
-			mProgressBar.setVisibility(View.GONE);
-			mTextView.setVisibility(View.GONE);
-			
-			if(mStatus == true) {
-				// finish updating the ui
-				mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_subheader);
-				mTextView.setText(R.string.config_manager_ui_lbl_subheader);
-				
-				TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
-				mLayout.setVisibility(View.VISIBLE);
-			}
+//			boolean mStatus = loadConfigFile();
+//			
+//			// update the UI as appropriate
+//			mProgressBar.setVisibility(View.GONE);
+//			mTextView.setVisibility(View.GONE);
+//			
+//			if(mStatus == true) {
+//				// finish updating the ui
+//				mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_subheader);
+//				mTextView.setText(R.string.config_manager_ui_lbl_subheader);
+//				
+//				TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
+//				mLayout.setVisibility(View.VISIBLE);
+//			}
 			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired the click event");
@@ -202,6 +208,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		
 	}
 	
+	/*
 	// method to load the configuration file
 	private boolean loadConfigFile() {
 		String[] mConfigFiles = null;
@@ -302,17 +309,15 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			return false;
 		}
 		
-		/*
-		 * delete any existing config
-		 */
+		
+		//delete any existing config
+		 
 		ContentResolver mContentResolver = this.getContentResolver();
 		
 		mContentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
 		mContentResolver.delete(FormsContract.CONTENT_URI, null, null);
-		
-		/*
-		 *  import the content
-		 */
+
+		//import the content
 		
 		// build the list of values
 		ContentValues mValues = new ContentValues();
@@ -343,9 +348,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			mContentResolver.insert(FormsContract.CONTENT_URI, mValues);	
 		}
 		
-		/* 
-		 * update the activity
-		 */
+		// update the activity
 		Cursor mCursor = mContentResolver.query(ConfigsContract.CONTENT_URI, 
 				null, 
 				null, 
@@ -356,4 +359,5 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		
 		return true;
 	}
+   */
 }

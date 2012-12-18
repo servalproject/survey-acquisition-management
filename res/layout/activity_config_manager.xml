@@ -144,7 +144,7 @@
      <TextView
         android:id="@+id/config_manager_ui_lbl_progress"
         style="@style/ui_elem_text_label"
-        android:text="@string/config_manager_ui_lbl_last_progress"
+        android:text="@string/config_manager_ui_lbl_progress"
         android:layout_below="@+id/config_manager_ui_progress_bar"
         android:layout_centerInParent="true"
         android:visibility="gone"/>

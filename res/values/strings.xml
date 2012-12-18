@@ -42,23 +42,7 @@
     
     <string name="launcher_ui_dialog_no_odk_collect_message">The ODK Collect software is not installed, please install it before using this application</string>
     <string name="launcher_ui_dialog_no_odk_collect_title">ODK Collect</string>
-    
-    <string name="launcher_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
-    <string name="launcher_ui_dialog_no_config_files_title">Config File Error</string>
-    
-    <string name="launcher_ui_dialog_too_many_config_files_message">There are too many config files, please delete all unnecessary files so that only one remains, and try again</string>
-    <string name="launcher_ui_dialog_too_many_config_files_title">Config File Error</string>
-    
-    <string name="launcher_ui_dialog_unable_open_config_message">Unable to open the config file, please check the file and then try again</string>
-    <string name="launcher_ui_dialog_unable_open_config_title">Config File Error</string>
-    
-    <string name="launcher_ui_dialog_unable_parse_config_message">Unable to parse the config file, please check the file and then try again</string>
-    <string name="launcher_ui_dialog_unable_parse_config_title">Config File Error</string>
-    
-    <string name="launcher_ui_dialog_invalid_config_message">The config file failed to validate, please check the file and then try again</string>
-    <string name="launcher_ui_dialog_invalid_config_title">Config File Error</string>
-    
-    
+ 
     <string name="launcher_ui_lbl_device_id">Device ID: %s</string>
     
     <string name="launcher_menu_acknowledgements">Acknowledgements</string>
@@ -77,7 +61,26 @@
     
     <string name="config_manager_ui_btn_load">Load Configuration</string>
     
-    <string name="config_manager_ui_lbl_last_progress">Loading Configuration&#8230;</string>
+    <string name="config_manager_ui_lbl_progress">Loading Configuration&#8230;</string>
+    
+    <string name="config_manager_ui_lbl_progress_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
+    
+    <!-- 
+    <string name="launcher_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
+    <string name="launcher_ui_dialog_no_config_files_title">Config File Error</string>
+    
+    <string name="launcher_ui_dialog_too_many_config_files_message">There are too many config files, please delete all unnecessary files so that only one remains, and try again</string>
+    <string name="launcher_ui_dialog_too_many_config_files_title">Config File Error</string>
+    
+    <string name="launcher_ui_dialog_unable_open_config_message">Unable to open the config file, please check the file and then try again</string>
+    <string name="launcher_ui_dialog_unable_open_config_title">Config File Error</string>
+    
+    <string name="launcher_ui_dialog_unable_parse_config_message">Unable to parse the config file, please check the file and then try again</string>
+    <string name="launcher_ui_dialog_unable_parse_config_title">Config File Error</string>
+    
+    <string name="launcher_ui_dialog_invalid_config_message">The config file failed to validate, please check the file and then try again</string>
+    <string name="launcher_ui_dialog_invalid_config_title">Config File Error</string>
+     -->
     
     <!-- event survey activity strings -->
     <string name="event_surveys_ui_lbl_header">Event Surveys</string>
