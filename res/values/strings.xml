@@ -72,6 +72,9 @@
     <string name="config_manager_ui_lbl_progress_06">Deleting existing ODK data&#8230;</string>
     <string name="config_manager_ui_lbl_progress_07">Installing new forms existing ODK data&#8230;</string>
     
+    <string name="config_manager_ui_dialog_confirm_title">Import New Configuration?</string>
+    <string name="config_manager_ui_dialog_confirm_message">Importing a new configuration will delete any existing configuration data, as well as data held by ODK collect.\nAre you sure you wish to continue?</string>
+        
     <string name="config_manager_ui_dialog_error_title">Config File Error</string>
     <string name="config_manager_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
     <string name="config_manager_ui_dialog_too_many_config_files_message">There are too many config files, please delete all unnecessary files so that only one remains, and try again</string>

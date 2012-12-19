@@ -217,14 +217,6 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 				
 				FileUtils.recursiveDelete(mTempPath);
 				
-				// work around a bug
-				// TODO have a better solution
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					
-				}
-				
 				if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
 					
 					Log.e(sLogTag, "temp directory not writeable following delete");
@@ -273,14 +265,6 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 			
 			// delete data
 			FileUtils.recursiveDelete(mOdkPath);
-			
-			// work around a bug
-			// TODO have a better solution
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				
-			}
 			
 			// recreate directories			
 			mOdkPath = Environment.getExternalStorageDirectory().getPath();

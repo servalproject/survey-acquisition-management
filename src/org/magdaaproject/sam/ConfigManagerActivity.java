@@ -28,11 +28,16 @@ import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.content.FormsContract;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -124,19 +129,10 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		// determine which view fired the event
 		switch(view.getId()) {
 		case R.id.config_manager_ui_btn_load:
-			// load a configuration
-			ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.config_manager_ui_progress_bar);
-			mProgressBar.setVisibility(View.VISIBLE);
-			
-			TextView mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_progress);
-			mTextView.setVisibility(View.VISIBLE);
-			
-			TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
-			mLayout.setVisibility(View.GONE);
-			
-			// load the config file
-			new ConfigLoaderTask(mProgressBar, mTextView, this).execute();
-
+			 DialogFragment newFragment = ConfirmLoadConfig.newInstance(
+					 getString(R.string.config_manager_ui_dialog_confirm_title),
+					 getString(R.string.config_manager_ui_dialog_confirm_message));
+		     newFragment.show(getFragmentManager(), "dialog");
 			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired the click event");
@@ -264,4 +260,88 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
 		mLayout.setVisibility(View.VISIBLE);
 	}
+	
+	/**
+	 * start the load config process
+	 */
+	public void loadConfig() {
+		
+		// load a configuration
+		ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.config_manager_ui_progress_bar);
+		mProgressBar.setVisibility(View.VISIBLE);
+		
+		TextView mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_progress);
+		mTextView.setVisibility(View.VISIBLE);
+		
+		TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
+		mLayout.setVisibility(View.GONE);
+		
+		// load the config file
+		new ConfigLoaderTask(mProgressBar, mTextView, this).execute();
+		
+	}
+	
+	/*
+	 * dialog to confirm the user wishes to continue loading a configuration
+	 */
+	public static class ConfirmLoadConfig extends DialogFragment {
+
+		/*
+		 * 
+		 */
+        public static ConfirmLoadConfig newInstance(String title, String message) {
+            
+        	if(TextUtils.isEmpty(title) == true) {
+    			throw new IllegalArgumentException("the title parameter is required");
+    		}
+    		
+    		if(TextUtils.isEmpty(message) == true) {
+    			throw new IllegalArgumentException("the message parameter is required");
+    		}
+    		
+    		ConfirmLoadConfig mObject = new ConfirmLoadConfig();
+    		
+    		// build a new bundle of arguments
+    		Bundle mBundle = new Bundle();
+    		mBundle.putString("title", title);
+    		mBundle.putString("message", message);
+    		
+    		mObject.setArguments(mBundle);
+    		
+    		return mObject;
+        }
+        
+        /*
+         * (non-Javadoc)
+         * @see android.app.DialogFragment#onCreateDialog(android.os.Bundle)
+         */
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        	
+        	if(savedInstanceState == null) {
+    			savedInstanceState = getArguments();
+    		}
+    		
+    		String mMessage = savedInstanceState.getString("message");
+    		String mTitle = savedInstanceState.getString("title");
+    		
+    		// create and return the dialog
+    		AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+    		
+    		mBuilder.setMessage(mMessage)
+    		.setCancelable(false)
+    		.setTitle(mTitle)
+    		.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				((ConfigManagerActivity)getActivity()).loadConfig();
+    			}
+    		})
+    		.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				dialog.cancel();
+    			}
+    		});
+    		return mBuilder.create();
+        }
+    }
 }
