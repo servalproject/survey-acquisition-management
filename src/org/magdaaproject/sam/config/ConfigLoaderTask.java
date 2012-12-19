@@ -29,6 +29,7 @@ import org.magdaaproject.utils.FileUtils;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,6 +45,8 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 	 */
 	private static final int sFailure = 0;
 	private static final int sSuccess = 1;
+	
+	private static final String sLogTag = "ConfigLoaderTask";
 	
 	/*
 	 * private class level variables
@@ -190,8 +193,161 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 			return Integer.valueOf(sFailure);
 		}
 		
+		// extract the forms
+		publishProgress(R.string.config_manager_ui_lbl_progress_05);
 		
+		String mTempPath = Environment.getExternalStorageDirectory().getPath();
+		mTempPath += context.getString(R.string.system_file_path_temp);
 		
+		// check to see if the temp path is available
+		if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
+			
+			Log.e(sLogTag, "temp directory not writeable");
+			
+			publishProgress(
+					R.string.config_manager_ui_dialog_error_title,
+					R.string.config_manager_ui_dialog_unable_extract_forms_message
+					);
+			return Integer.valueOf(sFailure);
+		}
+		
+		// delete any existing files if necessary
+		try {
+			if(FileUtils.listFilesInDir(mTempPath, "") != null) {
+				
+				FileUtils.recursiveDelete(mTempPath);
+				
+				// work around a bug
+				// TODO have a better solution
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					
+				}
+				
+				if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
+					
+					Log.e(sLogTag, "temp directory not writeable following delete");
+					
+					publishProgress(
+							R.string.config_manager_ui_dialog_error_title,
+							R.string.config_manager_ui_dialog_unable_extract_forms_message
+							);
+					return Integer.valueOf(sFailure);
+				}
+			}
+		} catch (IOException e) {
+			
+			Log.e(sLogTag, "IOException occurred while deleting temp files", e);
+			
+			publishProgress(
+					R.string.config_manager_ui_dialog_error_title,
+					R.string.config_manager_ui_dialog_unable_extract_forms_message
+					);
+			return Integer.valueOf(sFailure);
+		}
+		
+		// extract the contents of the bundle into the temp directory
+		publishProgress(R.string.config_manager_ui_lbl_progress_05);
+		
+		try {
+			FileUtils.extractFromZipFile(mConfigFiles[0], mTempPath);
+		} catch (IOException e) {
+			
+			Log.e(sLogTag, "IOException occurred while extracting files", e);
+			
+			publishProgress(
+					R.string.config_manager_ui_dialog_error_title,
+					R.string.config_manager_ui_dialog_unable_extract_forms_message
+					);
+			return Integer.valueOf(sFailure);
+		}
+		
+		// delete the ODK data
+		publishProgress(R.string.config_manager_ui_lbl_progress_06);
+		
+		String mOdkPath = Environment.getExternalStorageDirectory().getPath();
+		mOdkPath += context.getString(R.string.system_file_path_odk);
+		
+		try {
+			
+			// delete data
+			FileUtils.recursiveDelete(mOdkPath);
+			
+			// work around a bug
+			// TODO have a better solution
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				
+			}
+			
+			// recreate directories			
+			mOdkPath = Environment.getExternalStorageDirectory().getPath();
+			mOdkPath += context.getString(R.string.system_file_path_odk_instances);
+			
+			mOdkPath = Environment.getExternalStorageDirectory().getPath();
+			mOdkPath += context.getString(R.string.system_file_path_odk_metadata);
+			
+			mOdkPath = Environment.getExternalStorageDirectory().getPath();
+			mOdkPath += context.getString(R.string.system_file_path_odk_forms);
+			
+		} catch (IOException e) {
+			
+			Log.e(sLogTag, "IOException occurred while deleting odk files", e);
+			
+			publishProgress(
+					R.string.config_manager_ui_dialog_error_title,
+					R.string.config_manager_ui_dialog_unable_delete_odk_message
+					);
+			return Integer.valueOf(sFailure);
+		}
+		
+		// copy the new forms into place
+		publishProgress(R.string.config_manager_ui_lbl_progress_07);
+		
+		String[] mFormsList;
+		
+		try {
+			mFormsList = FileUtils.listFilesInDir(mTempPath, "zip");
+		} catch (IOException e) {
+			
+			Log.e(sLogTag, "IOException occurred while getting list of new forms", e);
+			
+			publishProgress(
+					R.string.config_manager_ui_dialog_error_title,
+					R.string.config_manager_ui_dialog_unable_install_new_forms_message
+					);
+			return Integer.valueOf(sFailure);
+		}
+		
+		// check to see if forms were found
+		if(mFormsList == null || mFormsList.length == 0) {
+			
+			Log.e(sLogTag, "no form files found");
+			
+			publishProgress(
+					R.string.config_manager_ui_dialog_error_title,
+					R.string.config_manager_ui_dialog_unable_install_new_forms_message
+					);
+			return Integer.valueOf(sFailure);
+		}
+		
+		// extract the forms into the ODK directory
+		for(String mFormFile : mFormsList) {
+			try {
+				FileUtils.extractFromZipFile(mFormFile, mOdkPath);
+			} catch (IOException e) {
+				
+				Log.e(sLogTag, "IOException occurred while extracting form", e);
+				
+				publishProgress(
+						R.string.config_manager_ui_dialog_error_title,
+						R.string.config_manager_ui_dialog_unable_install_new_forms_message
+						);
+				return Integer.valueOf(sFailure);
+			}
+		}
 		
 		// everything went as expected
 		return Integer.valueOf(sSuccess);
