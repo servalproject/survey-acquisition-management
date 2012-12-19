@@ -19,7 +19,6 @@
  */
 package org.magdaaproject.sam;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.magdaaproject.sam.config.BundleConfig;
@@ -27,15 +26,13 @@ import org.magdaaproject.sam.config.ConfigException;
 import org.magdaaproject.sam.config.ConfigLoaderTask;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.content.FormsContract;
-import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
-import org.magdaaproject.utils.FileUtils;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,6 +53,12 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 	private static final String sLogTag = "ConfigManagerActivity";
 	
 	/*
+	 * private class level variables
+	 */
+	
+	private ContentResolver contentResolver;
+	
+	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -72,7 +75,6 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		mButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				ConfigManagerActivity.this.finish();
 			}
 			
@@ -81,9 +83,9 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		//TODO manage multiple configs
 		
 		// load any existing config parameters
-		ContentResolver mContentResolver = getContentResolver();
+		contentResolver = getContentResolver();
 		
-		Cursor mCursor = mContentResolver.query(ConfigsContract.CONTENT_URI, 
+		Cursor mCursor = contentResolver.query(ConfigsContract.CONTENT_URI, 
 				null, 
 				null, 
 				null, 
@@ -134,21 +136,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			
 			// load the config file
 			new ConfigLoaderTask(mProgressBar, mTextView, this).execute();
-			
-//			boolean mStatus = loadConfigFile();
-//			
-//			// update the UI as appropriate
-//			mProgressBar.setVisibility(View.GONE);
-//			mTextView.setVisibility(View.GONE);
-//			
-//			if(mStatus == true) {
-//				// finish updating the ui
-//				mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_subheader);
-//				mTextView.setText(R.string.config_manager_ui_lbl_subheader);
-//				
-//				TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
-//				mLayout.setVisibility(View.VISIBLE);
-//			}
+
 			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired the click event");
@@ -207,117 +195,25 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		cursor.close();
 		
 	}
+
+	/**
+	 * convenience method to delete any existing config from the database
+	 * @return true on success, false on failure
+	 */
+	public void deleteExistingConfig() throws SQLException {
+
+		contentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
+		contentResolver.delete(FormsContract.CONTENT_URI, null, null);
+
+	}
 	
-	/*
-	// method to load the configuration file
-	private boolean loadConfigFile() {
-		String[] mConfigFiles = null;
-		String mConfigIndex = null;
-		BundleConfig newConfig = null;
-		
-		String mConfigPath = Environment.getExternalStorageDirectory().getPath();
-		mConfigPath += getString(R.string.system_file_path_configs);
-		
-		// get list of config files
-		try {
-			 mConfigFiles = FileUtils.listFilesInDir(
-					mConfigPath, 
-					getString(R.string.system_file_config_extension)
-				);
-		} catch (IOException e) {
-			// unable to get the list of config files
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_no_config_files_title),
-					getString(R.string.launcher_ui_dialog_no_config_files_message));
-
-			mAlert.show(getFragmentManager(), "no-config-files");
-			return false;
-		}
-		
-		// check to see if at least one config file was found
-		if(mConfigFiles == null || mConfigFiles.length == 0) {
-			// unable to get the list of config files
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_no_config_files_title),
-					getString(R.string.launcher_ui_dialog_no_config_files_message));
-
-			mAlert.show(getFragmentManager(), "no-config-files");
-			return false;
-		}
-		
-		// check if there is more than one file
-		if(mConfigFiles.length > 1) {
-			// unable to get the list of config files
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_too_many_config_files_title),
-					getString(R.string.launcher_ui_dialog_too_many_config_files_message));
-
-			mAlert.show(getFragmentManager(), "too-many-config-files");
-			return false;
-		}
-		
-		// load the index
-		try {
-			mConfigIndex = FileUtils.getMagdaaBundleIndex(mConfigFiles[0]);
-		} catch (IOException e) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_unable_open_config_title),
-					getString(R.string.launcher_ui_dialog_unable_open_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-open-config-file");
-			
-			Log.e(sLogTag, "unable to open the index file", e);
-			Log.v(sLogTag, "file path :'" + mConfigFiles[0] + "'");
-			return false;
-		}
-		
-		// check to see if the index was loaded
-		if(mConfigIndex == null) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_unable_open_config_title),
-					getString(R.string.launcher_ui_dialog_unable_open_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-open-config-files");
-			return false;
-		}
-		
-		// parse the config
-		try {
-			newConfig = new BundleConfig(mConfigIndex);
-			newConfig.parseConfig();
-		} catch (ConfigException e) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_unable_parse_config_title),
-					getString(R.string.launcher_ui_dialog_unable_parse_config_message));
-
-			mAlert.show(getFragmentManager(), "unable-parse-config-file");
-			
-			Log.e(sLogTag, "configException thrown:", e);
-			return false;
-		}
-		
-		try {
-			newConfig.validateConfig();
-		} catch (ConfigException e) {
-			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.launcher_ui_dialog_invalid_config_title),
-					getString(R.string.launcher_ui_dialog_invalid_config_message));
-
-			mAlert.show(getFragmentManager(), "invalid-config-file");
-			
-			Log.e(sLogTag, "configException thrown:", e);
-			return false;
-		}
-		
-		
-		//delete any existing config
-		 
-		ContentResolver mContentResolver = this.getContentResolver();
-		
-		mContentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
-		mContentResolver.delete(FormsContract.CONTENT_URI, null, null);
-
-		//import the content
+	/**
+	 * method used to import new config values 
+	 * @param newConfig a config bundle containing the new values
+	 * @return true on success, false on failure
+	 * @throws ConfigException if an error is detected in the config
+	 */
+	public void importNewConfig(BundleConfig newConfig) throws ConfigException {
 		
 		// build the list of values
 		ContentValues mValues = new ContentValues();
@@ -328,10 +224,9 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		mValues.put(ConfigsContract.Table.AUTHOR_EMAIL, newConfig.getMetadataValue("email"));
 		mValues.put(ConfigsContract.Table.GENERATED_DATE, newConfig.getMetadataValue("generated"));
 		
-		// save them to the database
+		// insert the values
+		contentResolver.insert(ConfigsContract.CONTENT_URI, mValues);
 		
-		
-		mContentResolver.insert(ConfigsContract.CONTENT_URI, mValues);
 		
 		// add the forms
 		ArrayList<String[]> mForms = newConfig.getForms();
@@ -345,11 +240,17 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			mValues.put(FormsContract.Table.TITLE, mElements[2]);
 			mValues.put(FormsContract.Table.XFORMS_FILE, mElements[3]);
 			
-			mContentResolver.insert(FormsContract.CONTENT_URI, mValues);	
+			contentResolver.insert(FormsContract.CONTENT_URI, mValues);
+			
 		}
-		
-		// update the activity
-		Cursor mCursor = mContentResolver.query(ConfigsContract.CONTENT_URI, 
+	}
+	
+	/**
+	 * refresh the display of config information
+	 */
+	public void refreshDisplay() {
+		// update the table of config values
+		Cursor mCursor = contentResolver.query(ConfigsContract.CONTENT_URI, 
 				null, 
 				null, 
 				null, 
@@ -357,7 +258,10 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		
 		populateTable(mCursor);
 		
-		return true;
+		TextView mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_subheader);
+		mTextView.setText(R.string.config_manager_ui_lbl_subheader);
+		
+		TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
+		mLayout.setVisibility(View.VISIBLE);
 	}
-   */
 }

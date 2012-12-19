@@ -117,11 +117,16 @@ public class BundleConfig {
 	 * @param key the metadata key to match against
 	 * @return the metadata value or null if the key cannot be found
 	 */
-	public String getMetadataValue(String key) {
+	public String getMetadataValue(String key) throws ConfigException {
 		if(TextUtils.isEmpty(key)) {
-			return null;
+			throw new IllegalArgumentException("the key paramter is required");
 		}
-		return metadata.get(key);
+		
+		if(metadata.containsKey(key)) {
+			return metadata.get(key);
+		} else {
+			throw new ConfigException("the specified metadata key cannot be found");
+		}
 	}
 	
 	/**

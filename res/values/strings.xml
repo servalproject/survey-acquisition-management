@@ -62,8 +62,20 @@
     <string name="config_manager_ui_btn_load">Load Configuration</string>
     
     <string name="config_manager_ui_lbl_progress">Loading Configuration&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_error">No configuration loaded, due to prior errors.</string>
     
-    <string name="config_manager_ui_lbl_progress_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
+    <string name="config_manager_ui_lbl_progress_01">Looking for new configuration file&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_02">Loading configuration index&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_03">Deleting configuration data&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_04">Importing configuration data&#8230;</string>
+    
+    <string name="config_manager_ui_dialog_error_title">Config File Error</string>
+    <string name="config_manager_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
+    <string name="config_manager_ui_dialog_too_many_config_files_message">There are too many config files, please delete all unnecessary files so that only one remains, and try again</string>
+    <string name="config_manager_ui_dialog_unable_open_config_index_message">Unable to open the config index file, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_unable_parse_config_message">Unable to parse the config index file, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_invalid_config_message">The config index file failed to validate, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_unable_import_config_message">Unable to import the config index, please check the file and then try again</string>
     
     <!-- 
     <string name="launcher_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
