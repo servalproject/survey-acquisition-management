@@ -19,17 +19,24 @@
  */
 package org.magdaaproject.sam;
 
+import java.util.HashMap;
+
+import org.magdaaproject.sam.adapters.EventSurveysAdapter;
 import org.magdaaproject.sam.content.FormsContract;
+import org.odk.collect.FormsProviderAPI;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.SimpleCursorAdapter;
 
 /**
  * view a list of survey forms associated with the event category
@@ -40,12 +47,14 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 	 * private class level variables
 	 */
 	private GridView gridView;
+	private Cursor   cursor;
+	private HashMap<String, Integer> odkData;
 
 	/*
 	 * private class level constants
 	 */
 	//private static final boolean sVerboseLog = true;
-	//private static final String sLogTag = "LauncherActivity";
+	//private static final String sLogTag = "EventSurveysActivity";
 	
 	/*
 	 * (non-Javadoc)
@@ -71,9 +80,10 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 		gridView = (GridView)findViewById(R.id.event_surveys_ui_grid);
 		
 		// setup the cursor
-		String[] mProjection = new String[2];
+		String[] mProjection = new String[3];
 		mProjection[0] = FormsContract.Table._ID;
 		mProjection[1] = FormsContract.Table.TITLE;
+		mProjection[2] = FormsContract.Table.XFORMS_FILE;
 		
 		String mSelection = FormsContract.Table.CATEGORY_ID + " = ?";
 		
@@ -85,7 +95,7 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 		// get the data
 		ContentResolver mContentResolver = getContentResolver();
 		
-		Cursor mCursor = mContentResolver.query(
+		cursor = mContentResolver.query(
 				FormsContract.CONTENT_URI,
 				mProjection,
 				mSelection,
@@ -99,25 +109,89 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 		int[] mViews = new int[1];
 		mViews[0] = R.id.grid_view_events_text;
 		
-		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(
-				getBaseContext(),
+		EventSurveysAdapter mAdapter = new EventSurveysAdapter(
+				this,
 				R.layout.grid_view_events,
-				mCursor,
+				cursor,
 				mColumns,
 				mViews,
 				0);
 		
 		gridView.setAdapter(mAdapter);
+		
+		// get the ODK data
+		mProjection = new String[2];
+		mProjection[0] = FormsProviderAPI.FormsColumns._ID;
+		mProjection[1] = FormsProviderAPI.FormsColumns.FORM_FILE_PATH;
+		
+		Cursor odkCursor = mContentResolver.query(
+				FormsProviderAPI.FormsColumns.CONTENT_URI,
+				mProjection,
+				null,
+				null,
+				null
+				);
+		
+		odkData = new HashMap<String, Integer>();
+		
+		String[] mTokens;
+		
+		while(odkCursor.moveToNext()) {
+			
+			mTokens = odkCursor.getString(1).split("/");
+			
+			odkData.put(
+					mTokens[mTokens.length -1], 
+					odkCursor.getInt(0)
+				);
+		}
+		
+		odkCursor.close();
 	}
-	
 
 	/*
 	 * (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
+	@Override
 	public void onClick(View view) {
-		// TODO Auto-generated method stub
 		
+		// get the details of the form that we want to load
+		cursor.moveToPosition((Integer) view.getTag());
+
+		// build a Uri representing data for the form
+		Uri mOdkFormUri = ContentUris.withAppendedId(
+				FormsProviderAPI.FormsColumns.CONTENT_URI, 
+				odkData.get(
+						cursor.getString(
+							cursor.getColumnIndex(FormsContract.Table.XFORMS_FILE)
+						)
+					)
+				);
+		
+		// build an intent to launch the form
+		Intent mIntent = new Intent();
+		mIntent.setAction("android.intent.action.EDIT");
+		mIntent.addCategory("android.intent.category.DEFAULT");
+		mIntent.setComponent(new ComponentName("org.odk.collect.android","org.odk.collect.android.activities.FormEntryActivity"));
+		mIntent.setDataAndType(mOdkFormUri, FormsProviderAPI.FormsColumns.CONTENT_TYPE);
+		
+		// launch the form
+		startActivityForResult(mIntent, 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		
+		// play nice and tidy up
+		super.onDestroy();
+		
+		if(cursor != null) {
+			cursor.close();
+		}
+	}
 }
