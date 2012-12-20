@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import org.magdaaproject.sam.adapters.EventSurveysAdapter;
 import org.magdaaproject.sam.content.FormsContract;
+import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.odk.collect.FormsProviderAPI;
 
 import android.app.Activity;
@@ -158,15 +159,28 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 		
 		// get the details of the form that we want to load
 		cursor.moveToPosition((Integer) view.getTag());
+		
+		// check to see if a matching form can be found
+		Integer mFormId = odkData.get(
+				cursor.getString(
+						cursor.getColumnIndex(FormsContract.Table.XFORMS_FILE)
+					)
+				);
+		
+		if(mFormId == null) {
+			// show error dialog
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.event_surveys_ui_dialog_missing_form_title),
+					getString(R.string.event_surveys_ui_dialog_missing_form_message));
+	
+			mAlert.show(getFragmentManager(), "missing-odk-form");
+			return;
+		}
 
 		// build a Uri representing data for the form
 		Uri mOdkFormUri = ContentUris.withAppendedId(
 				FormsProviderAPI.FormsColumns.CONTENT_URI, 
-				odkData.get(
-						cursor.getString(
-							cursor.getColumnIndex(FormsContract.Table.XFORMS_FILE)
-						)
-					)
+				mFormId
 				);
 		
 		// build an intent to launch the form
