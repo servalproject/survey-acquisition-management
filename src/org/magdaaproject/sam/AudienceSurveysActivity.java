@@ -19,11 +19,19 @@
  */
 package org.magdaaproject.sam;
 
+import java.util.HashMap;
+
 import org.magdaaproject.sam.content.FormsContract;
+import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
+import org.odk.collect.FormsProviderAPI;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,9 +45,17 @@ import android.widget.SimpleCursorAdapter;
 public class AudienceSurveysActivity extends Activity implements OnClickListener {
 	
 	/*
+	 * event surveys and audience surveys are managed as separate activities
+	 * due to the need in the future to undertake different tasks depending on
+	 * the type of survey, and to make development faster in the short / medium term
+	 */
+	
+	/*
 	 * private class level variables
 	 */
 	private GridView gridView;
+	private Cursor   cursor;
+	private HashMap<String, Integer> odkData;
 
 	/*
 	 * private class level constants
@@ -85,7 +101,7 @@ public class AudienceSurveysActivity extends Activity implements OnClickListener
 		// get the data
 		ContentResolver mContentResolver = getContentResolver();
 		
-		Cursor mCursor = mContentResolver.query(
+		cursor = mContentResolver.query(
 				FormsContract.CONTENT_URI,
 				mProjection,
 				mSelection,
@@ -102,12 +118,41 @@ public class AudienceSurveysActivity extends Activity implements OnClickListener
 		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(
 				getBaseContext(),
 				R.layout.grid_view_events,
-				mCursor,
+				cursor,
 				mColumns,
 				mViews,
 				0);
 		
 		gridView.setAdapter(mAdapter);
+		
+		// get the ODK data
+		mProjection = new String[2];
+		mProjection[0] = FormsProviderAPI.FormsColumns._ID;
+		mProjection[1] = FormsProviderAPI.FormsColumns.FORM_FILE_PATH;
+		
+		Cursor odkCursor = mContentResolver.query(
+				FormsProviderAPI.FormsColumns.CONTENT_URI,
+				mProjection,
+				null,
+				null,
+				null
+				);
+		
+		odkData = new HashMap<String, Integer>();
+		
+		String[] mTokens;
+		
+		while(odkCursor.moveToNext()) {
+			
+			mTokens = odkCursor.getString(1).split("/");
+			
+			odkData.put(
+					mTokens[mTokens.length -1], 
+					odkCursor.getInt(0)
+				);
+		}
+		
+		odkCursor.close();
 	}
 	
 
@@ -115,9 +160,58 @@ public class AudienceSurveysActivity extends Activity implements OnClickListener
 	 * (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
+	@Override
 	public void onClick(View view) {
-		// TODO Auto-generated method stub
 		
+		// get the details of the form that we want to load
+		cursor.moveToPosition((Integer) view.getTag());
+		
+		// check to see if a matching form can be found
+		Integer mFormId = odkData.get(
+				cursor.getString(
+						cursor.getColumnIndex(FormsContract.Table.XFORMS_FILE)
+					)
+				);
+		
+		if(mFormId == null) {
+			// show error dialog
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.event_surveys_ui_dialog_missing_form_title),
+					getString(R.string.event_surveys_ui_dialog_missing_form_message));
+	
+			mAlert.show(getFragmentManager(), "missing-odk-form");
+			return;
+		}
+
+		// build a Uri representing data for the form
+		Uri mOdkFormUri = ContentUris.withAppendedId(
+				FormsProviderAPI.FormsColumns.CONTENT_URI, 
+				mFormId
+				);
+		
+		// build an intent to launch the form
+		Intent mIntent = new Intent();
+		mIntent.setAction("android.intent.action.EDIT");
+		mIntent.addCategory("android.intent.category.DEFAULT");
+		mIntent.setComponent(new ComponentName("org.odk.collect.android","org.odk.collect.android.activities.FormEntryActivity"));
+		mIntent.setDataAndType(mOdkFormUri, FormsProviderAPI.FormsColumns.CONTENT_TYPE);
+		
+		// launch the form
+		startActivityForResult(mIntent, 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		
+		// play nice and tidy up
+		super.onDestroy();
+		
+		if(cursor != null) {
+			cursor.close();
+		}
+	}
 }
