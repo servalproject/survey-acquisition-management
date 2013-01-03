@@ -270,8 +270,11 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 			mOdkPath = Environment.getExternalStorageDirectory().getPath();
 			mOdkPath += context.getString(R.string.system_file_path_odk_instances);
 			
-			mOdkPath = Environment.getExternalStorageDirectory().getPath();
-			mOdkPath += context.getString(R.string.system_file_path_odk_metadata);
+			// don't delete metadata directory as 
+			// odk process has locked the database files
+			// delete will fail
+//			mOdkPath = Environment.getExternalStorageDirectory().getPath();
+//			mOdkPath += context.getString(R.string.system_file_path_odk_metadata);
 			
 			mOdkPath = Environment.getExternalStorageDirectory().getPath();
 			mOdkPath += context.getString(R.string.system_file_path_odk_forms);
