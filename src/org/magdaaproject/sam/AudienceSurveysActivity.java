@@ -176,8 +176,8 @@ public class AudienceSurveysActivity extends Activity implements OnClickListener
 		if(mFormId == null) {
 			// show error dialog
 			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.event_surveys_ui_dialog_missing_form_title),
-					getString(R.string.event_surveys_ui_dialog_missing_form_message));
+					getString(R.string.surveys_ui_dialog_missing_form_title),
+					getString(R.string.surveys_ui_dialog_missing_form_message));
 	
 			mAlert.show(getFragmentManager(), "missing-odk-form");
 			return;

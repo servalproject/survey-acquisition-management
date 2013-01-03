@@ -89,11 +89,15 @@
     <!-- event survey activity strings -->
     <string name="event_surveys_ui_lbl_header">Event Surveys</string>
     
-    <string name="event_surveys_ui_dialog_missing_form_title">Missing Form Error</string>
-    <string name="event_surveys_ui_dialog_missing_form_message">The matching event form in ODK Collect cannot be found. Please check the configuration and try again</string>
-    
     <!-- audience survey activity strings -->
     <string name="audience_surveys_ui_lbl_header">Audience Surveys</string>
+    
+    <!-- general survey strings -->
+    <string name="surveys_ui_dialog_missing_form_title">Missing Form Error</string>
+    <string name="surveys_ui_dialog_missing_form_message">The matching event form in ODK Collect cannot be found. Please check the configuration and try again</string>
+    
+    <string name="surveys_ui_toast_msg_missing_uri">Missing data from ODK, unable to share instance data over Rhizome</string>
+   	<string name="surveys_ui_toast_msg_shared_file">New instance file shared via Rhizome</string>
         
     <!-- preferences activity strings -->
     <string name="preferences_ui_lbl_header">MaGDAA SAM Preferences</string>

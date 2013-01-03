@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.magdaaproject.sam.adapters.EventSurveysAdapter;
 import org.magdaaproject.sam.content.FormsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
+import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
 import org.odk.collect.FormsProviderAPI;
 
 import android.app.Activity;
@@ -31,13 +32,17 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 /**
  * view a list of survey forms associated with the event category
@@ -51,17 +56,18 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 	 */
 	
 	/*
+	 * private class level constants
+	 */
+	//private static final boolean sVerboseLog = true;
+	private static final String sLogTag = "EventSurveysActivity";
+	
+	/*
 	 * private class level variables
 	 */
 	private GridView gridView;
 	private Cursor   cursor;
 	private HashMap<String, Integer> odkData;
-
-	/*
-	 * private class level constants
-	 */
-	//private static final boolean sVerboseLog = true;
-	//private static final String sLogTag = "EventSurveysActivity";
+	private boolean shareViaRhizome;
 	
 	/*
 	 * (non-Javadoc)
@@ -82,6 +88,14 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 			}
 			
 		});
+		
+		// determine if we're sharing saved instance data
+		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		if(mPreferences.getBoolean("preferences_sharing_bundles", true) == true) {
+			// we're undertaking some sort of sharing
+			shareViaRhizome = mPreferences.getBoolean("preferences_sharing_rhizome", true);
+		}
 		
 		// get a reference to the grid view
 		gridView = (GridView)findViewById(R.id.event_surveys_ui_grid);
@@ -176,8 +190,8 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 		if(mFormId == null) {
 			// show error dialog
 			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-					getString(R.string.event_surveys_ui_dialog_missing_form_title),
-					getString(R.string.event_surveys_ui_dialog_missing_form_message));
+					getString(R.string.surveys_ui_dialog_missing_form_title),
+					getString(R.string.surveys_ui_dialog_missing_form_message));
 	
 			mAlert.show(getFragmentManager(), "missing-odk-form");
 			return;
@@ -198,6 +212,38 @@ public class EventSurveysActivity extends Activity implements OnClickListener {
 		
 		// launch the form
 		startActivityForResult(mIntent, 0);
+	}
+	
+	/*
+	 * get the result code back from the ODK Collect activity
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		
+		// check to see if everything went OK
+		if(resultCode != Activity.RESULT_OK) {
+			Log.w(sLogTag, "ODK returned without the Activity.RESULT_OK flag");
+			return;
+		}
+		
+		// get the uri for the saved instance
+		Uri mInstanceUri = intent.getData();
+		
+		if(mInstanceUri == null) {
+			Log.w(sLogTag, "ODK failed to return URI for new form instance");
+			
+			Toast.makeText(this, getString(R.string.surveys_ui_toast_msg_missing_uri), Toast.LENGTH_SHORT).show();
+			
+			return;
+		}
+		
+		// share instance data via Rhizome?
+		if(shareViaRhizome == true) {
+			new ShareViaRhizomeTask(this, mInstanceUri).execute();
+		}
+		
 	}
 
 	/*
