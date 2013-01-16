@@ -20,9 +20,9 @@
  */
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:drawable="@drawable/button_red_pressed"
+    <item android:drawable="@drawable/button_red_focused_pressed"
           android:state_pressed="true" />
-    <item android:drawable="@drawable/button_red_focused"
+    <item android:drawable="@drawable/button_red_focused_pressed"
           android:state_focused="true" />
     <item android:drawable="@drawable/button_red_default" />
 </selector>

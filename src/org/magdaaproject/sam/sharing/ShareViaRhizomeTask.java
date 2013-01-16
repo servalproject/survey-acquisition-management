@@ -144,7 +144,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		
 		// create a zip file of the instance directory
 		String mTempPath = Environment.getExternalStorageDirectory().getPath();
-		mTempPath += context.getString(R.string.system_file_path_temp);
+		mTempPath += context.getString(R.string.system_file_path_rhizome_data);
 		mTempPath += mInstanceFile.getName() + ".instance.sam.magdaa";
 		
 		try {

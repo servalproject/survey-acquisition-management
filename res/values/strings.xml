@@ -31,11 +31,6 @@
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email MaGDAA</string>
     
-    <string name="launcher_ui_btn_categories">&lt;h1>%1$s&lt;/h1>&lt;br/>&lt;p>%2$s&lt;/p></string>
-    
-    <string name="launcher_ui_btn_audience">Audience Surveys</string>
-    <string name="launcher_ui_btn_event_survey">Event Surveys</string>
-    
     <string name="launcher_ui_dialog_no_external_storage_message">External storage, such as an SD Card, must be enabled before using this application</string>
     <string name="launcher_ui_dialog_no_external_storage_title">External Storage</string>
     
@@ -88,18 +83,11 @@
     <string name="config_manager_ui_dialog_unable_delete_odk_message">Unable to delete the existing ODK data, please check the external storage and try again</string>
     <string name="config_manager_ui_dialog_unable_install_new_forms_message">Unable to gather list of new forms, please check the external storage and the config file and try again</string>
     
-    <!-- event survey activity strings -->
-    <string name="event_surveys_ui_lbl_header">Event Surveys</string>
-    
-    <!-- audience survey activity strings -->
-    <string name="audience_surveys_ui_lbl_header">Audience Surveys</string>
-    
     <!-- general survey strings -->
     <string name="surveys_ui_dialog_missing_form_title">Missing Form Error</string>
     <string name="surveys_ui_dialog_missing_form_message">The matching event form in ODK Collect cannot be found. Please check the configuration and try again</string>
     
     <string name="surveys_ui_toast_msg_missing_uri">Missing data from ODK, unable to share instance data over Rhizome</string>
-   	<string name="surveys_ui_toast_msg_shared_file">New instance file shared via Rhizome</string>
         
     <!-- preferences activity strings -->
     <string name="preferences_ui_lbl_header">MaGDAA SAM Preferences</string>
@@ -121,8 +109,6 @@
     <string name="general_ui_btn_back_text">Back</string>
     
     <!-- file system related strings -->
-    <string name="system_file_path_parent">/magdaaproject/</string>
-    <string name="system_file_path_debug_output">/magdaaproject/debug/</string>
     <string name="system_file_path_rhizome_data">/magdaaproject/rhizome/sam/</string>
     <string name="system_file_path_temp">/magdaaproject/sam/temp/</string>
     <string name="system_file_path_configs">/magdaaproject/sam/configs/</string>
@@ -131,13 +117,11 @@
     <string name="system_file_path_odk">/odk/</string>
     <string name="system_file_path_odk_forms">/odk/forms/</string>
     <string name="system_file_path_odk_instances">/odk/instances/</string>
-    <string name="system_file_path_odk_metadata">/odk/metadata/</string>
     
     <!-- system contact strings -->
     <string name="system_contact_email">admin@magdaaproject.org</string>
     <string name="system_contact_email_subject">Feedback on the MaGDAA SAM application</string>
     <string name="system_contact_email_chooser">Send feedback email&#8230;</string>
-    <string name="system_contact_email_no_app">A default email client could not be found, please send any feedback you may have to %1$s</string>
     <string name="system_acknowledgments_uri">http://wiki.magdaaproject.org/software:sam_acknowledgments</string>
 
 </resources>

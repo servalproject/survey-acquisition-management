@@ -28,8 +28,7 @@
     <!-- header -->
     <TextView
         android:id="@+id/survey_forms_ui_lbl_header"
-        style="@style/ui_elem_header"
-        android:text="@string/event_surveys_ui_lbl_header" />
+        style="@style/ui_elem_header" />
     
     <!-- grid view -->
     <GridView
