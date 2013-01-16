@@ -22,21 +22,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
+    android:orientation="vertical"
     android:background="#ff111111" >
     
     <!-- header -->
     <TextView
         android:id="@+id/survey_forms_ui_lbl_header"
-        style="@style/ui_elem_header"
-        android:text="@string/event_surveys_ui_lbl_header" />
+        style="@style/ui_elem_header" />
     
     <!-- grid view -->
     <GridView
 		 android:id="@+id/survey_forms_ui_grid"
 		 android:layout_width="fill_parent"
 		 android:layout_height="fill_parent"
-		 android:numColumns="3"
+		 android:numColumns="2"
 		 android:columnWidth="250dp"
 		 android:stretchMode="spacingWidthUniform"
 		 android:gravity="center"

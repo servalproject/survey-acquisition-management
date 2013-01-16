@@ -51,6 +51,11 @@ import android.widget.TextView;
  * the main activity for the application
  */
 public class LauncherActivity extends Activity implements OnClickListener {
+	
+	/*
+	 * public constants
+	 */
+	public static final String INTENT_EXTRA_NAME = "intent-data";
 
 	/*
 	 * private class level constants
@@ -258,6 +263,9 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		case R.id.list_view_categories_btn:
 			// a category button has been touched
 			Log.i(sLogTag, "category button touched");
+			mIntent = new Intent(this, org.magdaaproject.sam.SurveyFormsActivity.class);
+			mIntent.putExtra(INTENT_EXTRA_NAME, view.getTag().toString());
+			startActivity(mIntent);
 			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired an onClick event");

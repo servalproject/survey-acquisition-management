@@ -20,6 +20,7 @@
 package org.magdaaproject.sam.adapters;
 
 import org.magdaaproject.sam.EventSurveysActivity;
+import org.magdaaproject.sam.SurveyFormsActivity;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -39,7 +40,7 @@ public class EventSurveysAdapter extends SimpleCursorAdapter {
 	 */
 	private String[] from;
 	private int[] to;
-	private EventSurveysActivity parent;
+	private SurveyFormsActivity parent;
 	
 
 	/*
@@ -52,7 +53,7 @@ public class EventSurveysAdapter extends SimpleCursorAdapter {
 		this.to = to;
 		
 		// cast the context to the appropriate type so the methods we expect are available
-		this.parent = (EventSurveysActivity) context;
+		this.parent = (SurveyFormsActivity) context;
 	}
 	
 	/*

@@ -64,7 +64,8 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 		
 		view.setOnClickListener(parent);
 		view.setTag(
-				cursor.getInt(cursor.getColumnIndex(from[0])));
+				cursor.getString(cursor.getColumnIndex(from[0])) 
+				+ "|" + cursor.getString(cursor.getColumnIndex(from[1])));
 		
 	}
 }

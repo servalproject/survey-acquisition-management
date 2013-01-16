@@ -68,8 +68,12 @@
             android:name=".EventSurveysActivity"
             android:label="@string/system_application_default_label"> 
         </activity>
-         <activity 
+        <activity 
             android:name=".AudienceSurveysActivity"
+            android:label="@string/system_application_default_label"> 
+        </activity>
+        <activity 
+            android:name=".SurveyFormsActivity"
             android:label="@string/system_application_default_label"> 
         </activity>
         <provider 
