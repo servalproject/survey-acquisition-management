@@ -21,7 +21,7 @@ package org.magdaaproject.sam;
 
 import java.util.HashMap;
 
-import org.magdaaproject.sam.adapters.EventSurveysAdapter;
+import org.magdaaproject.sam.adapters.SurveyFormsAdapter;
 import org.magdaaproject.sam.content.FormsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
@@ -144,7 +144,7 @@ public class SurveyFormsActivity extends Activity implements OnClickListener {
 		int[] mViews = new int[1];
 		mViews[0] = R.id.grid_view_events_text;
 		
-		EventSurveysAdapter mAdapter = new EventSurveysAdapter(
+		SurveyFormsAdapter mAdapter = new SurveyFormsAdapter(
 				this,
 				R.layout.grid_view_events,
 				cursor,

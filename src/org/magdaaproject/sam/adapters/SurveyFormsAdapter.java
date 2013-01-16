@@ -19,7 +19,7 @@
  */
 package org.magdaaproject.sam.adapters;
 
-import org.magdaaproject.sam.AudienceSurveysActivity;
+import org.magdaaproject.sam.SurveyFormsActivity;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -28,31 +28,31 @@ import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 
 /**
- * manage the mapping between data and view for the list of audience survey forms
+ * manage the mapping between data and view for the list of event survey forms
  * @author techxplorer
  *
  */
-public class AudienceSurveysAdapter extends SimpleCursorAdapter {
+public class SurveyFormsAdapter extends SimpleCursorAdapter {
 	
 	/*
 	 * private class level variables
 	 */
 	private String[] from;
 	private int[] to;
-	private AudienceSurveysActivity parent;
+	private SurveyFormsActivity parent;
 	
 
 	/*
 	 * standard constructor
 	 */
-	public AudienceSurveysAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
+	public SurveyFormsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		
 		this.from = from;
 		this.to = to;
 		
 		// cast the context to the appropriate type so the methods we expect are available
-		this.parent = (AudienceSurveysActivity) context;
+		this.parent = (SurveyFormsActivity) context;
 	}
 	
 	/*
@@ -70,4 +70,6 @@ public class AudienceSurveysAdapter extends SimpleCursorAdapter {
 		mButton.setTag(cursor.getPosition());
 		
 	}
+	 
+	
 }
