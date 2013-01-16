@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/*
+ * Retrieved directly from the ODK source code repository with one small minor change to the package name
+ * http://collect.opendatakit.googlecode.com/hg/src/org/odk/collect/android/provider/InstanceProviderAPI.java
+ */
+
 package org.odk.collect;
 
 import android.net.Uri;

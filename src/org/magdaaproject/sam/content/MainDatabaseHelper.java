@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2012 The MaGDAA Project
+ * Copyright (C) 2012, 2013 The MaGDAA Project
  *
- * This file is part of the MaGDAA MEM Software
+ * This file is part of the MaGDAA SAM Software
  *
- * MaGDAA MEM Software is free software; you can redistribute it and/or modify
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.

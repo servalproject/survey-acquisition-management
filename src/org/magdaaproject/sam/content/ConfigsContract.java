@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The MaGDAA Project
+ * Copyright (C) 2012, 2013 The MaGDAA Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
