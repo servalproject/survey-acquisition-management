@@ -51,8 +51,11 @@ public class ItemsContentProvider extends ContentProvider {
 	private static final int sConfigsListUri = 1;
 	private static final int sConfigsItemUri = 2;
 	
-	private static final int sFormsListUri = 5;
-	private static final int sFormsItemUri = 6;
+	private static final int sFormsListUri = 3;
+	private static final int sFormsItemUri = 4;
+	
+	private static final int sCategoriesListUri = 5;
+	private static final int sCategoriesItemUri = 6;
 	
 	private static final String sTag = "ItemsContentProvider";
 
@@ -76,6 +79,9 @@ public class ItemsContentProvider extends ContentProvider {
 		
 		sUriMatcher.addURI(AUTHORITY, FormsContract.CONTENT_URI_PATH, sFormsListUri);
 		sUriMatcher.addURI(AUTHORITY, FormsContract.CONTENT_URI_PATH + "/#", sFormsListUri);
+		
+		sUriMatcher.addURI(AUTHORITY, CategoriesContract.CONTENT_URI_PATH, sCategoriesListUri);
+		sUriMatcher.addURI(AUTHORITY, CategoriesContract.CONTENT_URI_PATH + "/#", sCategoriesListUri);
 
 		// create the database if necessary
 		databaseHelper = new MainDatabaseHelper(getContext());
@@ -120,6 +126,20 @@ public class ItemsContentProvider extends ContentProvider {
 				selection += " AND " + FormsContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
 			break;
+		case sCategoriesListUri:
+			// uri matches the entire table
+			if(TextUtils.isEmpty(sortOrder) == true) {
+				sortOrder = CategoriesContract.Table.TITLE + " ASC";
+			}
+			break;
+		case sCategoriesItemUri:
+			// uri matches a single item
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = CategoriesContract.Table._ID + " = " + uri.getLastPathSegment();
+			} else {
+				selection += " AND " + CategoriesContract.Table._ID + " = " + uri.getLastPathSegment();
+			}
+			break;
 		default:
 			// unknown uri found
 			Log.e(sTag, "unknown URI detected on query: " + uri.toString());
@@ -158,6 +178,10 @@ public class ItemsContentProvider extends ContentProvider {
 		case sFormsListUri:
 			mTable = FormsContract.Table.TABLE_NAME;
 			mContentUri = FormsContract.CONTENT_URI;
+			break;
+		case sCategoriesListUri:
+			mTable = CategoriesContract.Table.TABLE_NAME;
+			mContentUri = CategoriesContract.CONTENT_URI;
 			break;
 		default:
 			// unknown uri found
@@ -216,6 +240,17 @@ public class ItemsContentProvider extends ContentProvider {
 			}
 			mCount = database.delete(FormsContract.Table.TABLE_NAME, selection, selectionArgs);
 			break;
+		case sCategoriesListUri:
+			mCount = database.delete(CategoriesContract.Table.TABLE_NAME, selection, selectionArgs);
+			break;
+		case sCategoriesItemUri:
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = CategoriesContract.Table._ID + " = ?";
+				selectionArgs = new String[0];
+				selectionArgs[0] = uri.getLastPathSegment();
+			}
+			mCount = database.delete(CategoriesContract.Table.TABLE_NAME, selection, selectionArgs);
+			break;
 		default:
 			// unknown uri found
 			Log.e(sTag, "unknown URI detected on delete: " + uri.toString());
@@ -244,6 +279,10 @@ public class ItemsContentProvider extends ContentProvider {
 			return FormsContract.CONTENT_TYPE_LIST;
 		case sFormsItemUri:
 			return FormsContract.CONTENT_TYPE_ITEM;
+		case sCategoriesListUri:
+			return CategoriesContract.CONTENT_TYPE_LIST;
+		case sCategoriesItemUri:
+			return CategoriesContract.CONTENT_TYPE_ITEM;
 		default:
 			// unknown uri found
 			Log.e(sTag, "unknown URI detected on get type: " + uri.toString());

@@ -59,9 +59,16 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			FormsContract.Table.TABLE_NAME + " (" +
 			FormsContract.Table._ID + " INTEGER PRIMARY KEY, " +
 			FormsContract.Table.FORM_ID + " INTEGER, " +
-			FormsContract.Table.CATEGORY_ID + " TEXT, " +
+			FormsContract.Table.CATEGORY_ID + " INTEGER, " +
 			FormsContract.Table.TITLE + " TEXT, " +
 			FormsContract.Table.XFORMS_FILE + " TEXT)";
+	
+	private static final String sFormCategoriesCreate = "CREATE TABLE " +
+			CategoriesContract.Table.TABLE_NAME + " (" + 
+			CategoriesContract.Table._ID + " INTEGER PRIMARY KEY, " +
+			CategoriesContract.Table.CATEGORY_ID + " INTEGER, " +
+			CategoriesContract.Table.TITLE + " TEXT, " +
+			CategoriesContract.Table.DESCRIPTION + " TEXT)";
 
 	/**
 	 * constructs a new MainDatabaseHelper object
@@ -83,6 +90,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 		// create the table and index
 		db.execSQL(sConfigsTableCreate);
 		db.execSQL(sFormsTableCreate);
+		db.execSQL(sFormCategoriesCreate);
 	}
 
 	/*

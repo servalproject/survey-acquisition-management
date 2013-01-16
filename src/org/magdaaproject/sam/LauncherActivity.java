@@ -90,17 +90,17 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 		// check that Serval Mesh is installed
-		if(mPreferences.getBoolean("preferences_sharing_rhizome", true) == true) {
-			if(ServalUtils.isServalMeshInstalled(getApplicationContext()) == false) {
-				allowStart = false;
-				
-				BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-						getString(R.string.launcher_ui_dialog_no_serval_mesh_title),
-						getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
-				
-				mAlert.show(getFragmentManager(), "no-serval");
-			}
-		}
+//		if(mPreferences.getBoolean("preferences_sharing_rhizome", true) == true) {
+//			if(ServalUtils.isServalMeshInstalled(getApplicationContext()) == false) {
+//				allowStart = false;
+//				
+//				BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+//						getString(R.string.launcher_ui_dialog_no_serval_mesh_title),
+//						getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
+//				
+//				mAlert.show(getFragmentManager(), "no-serval");
+//			}
+//		}
 		
 		// check that ODK Collect is installed
 		if(OpenDataKitUtils.isOdkCollectInstalled(getApplicationContext()) == false) {

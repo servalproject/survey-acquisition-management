@@ -25,7 +25,10 @@ import org.magdaaproject.sam.config.BundleConfig;
 import org.magdaaproject.sam.config.ConfigException;
 import org.magdaaproject.sam.config.ConfigLoaderTask;
 import org.magdaaproject.sam.content.ConfigsContract;
+import org.magdaaproject.sam.content.CategoriesContract;
 import org.magdaaproject.sam.content.FormsContract;
+import org.odk.collect.FormsProviderAPI;
+import org.odk.collect.InstanceProviderAPI;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -223,6 +226,18 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 		// insert the values
 		contentResolver.insert(ConfigsContract.CONTENT_URI, mValues);
 		
+		// add the categories
+		ArrayList<String[]> mCategories = newConfig.getCategories();
+		
+		for(String[] mElements: mCategories) {
+			mValues = new ContentValues();
+			
+			mValues.put(CategoriesContract.Table.CATEGORY_ID, mElements[0]);
+			mValues.put(CategoriesContract.Table.TITLE, mElements[1]);
+			mValues.put(CategoriesContract.Table.DESCRIPTION, mElements[2]);
+			
+			contentResolver.insert(CategoriesContract.CONTENT_URI, mValues);
+		}
 		
 		// add the forms
 		ArrayList<String[]> mForms = newConfig.getForms();
@@ -237,8 +252,25 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			mValues.put(FormsContract.Table.XFORMS_FILE, mElements[3]);
 			
 			contentResolver.insert(FormsContract.CONTENT_URI, mValues);
-			
 		}
+	}
+	
+	/**
+	 * empty the ODK databases
+	 */
+	public void emptyOdkDatabases() {
+		
+		contentResolver.delete(FormsProviderAPI.FormsColumns.CONTENT_URI, null, null);
+		contentResolver.delete(InstanceProviderAPI.InstanceColumns.CONTENT_URI, null, null);
+	}
+	
+	/**
+	 * clean the MaGDAA SAM database
+	 */
+	public void cleanDatabase() {
+		contentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
+		contentResolver.delete(FormsContract.CONTENT_URI, null, null);
+		contentResolver.delete(CategoriesContract.CONTENT_URI, null, null);
 	}
 	
 	/**

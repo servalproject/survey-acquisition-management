@@ -32,10 +32,17 @@ import android.text.TextUtils;
 public class BundleConfig {
 	
 	/*
+	 * private class level constants
+	 */
+	private static int sFormTokenArrayLength = 4;
+	private static int sCategoryTokenArrayLength = 3;
+	
+	/*
 	 * private class level variables
 	 */
 	private HashMap<String, String> metadata;
 	private ArrayList<String[]> forms;
+	private ArrayList<String[]> categories;
 	private String rawConfig;
 	
 	/**
@@ -53,6 +60,7 @@ public class BundleConfig {
 		metadata = new HashMap<String, String>();
 
 		forms    = new ArrayList<String[]>();
+		categories = new ArrayList<String[]>();
 		
 		this.rawConfig = config;
 	}
@@ -78,7 +86,9 @@ public class BundleConfig {
 					if(mToken.startsWith("@form") == true) {
 						mToken = mToken.substring(mToken.indexOf("\t")  + 1, mToken.length());
 						addForm(mToken.trim());
-						//forms.add(mToken.trim());
+					} else if(mToken.startsWith("@category") == true ) {
+						mToken = mToken.substring(mToken.indexOf("\t")  + 1, mToken.length());
+						addCategory(mToken.trim());
 					} else {
 						metadata.put(
 							mToken.substring(1, mToken.indexOf("\t")).trim(), 
@@ -104,11 +114,35 @@ public class BundleConfig {
 		
 		String[] mElements = token.split("\t");
 		
-		if(mElements.length != 4) {
-			throw new ConfigException("expected 4 elements in the form line got '" + mElements.length + "' \ntoken: '" + token + "'");
+		if(mElements.length != sFormTokenArrayLength) {
+			throw new ConfigException("expected '" + sFormTokenArrayLength + "' elements in the form line, got '" + mElements.length + "' \ntoken: '" + token + "'");
 		}
 		
+		//TODO additional validation
+		
 		forms.add(mElements);
+		
+	}
+	
+	/*
+	 * parse the category line of the configuration
+	 */
+	private void addCategory(String token) throws ConfigException {
+		
+		// validate the string
+		if(TextUtils.isEmpty(token) == true) {
+			throw new ConfigException("a token parameter is required");
+		}
+		
+		String[] mElements = token.split("\t");
+		
+		if(mElements.length != sCategoryTokenArrayLength) {
+			throw new ConfigException("expected '" + sCategoryTokenArrayLength + "' elements in the category line got '" + mElements.length + "' \ntoken: '" + token + "'");
+		}
+		
+		//TODO additional validation
+		
+		categories.add(mElements);
 		
 	}
 	
@@ -138,11 +172,23 @@ public class BundleConfig {
 	}
 	
 	/**
+	 * get the list of form categories
+	 * @return the list of forms as a string array
+	 */
+	public ArrayList<String[]> getCategories() {
+		return categories;
+	}
+	
+	/**
 	 * validate the parsed configuration 
 	 * 
 	 * @throws ConfigException if the configuration doesn't validate
 	 */
 	public void validateConfig() throws ConfigException {
+		
+		if(categories.size() == 0) {
+			throw new ConfigException("The config requires at least one category definition");
+		}
 		
 		if(forms.size() == 0) {
 			throw new ConfigException("The config requires at least one form definition");

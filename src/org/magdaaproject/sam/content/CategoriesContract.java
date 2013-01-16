@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The MaGDAA Project
+ * Copyright (C) 2012, 2013 The MaGDAA Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,14 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Database contract class representing the table storing details of forms
+ * Database contract class representing the table listing form categories
  */
-public class FormsContract {
-
+public class CategoriesContract {
+	
 	/**
 	 * path component of the URI
 	 */
-	public static final String CONTENT_URI_PATH = "forms";
+	public static final String CONTENT_URI_PATH = "categories";
 
 	/**
 	 * content URI for the locations data
@@ -53,38 +53,21 @@ public class FormsContract {
 	 * content type for an individual item
 	 */
 	public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd." + ItemsContentProvider.AUTHORITY + "." + CONTENT_URI_PATH;
-	
-	/**
-	 * constant representing the value of the category field for an event related form
-	 */
-	public static final String CATEGORY_EVENT = "e";
-	
-	/**
-	 * constant representing the value of the category field for an audience related form
-	 */
-	public static final String CATEGORY_AUDIENCE = "a";
 
 	/**
 	 * table definition
 	 */
 	public static final class Table implements BaseColumns {
-
+		
 		/**
 		 * name of the database table
 		 */
-		public static final String TABLE_NAME = FormsContract.CONTENT_URI_PATH;
+		public static final String TABLE_NAME = CategoriesContract.CONTENT_URI_PATH;
 		
 		/**
 		 * unique id column
 		 */
 		public static final String _ID = BaseColumns._ID;
-		
-		/**
-		 * form id column
-		 * 
-		 * used to enforce an order based on the column from the config file
-		 */
-		public static final String FORM_ID = "form_id";
 		
 		/**
 		 * category id column
@@ -97,8 +80,8 @@ public class FormsContract {
 		public static final String TITLE = "title";
 		
 		/**
-		 * xforms file name column
+		 * category description column
 		 */
-		public static final String XFORMS_FILE = "xforms_file";
+		public static final String DESCRIPTION = "description";
 	}
 }

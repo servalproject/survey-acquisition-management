@@ -161,7 +161,6 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		}
 		
 		// delete the existing config
-		// output progress information
 		publishProgress(R.string.config_manager_ui_lbl_progress_03);
 		
 		try {
@@ -276,6 +275,9 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 //			mOdkPath = Environment.getExternalStorageDirectory().getPath();
 //			mOdkPath += context.getString(R.string.system_file_path_odk_metadata);
 			
+			// empty the database tables via odk instead
+			context.emptyOdkDatabases();
+			
 			mOdkPath = Environment.getExternalStorageDirectory().getPath();
 			mOdkPath += context.getString(R.string.system_file_path_odk_forms);
 			
@@ -374,6 +376,9 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		case sFailure:
 			progressBar.setVisibility(View.GONE);
 			textView.setText(R.string.config_manager_ui_lbl_progress_error);
+			
+			// clean the database of potentially invalid data
+			context.cleanDatabase();
 			break;
 		case sSuccess:
 			progressBar.setVisibility(View.GONE);

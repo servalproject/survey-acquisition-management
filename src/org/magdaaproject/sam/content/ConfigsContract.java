@@ -29,6 +29,9 @@ package org.magdaaproject.sam.content;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Database contract class representing the current config in use
+ */
 public class ConfigsContract {
 	
 	/**
