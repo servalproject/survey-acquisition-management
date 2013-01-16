@@ -255,16 +255,6 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			// show the contact information stuff
 			contactUs();
 			break;
-		case R.id.launcher_ui_btn_event_survey:
-			// show the event survey activity
-			mIntent = new Intent(this, org.magdaaproject.sam.EventSurveysActivity.class);
-			startActivity(mIntent);
-			break;
-		case R.id.launcher_ui_btn_audience_survey:
-			// show the event survey activity
-			mIntent = new Intent(this, org.magdaaproject.sam.AudienceSurveysActivity.class);
-			startActivity(mIntent);
-			break;
 		case R.id.list_view_categories_btn:
 			// a category button has been touched
 			Log.i(sLogTag, "category button touched");

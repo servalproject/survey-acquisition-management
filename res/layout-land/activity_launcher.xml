@@ -31,40 +31,14 @@
         style="@style/ui_elem_header"
         android:text="@string/launcher_ui_lbl_header" />
     
-    <!-- category launch buttons -->
-    <Button
-        android:id="@+id/launcher_ui_btn_event_survey"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_ui_lbl_header"
-        android:contentDescription="@string/launcher_ui_btn_event_survey"
-        android:text="@string/launcher_ui_btn_event_survey"
-        android:textSize="18sp"
-        android:drawableTop="@drawable/ic_site_survey"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/ui_elem_margin_top"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:background="@drawable/button_gold" />
- 
-     <Button
-        android:id="@+id/launcher_ui_btn_audience_survey"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_ui_btn_event_survey"
-        android:contentDescription="@string/launcher_ui_btn_audience"
-        android:text="@string/launcher_ui_btn_audience"
-        android:textSize="18sp"
-        android:drawableTop="@drawable/ic_crowds"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/ui_elem_margin_top"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:background="@drawable/button_gold" />
+    <!-- list of form categories -->
+    <ListView
+        android:id="@+id/launcher_ui_list_categories"
+        android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/launcher_ui_lbl_header"
+		android:layout_margin="@dimen/ui_elem_margin_top" >
+    </ListView>
     
     <!-- device id -->
     <TextView
