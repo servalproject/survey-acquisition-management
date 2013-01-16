@@ -31,6 +31,8 @@
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email MaGDAA</string>
     
+    <string name="launcher_ui_btn_categories">&lt;h1>%1$s&lt;/h1>&lt;br/>&lt;p>%2$s&lt;/p></string>
+    
     <string name="launcher_ui_btn_audience">Audience Surveys</string>
     <string name="launcher_ui_btn_event_survey">Event Surveys</string>
     

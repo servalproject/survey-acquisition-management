@@ -115,6 +115,11 @@
         <item name="android:textColor">#ffffff</item>
     </style>
     
+    <style name="ui_elem_btn_list_gold" parent="ui_elem_layout_fill">
+        <item name="android:background">@drawable/button_gold</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
     <style name="ui_elem_btn_border">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

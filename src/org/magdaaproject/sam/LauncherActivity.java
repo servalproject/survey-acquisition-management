@@ -19,6 +19,10 @@
  */
 package org.magdaaproject.sam;
 
+import java.util.Arrays;
+
+import org.magdaaproject.sam.adapters.CategoriesAdapter;
+import org.magdaaproject.sam.content.CategoriesContract;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.DeviceUtils;
@@ -40,6 +44,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -59,6 +64,8 @@ public class LauncherActivity extends Activity implements OnClickListener {
 	 * private class level variables
 	 */
 	private boolean allowStart = true;
+	private ListView listView;
+	private Cursor cursor;
 
 	/*
 	 * (non-Javadoc)
@@ -118,19 +125,6 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			return;
 		}
 		
-		// setup the buttons
-		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
-		mButton.setOnClickListener(this);
-
-		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
-		mButton.setOnClickListener(this);
-		
-		mButton = (Button) findViewById(R.id.launcher_ui_btn_event_survey);
-		mButton.setOnClickListener(this);
-		
-		mButton = (Button) findViewById(R.id.launcher_ui_btn_audience_survey);
-		mButton.setOnClickListener(this);
-		
 		// check for an available config
 		ContentResolver mContentResolver = this.getContentResolver();
 		
@@ -161,6 +155,41 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		if(mCursor != null) {
 			mCursor.close();
 		}
+		
+		// build the list of category data
+		// the order of this array is very important
+		// changes to the order will break the rendering of the buttons
+		mProjection = new String[4];
+		mProjection[0] = CategoriesContract.Table._ID;
+		mProjection[1] = CategoriesContract.Table.CATEGORY_ID;
+		mProjection[2] = CategoriesContract.Table.TITLE;
+		mProjection[3] = CategoriesContract.Table.DESCRIPTION;
+		
+		String mOrderBy = CategoriesContract.Table.CATEGORY_ID + " ASC";
+		
+		cursor = mContentResolver.query(
+				CategoriesContract.CONTENT_URI, 
+				mProjection,
+				null,
+				null,
+				mOrderBy);
+		
+		// get a reference to the list view
+		listView = (ListView) findViewById(R.id.launcher_ui_list_categories);
+		
+		// prepare other layout variables
+		int[] mViews = new int[1];
+		mViews[0] = R.id.list_view_categories_btn;
+		
+		CategoriesAdapter mAdapter = new CategoriesAdapter(
+				this,
+				R.layout.list_view_categories,
+				cursor,
+				Arrays.copyOfRange(mProjection, 1, mProjection.length),
+				mViews,
+				0);
+		
+		listView.setAdapter(mAdapter);
 	}
 	
 	/*
@@ -228,6 +257,10 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			mIntent = new Intent(this, org.magdaaproject.sam.AudienceSurveysActivity.class);
 			startActivity(mIntent);
 			break;
+		case R.id.list_view_categories_btn:
+			// a category button has been touched
+			Log.i(sLogTag, "category button touched");
+			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired an onClick event");
 		}
@@ -276,5 +309,20 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		mIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.system_contact_email_subject));
 
 		startActivity(Intent.createChooser(mIntent, getString(R.string.system_contact_email_chooser)));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		
+		// play nice and tidy up
+		super.onDestroy();
+		
+		if(cursor != null) {
+			cursor.close();
+		}
 	}
 }
