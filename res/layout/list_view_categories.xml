@@ -1,13 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:id="@+id/list_view_categories" >
+<?xml version="1.0" encoding="utf-8"?>    
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   	android:layout_width="fill_parent"
+   	android:layout_height="fill_parent"
+   	android:id="@+id/list_view_categories_btn"
+   	android:clickable="true"
+   	style="@style/ui_elem_btn_list_gold">
+   	
+    <TextView
+        android:id="@+id/list_view_category_header"
+        style="@style/ui_elem_fake_button_header" />
     
-    <Button
-	    android:id="@+id/list_view_categories_btn"
-	    style="@style/ui_elem_btn_list_gold"/>
-    
-
-</LinearLayout>
+    <TextView
+               android:id="@+id/list_view_category_description"
+               style="@style/ui_elem_fake_button_sub_header"
+               android:layout_below="@id/list_view_category_header"/>
+</RelativeLayout>

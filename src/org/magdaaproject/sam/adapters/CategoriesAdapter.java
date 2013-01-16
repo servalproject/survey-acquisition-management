@@ -19,16 +19,12 @@
  */
 package org.magdaaproject.sam.adapters;
 
-import org.magdaaproject.sam.R;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.widget.Button;
-import android.widget.SimpleCursorAdapter;
-import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 public class CategoriesAdapter extends SimpleCursorAdapter {
 	
@@ -37,9 +33,7 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 	 */
 	private String[] from;
 	private int[] to;
-	private Context context;
 	private OnClickListener parent;
-	private String template;
 
 	/*
 	 * standard constructor
@@ -51,10 +45,7 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 		this.from = from;
 		this.to = to;
 		
-		this.context = context;
 		this.parent = (OnClickListener) context;
-		
-		template = context.getString(R.string.launcher_ui_btn_categories);
 		
 	}
 	
@@ -65,22 +56,15 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		
-		// populate button text and set onclick handler
-		Button mButton = (Button) view.findViewById(to[0]);
-		String mButtonLabel = String.format(
-				template, 
-				cursor.getString(cursor.getColumnIndex(from[1])),
-				cursor.getString(cursor.getColumnIndex(from[2]))
-			);
+		TextView mTextView = (TextView) view.findViewById(to[0]);
+		mTextView.setText(cursor.getString(cursor.getColumnIndex(from[1])));
 		
-		Log.i("info-1", template);
-		Log.i("info-2", mButtonLabel);
-				
-		mButton.setText(Html.fromHtml(mButtonLabel));
+		mTextView = (TextView) view.findViewById(to[1]);
+		mTextView.setText(cursor.getString(cursor.getColumnIndex(from[2])));
 		
-		mButton.setOnClickListener(parent);
-		mButton.setTag(
-				cursor.getInt(cursor.getColumnIndex(from[0]))
-			);
+		view.setOnClickListener(parent);
+		view.setTag(
+				cursor.getInt(cursor.getColumnIndex(from[0])));
+		
 	}
 }

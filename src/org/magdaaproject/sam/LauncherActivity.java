@@ -80,6 +80,13 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_device_id);
 		mTextView.setText(String.format(getString(R.string.launcher_ui_lbl_device_id), DeviceUtils.getDeviceId(getApplicationContext())));
 		mTextView = null;
+		
+		// setup the buttons
+		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
+		mButton.setOnClickListener(this);
+
+		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
+		mButton.setOnClickListener(this);
 
 		// check on external storage
 		if(FileUtils.isExternalStorageAvailable() == false) {
@@ -178,8 +185,9 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		listView = (ListView) findViewById(R.id.launcher_ui_list_categories);
 		
 		// prepare other layout variables
-		int[] mViews = new int[1];
-		mViews[0] = R.id.list_view_categories_btn;
+		int[] mViews = new int[2];
+		mViews[0] = R.id.list_view_category_header;
+		mViews[1] = R.id.list_view_category_description;
 		
 		CategoriesAdapter mAdapter = new CategoriesAdapter(
 				this,

@@ -120,6 +120,14 @@
         <item name="android:textColor">#ffffff</item>
     </style>
     
+    <style name="ui_elem_fake_button_header" parent="ui_elem_sub_header_1">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="ui_elem_fake_button_sub_header" parent="ui_elem_sub_header_2">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
     <style name="ui_elem_btn_border">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
