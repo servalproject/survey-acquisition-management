@@ -155,27 +155,46 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			// send user to config manager screen
 			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
 			startActivityForResult(mIntent, sReturnFromConfigManager);
-		} else {
 			
-			// update the header
-			mCursor.moveToFirst();
-			mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
-			mTextView.setText(mCursor.getString(0));
-		}
+			return;
+		} 
 		
-		// play nice and tidy up
-		if(mCursor != null) {
-			mCursor.close();
-		}
+		mCursor.close();
+		mCursor = null;
+		
+		// populate the UI
+		populateUserInterface();
+	}
+	
+	private void populateUserInterface() {
+		
+		// check for an available config
+		ContentResolver mContentResolver = this.getContentResolver();
+		
+		String[] mProjection = new String[1];
+		mProjection[0] = ConfigsContract.Table.TITLE;
+		
+		Cursor mCursor = mContentResolver.query(
+				ConfigsContract.CONTENT_URI, 
+				mProjection, 
+				null, 
+				null, 
+				null);
+		
+		// update the header
+		mCursor.moveToFirst();
+		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
+		mTextView.setText(mCursor.getString(0));
 		
 		// build the list of category data
 		// the order of this array is very important
 		// changes to the order will break the rendering of the buttons
-		mProjection = new String[4];
+		mProjection = new String[5];
 		mProjection[0] = CategoriesContract.Table._ID;
 		mProjection[1] = CategoriesContract.Table.CATEGORY_ID;
 		mProjection[2] = CategoriesContract.Table.TITLE;
 		mProjection[3] = CategoriesContract.Table.DESCRIPTION;
+		mProjection[4] = CategoriesContract.Table.ICON;
 		
 		String mOrderBy = CategoriesContract.Table.CATEGORY_ID + " ASC";
 		
@@ -190,9 +209,10 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		listView = (ListView) findViewById(R.id.launcher_ui_list_categories);
 		
 		// prepare other layout variables
-		int[] mViews = new int[2];
+		int[] mViews = new int[3];
 		mViews[0] = R.id.list_view_category_header;
 		mViews[1] = R.id.list_view_category_description;
+		mViews[2] = R.id.list_view_category_icon;
 		
 		CategoriesAdapter mAdapter = new CategoriesAdapter(
 				this,
@@ -203,6 +223,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 				0);
 		
 		listView.setAdapter(mAdapter);
+		
 	}
 	
 	/*
@@ -227,17 +248,20 @@ public class LauncherActivity extends Activity implements OnClickListener {
 					null, 
 					null);
 			
-			if(mCursor != null && mCursor.getCount() > 0) {
-				// update the header
-				mCursor.moveToFirst();
-				TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
-				mTextView.setText(mCursor.getString(0));
-			}
+			if(mCursor == null || mCursor.getCount() == 0) {
+				
+				// send user to config manager screen
+				Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
+				startActivityForResult(mIntent, sReturnFromConfigManager);
+				
+				return;
+			} 
 			
-			// play nice and tidy up
-			if(mCursor != null) {
-				mCursor.close();
-			}	
+			mCursor.close();
+			mCursor = null;
+			
+			// populate the UI
+			populateUserInterface();
 		}
 	}
 	

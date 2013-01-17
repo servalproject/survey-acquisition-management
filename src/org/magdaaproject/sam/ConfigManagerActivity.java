@@ -235,6 +235,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			mValues.put(CategoriesContract.Table.CATEGORY_ID, mElements[0]);
 			mValues.put(CategoriesContract.Table.TITLE, mElements[1]);
 			mValues.put(CategoriesContract.Table.DESCRIPTION, mElements[2]);
+			mValues.put(CategoriesContract.Table.ICON, mElements[3]);
 			
 			contentResolver.insert(CategoriesContract.CONTENT_URI, mValues);
 		}

@@ -42,6 +42,8 @@
  
     <string name="launcher_ui_lbl_device_id">Device ID: %s</string>
     
+    <string name="list_view_category_icon">Category Icon</string>
+    
     <string name="launcher_menu_acknowledgements">Acknowledgements</string>
     
     <!-- config manager activity strings -->
@@ -114,6 +116,7 @@
     <string name="system_file_path_rhizome_data">/magdaaproject/rhizome/sam/</string>
     <string name="system_file_path_temp">/magdaaproject/sam/temp/</string>
     <string name="system_file_path_configs">/magdaaproject/sam/configs/</string>
+    <string name="system_file_path_icons">/magdaaproject/sam/icons/</string>
     <string name="system_file_config_extension">config.sam.magdaa</string>
     
     <string name="system_file_path_odk">/odk/</string>

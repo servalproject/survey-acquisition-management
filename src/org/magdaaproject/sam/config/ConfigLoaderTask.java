@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012, 2013 The MaGDAA Project
+android:layout_toRightOf="@id/list_view_category_icon" * Copyright (C) 2012, 2013 The MaGDAA Project
  *
  * This file is part of the MaGDAA SAM Software
  *
@@ -142,6 +142,9 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 			newConfig = new BundleConfig(mConfigIndex);
 			newConfig.parseConfig();
 		} catch (ConfigException e) {
+			
+			Log.e(sLogTag, "unable to parse the configuration index", e);
+			
 			publishProgress(
 					R.string.config_manager_ui_dialog_error_title,
 					R.string.config_manager_ui_dialog_unable_parse_config_message
@@ -295,13 +298,13 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		// copy the new forms into place
 		publishProgress(R.string.config_manager_ui_lbl_progress_07);
 		
-		String[] mFormsList;
+		String[] mZipFileList;
 		
 		try {
-			mFormsList = FileUtils.listFilesInDir(mTempPath, "zip");
+			mZipFileList = FileUtils.listFilesInDir(mTempPath, "zip");
 		} catch (IOException e) {
 			
-			Log.e(sLogTag, "IOException occurred while getting list of new forms", e);
+			Log.e(sLogTag, "IOException occurred while getting list of zip files", e);
 			
 			publishProgress(
 					R.string.config_manager_ui_dialog_error_title,
@@ -311,7 +314,7 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		}
 		
 		// check to see if forms were found
-		if(mFormsList == null || mFormsList.length == 0) {
+		if(mZipFileList == null || mZipFileList.length == 0) {
 			
 			Log.e(sLogTag, "no form files found");
 			
@@ -323,18 +326,86 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		}
 		
 		// extract the forms into the ODK directory
-		for(String mFormFile : mFormsList) {
-			try {
-				FileUtils.extractFromZipFile(mFormFile, mOdkPath);
-			} catch (IOException e) {
+		for(String mZipFile : mZipFileList) {
+			
+			// extract the forms
+			if(mZipFile.endsWith("forms.zip") == true) {
+			
+				try {
+					FileUtils.extractFromZipFile(mZipFile, mOdkPath);
+
+				} catch (IOException e) {
+					
+					Log.e(sLogTag, "IOException occurred while extracting form", e);
+					
+					publishProgress(
+							R.string.config_manager_ui_dialog_error_title,
+							R.string.config_manager_ui_dialog_unable_install_new_forms_message
+							);
+					return Integer.valueOf(sFailure);
+				}
+			}
+			
+			// extract the icons
+			if(mZipFile.endsWith("icons.zip") == true) {
 				
-				Log.e(sLogTag, "IOException occurred while extracting form", e);
+				// delete any existing files
+				String mIconPath = Environment.getExternalStorageDirectory().getPath();
+				mIconPath += context.getString(R.string.system_file_path_icons);
 				
-				publishProgress(
-						R.string.config_manager_ui_dialog_error_title,
-						R.string.config_manager_ui_dialog_unable_install_new_forms_message
-						);
-				return Integer.valueOf(sFailure);
+				// check if directory exists
+				if(FileUtils.isDirectoryWriteable(mIconPath) == true) {
+					
+					// empty the directory
+					try {
+						FileUtils.recursiveDelete(mIconPath);
+						
+						if(FileUtils.isDirectoryWriteable(mIconPath) == false) {
+							Log.e(sLogTag, "Unable to create / access icon directory after delete");
+							
+							publishProgress(
+									R.string.config_manager_ui_dialog_error_title,
+									R.string.config_manager_ui_dialog_unable_install_new_forms_message
+									);
+							return Integer.valueOf(sFailure);
+						}
+						
+					} catch (IOException e) {
+						
+						Log.e(sLogTag, "IOException occurred while emptying icon directory", e);
+						
+						publishProgress(
+								R.string.config_manager_ui_dialog_error_title,
+								R.string.config_manager_ui_dialog_unable_install_new_forms_message
+								);
+						return Integer.valueOf(sFailure);
+					}
+					
+					// extract the icon files
+					try {
+						FileUtils.extractFromZipFile(mZipFile, mIconPath);
+						
+					} catch (IOException e) {
+						
+						Log.e(sLogTag, "IOException occurred while extracting form", e);
+						
+						publishProgress(
+								R.string.config_manager_ui_dialog_error_title,
+								R.string.config_manager_ui_dialog_unable_install_new_forms_message
+								);
+						return Integer.valueOf(sFailure);
+					}
+						
+				} else {
+					Log.e(sLogTag, "Unable to create / access icon directory");
+					
+					publishProgress(
+							R.string.config_manager_ui_dialog_error_title,
+							R.string.config_manager_ui_dialog_unable_install_new_forms_message
+							);
+					return Integer.valueOf(sFailure);
+				}
+				
 			}
 		}
 		

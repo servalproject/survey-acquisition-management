@@ -19,10 +19,17 @@
  */
 package org.magdaaproject.sam.adapters;
 
+import org.magdaaproject.sam.R;
+import org.magdaaproject.utils.FileUtils;
+
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -34,6 +41,7 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 	private String[] from;
 	private int[] to;
 	private OnClickListener parent;
+	private String iconPath;
 
 	/*
 	 * standard constructor
@@ -47,6 +55,9 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 		
 		this.parent = (OnClickListener) context;
 		
+		iconPath = Environment.getExternalStorageDirectory().getPath();
+		iconPath += context.getString(R.string.system_file_path_icons);
+		
 	}
 	
 	/*
@@ -56,11 +67,26 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		
+		// add the title and description
 		TextView mTextView = (TextView) view.findViewById(to[0]);
 		mTextView.setText(cursor.getString(cursor.getColumnIndex(from[1])));
 		
 		mTextView = (TextView) view.findViewById(to[1]);
 		mTextView.setText(cursor.getString(cursor.getColumnIndex(from[2])));
+		
+		String mFullIconPath = iconPath + cursor.getString(cursor.getColumnIndex(from[3]));
+		
+		//TODO cache these bitmaps somewhere?
+		
+		// add the icon
+		if(FileUtils.isFileReadable(mFullIconPath) == true) {
+			
+			Bitmap mIconBitmap = BitmapFactory.decodeFile(mFullIconPath);
+			
+			ImageView mImageView = (ImageView) view.findViewById(to[2]);
+			mImageView.setImageBitmap(mIconBitmap);
+			
+		}
 		
 		view.setOnClickListener(parent);
 		view.setTag(

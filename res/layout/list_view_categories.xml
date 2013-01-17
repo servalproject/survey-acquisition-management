@@ -26,12 +26,22 @@
    	android:clickable="true"
    	style="@style/ui_elem_btn_list_gold">
    	
+    <ImageView
+        android:id="@+id/list_view_category_icon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:contentDescription="@string/list_view_category_icon"
+        android:src="@drawable/ic_launcher" />
+   	
     <TextView
         android:id="@+id/list_view_category_header"
-        style="@style/ui_elem_fake_button_header" />
+        style="@style/ui_elem_fake_button_header"
+        android:layout_toRightOf="@id/list_view_category_icon" />
     
     <TextView
-               android:id="@+id/list_view_category_description"
-               style="@style/ui_elem_fake_button_sub_header"
-               android:layout_below="@id/list_view_category_header"/>
+        android:id="@+id/list_view_category_description"
+        style="@style/ui_elem_fake_button_sub_header"
+        android:layout_below="@id/list_view_category_header"
+        android:layout_toRightOf="@id/list_view_category_icon"/>
+
 </RelativeLayout>

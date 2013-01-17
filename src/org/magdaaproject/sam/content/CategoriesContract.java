@@ -83,5 +83,12 @@ public class CategoriesContract {
 		 * category description column
 		 */
 		public static final String DESCRIPTION = "description";
+		
+		/**
+		 * category icon
+		 */
+		public static final String ICON = "icon";
+		
+		
 	}
 }

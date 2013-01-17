@@ -68,7 +68,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			CategoriesContract.Table._ID + " INTEGER PRIMARY KEY, " +
 			CategoriesContract.Table.CATEGORY_ID + " INTEGER, " +
 			CategoriesContract.Table.TITLE + " TEXT, " +
-			CategoriesContract.Table.DESCRIPTION + " TEXT)";
+			CategoriesContract.Table.DESCRIPTION + " TEXT, " + 
+			CategoriesContract.Table.ICON + " TEXT)";
 
 	/**
 	 * constructs a new MainDatabaseHelper object

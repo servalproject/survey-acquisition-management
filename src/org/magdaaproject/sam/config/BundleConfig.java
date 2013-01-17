@@ -35,7 +35,7 @@ public class BundleConfig {
 	 * private class level constants
 	 */
 	private static int sFormTokenArrayLength = 4;
-	private static int sCategoryTokenArrayLength = 3;
+	private static int sCategoryTokenArrayLength = 4;
 	
 	/*
 	 * private class level variables
