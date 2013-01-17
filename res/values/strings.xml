@@ -84,6 +84,8 @@
     <string name="config_manager_ui_dialog_unable_install_new_forms_message">Unable to gather list of new forms, please check the external storage and the config file and try again</string>
     
     <!-- general survey strings -->
+    <string name="survey_forms_ui_lbl_no_forms">No forms are available for this category at this time</string>
+    
     <string name="surveys_ui_dialog_missing_form_title">Missing Form Error</string>
     <string name="surveys_ui_dialog_missing_form_message">The matching event form in ODK Collect cannot be found. Please check the configuration and try again</string>
     

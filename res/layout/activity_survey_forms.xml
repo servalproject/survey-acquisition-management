@@ -30,6 +30,14 @@
         android:id="@+id/survey_forms_ui_lbl_header"
         style="@style/ui_elem_header" />
     
+    <!-- no forms available label -->
+    <TextView
+        android:id="@+id/survey_forms_ui_lbl_no_forms"
+        style="@style/ui_elem_sub_header_1"
+        android:text="@string/survey_forms_ui_lbl_no_forms"
+        android:layout_below="@id/survey_forms_ui_lbl_header"
+        android:visibility="gone" />
+    
     <!-- grid view -->
     <GridView
 		 android:id="@+id/survey_forms_ui_grid"

@@ -137,6 +137,19 @@ public class SurveyFormsActivity extends Activity implements OnClickListener {
 				mSelectionArgs,
 				mSortOrder);
 		
+		// check to make sure some data is there
+		if(cursor == null || cursor.getCount() == 0) {
+			
+			// hide the grid view, show the label
+			gridView.setVisibility(View.GONE);
+			
+			mTextView = (TextView) findViewById(R.id.survey_forms_ui_lbl_no_forms);
+			mTextView.setVisibility(View.VISIBLE);
+			
+			return;
+			
+		}
+		
 		// setup the cursor to view map related code
 		String[] mColumns = new String[1];
 		mColumns[0] = FormsContract.Table.TITLE;
