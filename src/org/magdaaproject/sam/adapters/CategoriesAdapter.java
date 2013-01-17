@@ -19,6 +19,8 @@
  */
 package org.magdaaproject.sam.adapters;
 
+import java.util.HashMap;
+
 import org.magdaaproject.sam.R;
 import org.magdaaproject.utils.FileUtils;
 
@@ -42,6 +44,7 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 	private int[] to;
 	private OnClickListener parent;
 	private String iconPath;
+	private HashMap<String, Bitmap> iconCache;
 
 	/*
 	 * standard constructor
@@ -57,6 +60,8 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 		
 		iconPath = Environment.getExternalStorageDirectory().getPath();
 		iconPath += context.getString(R.string.system_file_path_icons);
+		
+		iconCache = new HashMap<String, Bitmap>();
 		
 	}
 	
@@ -74,24 +79,31 @@ public class CategoriesAdapter extends SimpleCursorAdapter {
 		mTextView = (TextView) view.findViewById(to[1]);
 		mTextView.setText(cursor.getString(cursor.getColumnIndex(from[2])));
 		
-		String mFullIconPath = iconPath + cursor.getString(cursor.getColumnIndex(from[3]));
+		// get the bitmap representation of the icon, either from cache
+		// or from the file system
+		String mIconFileName = cursor.getString(cursor.getColumnIndex(from[3]));
 		
-		//TODO cache these bitmaps somewhere?
+		Bitmap mIconBitmap = null;
 		
-		// add the icon
-		if(FileUtils.isFileReadable(mFullIconPath) == true) {
+		if(iconCache.containsKey(mIconFileName) == true) {
+			mIconBitmap = iconCache.get(mIconFileName);
+		} else {
+			String mFullIconPath = iconPath + mIconFileName;
 			
-			Bitmap mIconBitmap = BitmapFactory.decodeFile(mFullIconPath);
-			
+			if(FileUtils.isFileReadable(mFullIconPath) == true) {
+				mIconBitmap = BitmapFactory.decodeFile(mFullIconPath);
+			}
+		}
+		
+		// use the bitmap to replace the default image if available
+		if(mIconBitmap != null) {
 			ImageView mImageView = (ImageView) view.findViewById(to[2]);
 			mImageView.setImageBitmap(mIconBitmap);
-			
 		}
 		
 		view.setOnClickListener(parent);
 		view.setTag(
 				cursor.getString(cursor.getColumnIndex(from[0])) 
-				+ "|" + cursor.getString(cursor.getColumnIndex(from[1])));
-		
+				+ "|" + cursor.getString(cursor.getColumnIndex(from[1])));	
 	}
 }
