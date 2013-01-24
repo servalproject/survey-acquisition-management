@@ -90,21 +90,21 @@
     <style name="ui_elem_header" parent="ui_elem_content">
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_width">fill_parent</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
     <style name="ui_elem_sub_header_1" parent="ui_elem_content">
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">14sp</item>
          <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
     <style name="ui_elem_sub_header_2" parent="ui_elem_content">
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">12sp</item>
          <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
@@ -112,7 +112,7 @@
     <style name="ui_elem_button_default">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">8sp</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_weight">1</item>
@@ -158,6 +158,7 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
         <item name="android:paddingRight">@dimen/ui_elem_xl_padding_right</item>
         <item name="android:paddingLeft">@dimen/ui_elem_xl_padding_left</item> 
+        <item name="android:textColor">#ffffff</item>
     </style>
     
     <style name="ui_elem_btn_border_red" parent="ui_elem_btn_border">
@@ -182,7 +183,7 @@
     
     <!-- text styles -->
     <style name="ui_elem_text_default" parent="ui_elem_wrap">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">10sp</item>
     </style>
     
     <style name="ui_elem_text_label" parent="ui_elem_text_default">
@@ -192,7 +193,7 @@
     </style>
     
     <style name="ui_elem_text_fill" parent="ui_elem_layout_fill">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
         <item name="android:layout_marginRight">@dimen/ui_elem_xl_margin_right</item>
