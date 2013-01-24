@@ -25,7 +25,7 @@
     <string name="system_application_name">MaGDAA - SAM</string>
     <string name="system_application_default_label">MaGDAA - SAM</string>
     
-     <!-- launcher activity screen -->
+    <!-- launcher activity screen -->
     <string name="launcher_ui_lbl_header">Survey Acquisition Management</string>
     
     <string name="launcher_ui_btn_settings">Preferences</string>
