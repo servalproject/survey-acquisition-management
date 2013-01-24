@@ -44,7 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.Deflater;
 
-import org.magdaaproject.sam.R;
+import org.servalproject.sam.R;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.serval.RhizomeUtils;
 import org.odk.collect.InstanceProviderAPI;

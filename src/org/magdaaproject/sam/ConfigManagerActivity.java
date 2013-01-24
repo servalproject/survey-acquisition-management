@@ -50,17 +50,18 @@ import org.magdaaproject.sam.content.CategoriesContract;
 import org.magdaaproject.sam.content.FormsContract;
 import org.odk.collect.FormsProviderAPI;
 import org.odk.collect.InstanceProviderAPI;
+import org.servalproject.sam.R;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -73,7 +74,7 @@ import android.widget.TextView;
 /**
  * activity used to view details of the current config and manage other config related tasks
  */
-public class ConfigManagerActivity extends Activity implements OnClickListener {
+public class ConfigManagerActivity extends FragmentActivity implements OnClickListener {
 
 	/*
 	 * private class level constants
@@ -156,7 +157,7 @@ public class ConfigManagerActivity extends Activity implements OnClickListener {
 			 DialogFragment newFragment = ConfirmLoadConfig.newInstance(
 					 getString(R.string.config_manager_ui_dialog_confirm_title),
 					 getString(R.string.config_manager_ui_dialog_confirm_message));
-		     newFragment.show(getFragmentManager(), "dialog");
+		     newFragment.show(getSupportFragmentManager(), "dialog");
 			break;
 		default:
 			Log.w(sLogTag, "an unknown view fired the click event");

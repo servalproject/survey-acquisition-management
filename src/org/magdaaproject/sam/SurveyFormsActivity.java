@@ -47,6 +47,7 @@ import org.magdaaproject.sam.content.FormsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
 import org.odk.collect.FormsProviderAPI;
+import org.servalproject.sam.R;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -58,6 +59,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,7 +71,7 @@ import android.widget.Toast;
 /**
  * view a list of survey forms associated with the event category
  */
-public class SurveyFormsActivity extends Activity implements OnClickListener {
+public class SurveyFormsActivity extends FragmentActivity implements OnClickListener {
 	
 	/*
 	 * event surveys and audience surveys are managed as separate activities
@@ -241,7 +243,7 @@ public class SurveyFormsActivity extends Activity implements OnClickListener {
 					getString(R.string.surveys_ui_dialog_missing_form_title),
 					getString(R.string.surveys_ui_dialog_missing_form_message));
 	
-			mAlert.show(getFragmentManager(), "missing-odk-form");
+			mAlert.show(getSupportFragmentManager(), "missing-odk-form");
 			return;
 		}
 

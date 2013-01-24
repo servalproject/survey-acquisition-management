@@ -47,6 +47,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import org.servalproject.sam.R;
 
 /**
  * allow the user to change settings and preferences that control various aspects of the software
@@ -63,7 +64,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 	 * (non-Javadoc)
 	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

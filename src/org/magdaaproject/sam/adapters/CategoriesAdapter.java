@@ -42,7 +42,7 @@ package org.magdaaproject.sam.adapters;
 
 import java.util.HashMap;
 
-import org.magdaaproject.sam.R;
+import org.servalproject.sam.R;
 import org.magdaaproject.utils.FileUtils;
 
 import android.content.Context;
@@ -53,7 +53,7 @@ import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class CategoriesAdapter extends SimpleCursorAdapter {

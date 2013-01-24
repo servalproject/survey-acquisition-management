@@ -43,7 +43,7 @@ package org.magdaaproject.sam.config;
 import java.io.IOException;
 
 import org.magdaaproject.sam.ConfigManagerActivity;
-import org.magdaaproject.sam.R;
+import org.servalproject.sam.R;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.FileUtils;
 
@@ -449,7 +449,7 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 					context.getString(progress[0]),
 					context.getString(progress[1]));
 	
-			mAlert.show(context.getFragmentManager(), "no-config-files");
+			mAlert.show(context.getSupportFragmentManager(), "no-config-files");
 		} else {
 			// update progress text field using the single referenced string
 			textView.setText(progress[0]);

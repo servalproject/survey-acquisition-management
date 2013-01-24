@@ -44,9 +44,9 @@ import org.magdaaproject.sam.SurveyFormsActivity;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.Button;
-import android.widget.SimpleCursorAdapter;
 
 /**
  * manage the mapping between data and view for the list of event survey forms

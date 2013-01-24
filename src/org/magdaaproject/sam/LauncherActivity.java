@@ -50,15 +50,16 @@ import org.magdaaproject.utils.DeviceUtils;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.OpenDataKitUtils;
 import org.magdaaproject.utils.serval.ServalUtils;
+import org.servalproject.sam.R;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,7 +72,7 @@ import android.widget.TextView;
 /**
  * the main activity for the application
  */
-public class LauncherActivity extends Activity implements OnClickListener {
+public class LauncherActivity extends FragmentActivity implements OnClickListener {
 	
 	/*
 	 * public constants
@@ -122,7 +123,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 					getString(R.string.launcher_ui_dialog_no_external_storage_title),
 					getString(R.string.launcher_ui_dialog_no_external_storage_message));
 
-			mAlert.show(getFragmentManager(), "no-external-storage");
+			mAlert.show(getSupportFragmentManager(), "no-external-storage");
 			
 		}
 		
@@ -138,7 +139,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 						getString(R.string.launcher_ui_dialog_no_serval_mesh_title),
 						getString(R.string.launcher_ui_dialog_no_serval_mesh_message));
 				
-				mAlert.show(getFragmentManager(), "no-serval");
+				mAlert.show(getSupportFragmentManager(), "no-serval");
 			}
 		}
 		
@@ -150,7 +151,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 					getString(R.string.launcher_ui_dialog_no_odk_collect_title),
 					getString(R.string.launcher_ui_dialog_no_odk_collect_message));
 
-			mAlert.show(getFragmentManager(), "no-odk-collect");
+			mAlert.show(getSupportFragmentManager(), "no-odk-collect");
 		}
 		
 		// check to see if we should continue
