@@ -69,7 +69,7 @@
 	
 	    <Preference android:title="@string/preferences_view_config_title" >
 		    <intent
-		        android:targetPackage="org.magdaaproject.sam"
+		        android:targetPackage="org.servalproject.sam"
 		        android:targetClass="org.magdaaproject.sam.ConfigManagerActivity" />
 		</Preference>
 	    
