@@ -59,6 +59,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -283,8 +284,12 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 	 */
 	public void emptyOdkDatabases() {
 		
-		contentResolver.delete(FormsProviderAPI.FormsColumns.CONTENT_URI, null, null);
-		contentResolver.delete(InstanceProviderAPI.InstanceColumns.CONTENT_URI, null, null);
+		try {
+			contentResolver.delete(FormsProviderAPI.FormsColumns.CONTENT_URI, null, null);
+			contentResolver.delete(InstanceProviderAPI.InstanceColumns.CONTENT_URI, null, null);
+		} catch (SQLiteException e) {
+			Log.w(sLogTag, "error thrown while trying to empty ODK database", e);
+		}
 	}
 	
 	/**
