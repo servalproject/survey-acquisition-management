@@ -220,12 +220,11 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 
 	/**
 	 * convenience method to delete any existing config from the database
-	 * @return true on success, false on failure
+	 * synonym for cleanDatabase() method
 	 */
 	public void deleteExistingConfig() throws SQLException {
 
-		contentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
-		contentResolver.delete(FormsContract.CONTENT_URI, null, null);
+		cleanDatabase();
 
 	}
 	
@@ -296,6 +295,10 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 	 * clean the MaGDAA SAM database
 	 */
 	public void cleanDatabase() {
+		
+		//debug code
+		Log.d(sLogTag, "cleaning database");
+		
 		contentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
 		contentResolver.delete(FormsContract.CONTENT_URI, null, null);
 		contentResolver.delete(CategoriesContract.CONTENT_URI, null, null);
