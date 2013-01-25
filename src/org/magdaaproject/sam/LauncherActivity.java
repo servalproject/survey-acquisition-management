@@ -289,6 +289,18 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	
 	/*
 	 * (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onResume()
+	 */
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		// populate the UI
+		populateUserInterface();
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
 	@Override
