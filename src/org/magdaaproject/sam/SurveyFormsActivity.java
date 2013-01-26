@@ -64,7 +64,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,7 +88,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 	/*
 	 * private class level variables
 	 */
-	private GridView gridView;
+	private ListView listView;
 	private Cursor   cursor;
 	private HashMap<String, Integer> odkData;
 	private boolean shareViaRhizome;
@@ -135,7 +135,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		}
 		
 		// get a reference to the grid view
-		gridView = (GridView)findViewById(R.id.survey_forms_ui_grid);
+		listView = (ListView)findViewById(R.id.survey_ui_list_surveys);
 		
 		// setup the cursor
 		String[] mProjection = new String[3];
@@ -164,7 +164,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		if(cursor == null || cursor.getCount() == 0) {
 			
 			// hide the grid view, show the label
-			gridView.setVisibility(View.GONE);
+			listView.setVisibility(View.GONE);
 			
 			mTextView = (TextView) findViewById(R.id.survey_forms_ui_lbl_no_forms);
 			mTextView.setVisibility(View.VISIBLE);
@@ -178,17 +178,17 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		mColumns[0] = FormsContract.Table.TITLE;
 		
 		int[] mViews = new int[1];
-		mViews[0] = R.id.grid_view_events_text;
+		mViews[0] = R.id.list_view_surveys_button;
 		
 		SurveyFormsAdapter mAdapter = new SurveyFormsAdapter(
 				this,
-				R.layout.grid_view_events,
+				R.layout.list_view_surveys,
 				cursor,
 				mColumns,
 				mViews,
 				0);
 		
-		gridView.setAdapter(mAdapter);
+		listView.setAdapter(mAdapter);
 		
 		// get the ODK data
 		mProjection = new String[2];

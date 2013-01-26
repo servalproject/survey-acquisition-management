@@ -51,17 +51,14 @@
         android:id="@+id/survey_forms_ui_lbl_header"
         style="@style/ui_elem_header" />
     
-    <!-- grid view -->
-    <GridView
-		 android:id="@+id/survey_forms_ui_grid"
-		 android:layout_width="fill_parent"
-		 android:layout_height="fill_parent"
-		 android:numColumns="3"
-		 android:columnWidth="250dp"
-		 android:stretchMode="spacingWidthUniform"
-		 android:gravity="center"
-		 android:layout_below="@id/survey_forms_ui_lbl_header"
-		 android:verticalSpacing="35dp"/>
+    <!-- list view -->
+    <ListView
+        android:id="@+id/survey_ui_list_surveys"
+        android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/survey_forms_ui_lbl_header"
+		android:layout_margin="@dimen/ui_elem_margin_top" >
+    </ListView>
     
     <!-- buttons -->
     <Button

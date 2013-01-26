@@ -45,6 +45,5 @@
           android:state_pressed="true" />
     <item android:drawable="@drawable/button_blue_focused_pressed"
           android:state_focused="true" />
-    <item android:drawable="@drawable/button_blue_default"
-          android:color="#ffffff" />
+    <item android:drawable="@drawable/button_blue_default" />
 </selector>

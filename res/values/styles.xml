@@ -122,18 +122,12 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
     </style>
     
-     <style name="ui_elem_btn_grid" parent="ui_elem_layout_fill">
-        <item name="android:gravity">center</item>
+    <style name="ui_elem_btn_list_blue" parent="ui_elem_layout_fill">
+        <item name="android:background">@drawable/button_blue</item>
+        <item name="android:textColor">#ffffff</item>
         <item name="android:layout_margin">3sp</item>
         <item name="android:paddingLeft">15sp</item>
         <item name="android:paddingRight">15sp</item>
-        <item name="android:width">250dp</item>
-	    <item name="android:height">85dp</item>
-    </style>
-    
-    <style name="ui_elem_btn_grid_blue" parent="ui_elem_btn_grid">
-        <item name="android:background">@drawable/button_blue</item>
-        <item name="android:textColor">#ffffff</item>
     </style>
     
     <style name="ui_elem_btn_list_gold" parent="ui_elem_layout_fill">
