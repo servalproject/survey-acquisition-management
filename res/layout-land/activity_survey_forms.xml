@@ -57,7 +57,8 @@
         android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_below="@id/survey_forms_ui_lbl_header"
-		android:layout_margin="@dimen/ui_elem_margin_top" >
+		android:layout_margin="@dimen/ui_elem_margin_top"
+		android:layout_above="@id/general_ui_btn_back" >
     </ListView>
     
     <!-- buttons -->

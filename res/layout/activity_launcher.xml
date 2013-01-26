@@ -58,7 +58,8 @@
         android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_below="@id/launcher_ui_lbl_header"
-		android:layout_margin="@dimen/ui_elem_margin_top" >
+		android:layout_margin="@dimen/ui_elem_margin_top"
+		android:layout_above="@+id/launcher_ui_btn_contact">
     </ListView>
     
     <!-- device id -->
