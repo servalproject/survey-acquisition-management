@@ -61,7 +61,7 @@ public class ItemsContentProvider extends ContentProvider {
 	/**
 	 * authority string for the content provider
 	 */
-	public static final String AUTHORITY = "org.magdaaproject.sam.provider.items";
+	public static final String AUTHORITY = "org.servalproject.sam.provider.items";
 	
 	/*
 	 * private class level constants

@@ -93,7 +93,7 @@
             android:enabled="true" 
             android:name="org.magdaaproject.sam.content.ItemsContentProvider" 
             android:exported="false" 
-            android:authorities="org.magdaaproject.sam.provider.items">
+            android:authorities="org.servalproject.sam.provider.items">
         </provider>
     </application>
 
