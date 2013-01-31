@@ -42,7 +42,6 @@ package org.magdaaproject.sam.sharing;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.zip.Deflater;
 
 import org.servalproject.sam.R;
 import org.magdaaproject.utils.FileUtils;
@@ -166,20 +165,22 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		// check to make sure the rhizome data directory exists
 		String mTempPath = Environment.getExternalStorageDirectory().getPath();
 		mTempPath += context.getString(R.string.system_file_path_rhizome_data);
-		
+
 		if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
+
 			Log.e(sLogTag, "expected rhizome directory is missing");
 			return null;
 		}
-		
+
 		// create a zip file of the instance directory
 		mTempPath += mInstanceFile.getName() + context.getString(R.string.system_file_instance_extension);
 		
 		try {
+			// create zip file, including parent directory
 			ZipUtil.pack(
 					new File(mInstanceFile.getParent()),
 					new File(mTempPath),
-					Deflater.BEST_COMPRESSION);
+					true);
 		} catch (ZipException e) {
 			Log.e(sLogTag, "unable to create the zip file", e);
 			return null;
