@@ -56,14 +56,15 @@ public class FormsContract {
 	public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd." + ItemsContentProvider.AUTHORITY + "." + CONTENT_URI_PATH;
 	
 	/**
-	 * constant representing the value of the category field for an event related form
+	 * used to indicate no in a column such as FOR_DISPLAY or USES_LOCATION
 	 */
-	public static final String CATEGORY_EVENT = "e";
+	public static final int NO = 0;
 	
 	/**
-	 * constant representing the value of the category field for an audience related form
+	 * used to indicate yes in a column such as FOR_DISPLAY or USES_LOCATION
 	 */
-	public static final String CATEGORY_AUDIENCE = "a";
+	public static final int YES = 1;
+
 
 	/**
 	 * table definition
@@ -101,5 +102,15 @@ public class FormsContract {
 		 * xforms file name column
 		 */
 		public static final String XFORMS_FILE = "xforms_file";
+		
+		/**
+		 * indicates if the form should be displayed
+		 */
+		public static final String FOR_DISPLAY = "for_display";
+		
+		/**
+		 * indicates if the form uses location services
+		 */
+		public static final String USES_LOCATION = "uses_location";
 	}
 }

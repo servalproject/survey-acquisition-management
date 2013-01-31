@@ -82,7 +82,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			FormsContract.Table.FORM_ID + " INTEGER, " +
 			FormsContract.Table.CATEGORY_ID + " INTEGER, " +
 			FormsContract.Table.TITLE + " TEXT, " +
-			FormsContract.Table.XFORMS_FILE + " TEXT)";
+			FormsContract.Table.XFORMS_FILE + " TEXT, " +
+			FormsContract.Table.FOR_DISPLAY + " INTEGER DEFAULT " + FormsContract.YES + ", " +
+			FormsContract.Table.USES_LOCATION + " INTEGER DEFAULT " + FormsContract.NO + ")";
 	
 	private static final String sFormCategoriesCreate = "CREATE TABLE " +
 			CategoriesContract.Table.TABLE_NAME + " (" + 
