@@ -94,9 +94,15 @@
     <string name="config_manager_ui_lbl_progress_06">Deleting existing ODK data&#8230;</string>
     <string name="config_manager_ui_lbl_progress_07">Installing new forms existing ODK data&#8230;</string>
     
-    <string name="config_manager_ui_dialog_confirm_title">Import New Configuration?</string>
-    <string name="config_manager_ui_dialog_confirm_message">Importing a new configuration will delete any existing configuration data, as well as data held by ODK collect.\nAre you sure you wish to continue?</string>
-        
+    <string name="config_manager_ui_dialog_confirm_load_title">Import New Configuration?</string>
+    <string name="config_manager_ui_dialog_confirm_load_message">Importing a new configuration will delete any existing configuration data, as well as data held by ODK collect.\nAre you sure you wish to continue?</string>
+    
+    <string name="config_manager_ui_dialog_confirm_odk_title">Launch ODK?</string>
+    <string name="config_manager_ui_dialog_confirm_odk_message">To complete importing a new configuration the ODK Collect application must be started. To return to %s use the standard Android back button</string>
+
+    <string name="config_manager_ui_dialog_complete_title">Import Complete</string>
+    <string name="config_manager_ui_dialog_complete_message">The import of the new configuration is complete</string>
+    
     <string name="config_manager_ui_dialog_error_title">Config File Error</string>
     <string name="config_manager_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
     <string name="config_manager_ui_dialog_too_many_config_files_message">There are too many config files, please delete all unnecessary files so that only one remains, and try again</string>
@@ -116,7 +122,10 @@
     <string name="survey_forms_ui_lbl_no_forms">No forms are available for this category at this time</string>
     
     <string name="surveys_ui_dialog_missing_form_title">Missing Form Error</string>
-    <string name="surveys_ui_dialog_missing_form_message">The matching event form in ODK Collect cannot be found. Please check the configuration and try again</string>
+    <string name="surveys_ui_dialog_missing_form_message">The matching form in ODK Collect cannot be found. Please check the configuration and try again</string>
+    
+    <string name="surveys_ui_dialog_odk_database_error_title">ODK Database Error</string>
+    <string name="surveys_ui_dialog_odk_database_error_message">Unable to access the ODK database, please confirm ODK is installed and configured before continuing</string>
     
     <string name="surveys_ui_toast_msg_missing_uri">Missing data from ODK, unable to share instance data over Rhizome</string>
         

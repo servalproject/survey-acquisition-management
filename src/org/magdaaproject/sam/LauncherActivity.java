@@ -203,6 +203,14 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 				null, 
 				null);
 		
+		// double check the server
+		if(mCursor == null || mCursor.getCount() == 0) {
+			// send user to config manager screen
+			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
+			startActivityForResult(mIntent, sReturnFromConfigManager);
+			return;
+		}
+		
 		// update the header
 		mCursor.moveToFirst();
 		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);

@@ -49,15 +49,18 @@ import org.magdaaproject.sam.config.FormVerifyTask;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.content.CategoriesContract;
 import org.magdaaproject.sam.content.FormsContract;
+import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.odk.collect.FormsProviderAPI;
 import org.odk.collect.InstanceProviderAPI;
 import org.servalproject.sam.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
@@ -156,8 +159,8 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 		switch(view.getId()) {
 		case R.id.config_manager_ui_btn_load:
 			 DialogFragment newFragment = ConfirmLoadConfig.newInstance(
-					 getString(R.string.config_manager_ui_dialog_confirm_title),
-					 getString(R.string.config_manager_ui_dialog_confirm_message));
+					 getString(R.string.config_manager_ui_dialog_confirm_load_title),
+					 getString(R.string.config_manager_ui_dialog_confirm_load_message));
 		     newFragment.show(getSupportFragmentManager(), "dialog");
 			break;
 		default:
@@ -347,6 +350,52 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 		
 	}
 	
+	/**
+	 * start the ODK form view list activity
+	 */
+	public void launchOdk() {
+		
+		// build an intent to launch the form
+		Intent mIntent = new Intent();
+		mIntent.setAction("android.intent.action.VIEW");
+		mIntent.addCategory("android.intent.category.DEFAULT");
+		mIntent.setComponent(new ComponentName("org.odk.collect.android","org.odk.collect.android.activities.FormChooserList"));
+		
+		// launch the form
+		startActivityForResult(mIntent, 0);
+		
+	}
+	
+	/**
+	 * confirm launching ODK to finalise installation
+	 */
+	public void finaliseInstall() {
+		
+		DialogFragment newFragment = LaunchOdkDialog.newInstance(
+				 getString(R.string.config_manager_ui_dialog_confirm_odk_title),
+				 String.format(getString(R.string.config_manager_ui_dialog_confirm_odk_message), getString(R.string.system_application_name)));
+	     newFragment.show(getSupportFragmentManager(), "dialog");
+	}
+	
+	/*
+	 * get the result code back from the ODK Collect activity
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		
+		BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+				getString(R.string.config_manager_ui_dialog_complete_title),
+				getString(R.string.config_manager_ui_dialog_complete_message));
+
+		mAlert.show(getSupportFragmentManager(), "dialog");
+	}
+	
+	/*
+	 * TODO remove this technical debt by creating a reusable class for these types of dialogs
+	 */
+	
 	/*
 	 * dialog to confirm the user wishes to continue loading a configuration
 	 */
@@ -409,5 +458,64 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
     		});
     		return mBuilder.create();
         }
+    }
+	
+	/*
+	 * dialog to confirm the user wishes to continue loading a configuration
+	 */
+	public static class LaunchOdkDialog extends DialogFragment {
+
+		/*
+		 * 
+		 */
+        public static LaunchOdkDialog newInstance(String title, String message) {
+            
+        	if(TextUtils.isEmpty(title) == true) {
+    			throw new IllegalArgumentException("the title parameter is required");
+    		}
+    		
+    		if(TextUtils.isEmpty(message) == true) {
+    			throw new IllegalArgumentException("the message parameter is required");
+    		}
+    		
+    		LaunchOdkDialog mObject = new LaunchOdkDialog();
+    		
+    		// build a new bundle of arguments
+    		Bundle mBundle = new Bundle();
+    		mBundle.putString("title", title);
+    		mBundle.putString("message", message);
+    		
+    		mObject.setArguments(mBundle);
+    		
+    		return mObject;
+        }
+        
+        /*
+    	 * (non-Javadoc)
+    	 * @see android.app.DialogFragment#onCreateDialog(android.os.Bundle)
+    	 */
+    	@Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		
+    		if(savedInstanceState == null) {
+    			savedInstanceState = getArguments();
+    		}
+    		
+    		String mMessage = savedInstanceState.getString("message");
+    		String mTitle = savedInstanceState.getString("title");
+    		
+    		// create and return the dialog
+    		AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+    		
+    		mBuilder.setMessage(mMessage)
+    		.setCancelable(false)
+    		.setTitle(mTitle)
+    		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				((ConfigManagerActivity)getActivity()).launchOdk();
+    			}
+    		});
+    		return mBuilder.create();
+    	}
     }
 }

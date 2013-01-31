@@ -35,7 +35,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -120,7 +122,7 @@ public class FormVerifyTask extends AsyncTask<Void, Integer, Integer> {
 		
 		// get the path to the ODK directory
 		String mOdkPath = Environment.getExternalStorageDirectory().getPath();
-		mOdkPath += context.getString(R.string.system_file_path_odk);
+		mOdkPath += context.getString(R.string.system_file_path_odk_forms);
 		
 		Integer mKey;
 		String  mFileName;
@@ -133,6 +135,9 @@ public class FormVerifyTask extends AsyncTask<Void, Integer, Integer> {
 			
 			// get the file name 
 			mFileName = mOdkPath + formList.get(mKey);
+			
+			// debug
+			Log.i(sLogTag, "Looking for file: " + mFileName);
 			
 			if(checkFileExists(mKey, mFileName, mContentResolver) == false) {
 				publishProgress(
@@ -236,13 +241,23 @@ public class FormVerifyTask extends AsyncTask<Void, Integer, Integer> {
 		// determine what option to take
 		switch(result) {
 		case sFailure:
-			progressBar.setVisibility(View.GONE);
+			progressBar.setVisibility(View.INVISIBLE);
 			textView.setText(R.string.config_manager_ui_lbl_verify_error);
+			
+			// place the text view, below the table
+			RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(
+					ViewGroup.LayoutParams.WRAP_CONTENT,
+			        ViewGroup.LayoutParams.WRAP_CONTENT);
+
+			mLayoutParams.addRule(RelativeLayout.BELOW, R.id.config_manager_ui_table);
+
+			textView.setLayoutParams(mLayoutParams);
 			
 			break;
 		case sSuccess:
 			progressBar.setVisibility(View.GONE);
 			textView.setVisibility(View.GONE);
+			context.finaliseInstall();
 			break;
 		}
     }

@@ -57,6 +57,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -205,29 +206,66 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		mProjection[0] = FormsProviderAPI.FormsColumns._ID;
 		mProjection[1] = FormsProviderAPI.FormsColumns.FORM_FILE_PATH;
 		
-		Cursor odkCursor = mContentResolver.query(
-				FormsProviderAPI.FormsColumns.CONTENT_URI,
-				mProjection,
-				null,
-				null,
-				null
-				);
+		Cursor mOdkCursor = null;
+		
+		try {
+			mOdkCursor = mContentResolver.query(
+					FormsProviderAPI.FormsColumns.CONTENT_URI,
+					mProjection,
+					null,
+					null,
+					null
+					);
+		} catch (android.database.sqlite.SQLiteDiskIOException e) {
+			
+			Log.e(sLogTag, "unable to access the ODK database", e);
+			
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.surveys_ui_dialog_odk_database_error_title),
+					getString(R.string.surveys_ui_dialog_odk_database_error_message));
+
+			mAlert.show(getSupportFragmentManager(), "odk-database-error");
+			return;
+			
+		} catch (SQLException e) {
+			Log.e(sLogTag, "unable to access the ODK database", e);
+			
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.surveys_ui_dialog_odk_database_error_title),
+					getString(R.string.surveys_ui_dialog_odk_database_error_message));
+
+			mAlert.show(getSupportFragmentManager(), "odk-database-error");
+			return;
+		}
+		
+		// check to make sure data was found
+		if(mOdkCursor == null || mOdkCursor.getCount() == 0) {
+			
+			Log.e(sLogTag, "no data from the ODK database");
+			
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.surveys_ui_dialog_odk_database_error_title),
+					getString(R.string.surveys_ui_dialog_odk_database_error_message));
+
+			mAlert.show(getSupportFragmentManager(), "odk-database-error");
+			return;
+		}
 		
 		odkData = new HashMap<String, Integer>();
 		
 		mTokens = null;
 		
-		while(odkCursor.moveToNext()) {
+		while(mOdkCursor.moveToNext()) {
 			
-			mTokens = odkCursor.getString(1).split("/");
+			mTokens = mOdkCursor.getString(1).split("/");
 			
 			odkData.put(
 					mTokens[mTokens.length -1], 
-					odkCursor.getInt(0)
+					mOdkCursor.getInt(0)
 				);
 		}
 		
-		odkCursor.close();
+		mOdkCursor.close();
 	}
 
 	/*
@@ -239,6 +277,15 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		
 		// get the details of the form that we want to load
 		cursor.moveToPosition((Integer) view.getTag());
+		
+		if(odkData == null) {
+			BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+					getString(R.string.surveys_ui_dialog_missing_form_title),
+					getString(R.string.surveys_ui_dialog_missing_form_message));
+	
+			mAlert.show(getSupportFragmentManager(), "missing-odk-form");
+			return;
+		}
 		
 		// check to see if a matching form can be found
 		Integer mFormId = odkData.get(
