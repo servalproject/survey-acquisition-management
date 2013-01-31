@@ -75,12 +75,6 @@ import android.widget.Toast;
 public class SurveyFormsActivity extends FragmentActivity implements OnClickListener {
 	
 	/*
-	 * event surveys and audience surveys are managed as separate activities
-	 * due to the need in the future to undertake different tasks depending on
-	 * the type of survey, and to make development faster in the short / medium term
-	 */
-	
-	/*
 	 * private class level constants
 	 */
 	//private static final boolean sVerboseLog = true;
