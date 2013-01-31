@@ -49,7 +49,6 @@ import org.magdaaproject.sam.config.FormVerifyTask;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.content.CategoriesContract;
 import org.magdaaproject.sam.content.FormsContract;
-import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.odk.collect.FormsProviderAPI;
 import org.odk.collect.InstanceProviderAPI;
 import org.servalproject.sam.R;
@@ -385,11 +384,12 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		
-		BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
-				getString(R.string.config_manager_ui_dialog_complete_title),
-				getString(R.string.config_manager_ui_dialog_complete_message));
-
-		mAlert.show(getSupportFragmentManager(), "dialog");
+		// support library does not allow showing a dialog here
+//		BasicAlertDialogFragment mAlert = BasicAlertDialogFragment.newInstance(
+//				getString(R.string.config_manager_ui_dialog_complete_title),
+//				getString(R.string.config_manager_ui_dialog_complete_message));
+//
+//		mAlert.show(getSupportFragmentManager(), "dialog");
 	}
 	
 	/*
