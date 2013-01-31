@@ -58,7 +58,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -217,16 +216,6 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 		cursor.close();
 		
 	}
-
-	/**
-	 * convenience method to delete any existing config from the database
-	 * synonym for cleanDatabase() method
-	 */
-	public void deleteExistingConfig() throws SQLException {
-
-		cleanDatabase();
-
-	}
 	
 	/**
 	 * method used to import new config values 
@@ -295,9 +284,6 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 	 * clean the MaGDAA SAM database
 	 */
 	public void cleanDatabase() {
-		
-		//debug code
-		Log.d(sLogTag, "cleaning database");
 		
 		contentResolver.delete(ConfigsContract.CONTENT_URI, null, null);
 		contentResolver.delete(FormsContract.CONTENT_URI, null, null);

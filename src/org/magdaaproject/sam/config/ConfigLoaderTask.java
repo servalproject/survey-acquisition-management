@@ -188,7 +188,7 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		publishProgress(R.string.config_manager_ui_lbl_progress_03);
 		
 		try {
-			context.deleteExistingConfig();
+			context.cleanDatabase();
 		} catch (SQLException e){ 
 			publishProgress(
 					R.string.config_manager_ui_dialog_error_title,
