@@ -84,6 +84,8 @@
     <string name="config_manager_ui_lbl_progress">Loading Configuration&#8230;</string>
     <string name="config_manager_ui_lbl_progress_error">No configuration loaded, due to prior errors.</string>
     
+    <string name="config_manager_ui_lbl_verify_error">Some forms failed verification, unexpected behaviour may occur, check configuration and try again.</string>
+    
     <string name="config_manager_ui_lbl_progress_01">Looking for new configuration file&#8230;</string>
     <string name="config_manager_ui_lbl_progress_02">Loading configuration index&#8230;</string>
     <string name="config_manager_ui_lbl_progress_03">Deleting configuration data&#8230;</string>
@@ -105,6 +107,10 @@
     <string name="config_manager_ui_dialog_unable_extract_forms_message">Unable to extract the forms, please check the config file and try again</string>
     <string name="config_manager_ui_dialog_unable_delete_odk_message">Unable to delete the existing ODK data, please check the external storage and try again</string>
     <string name="config_manager_ui_dialog_unable_install_new_forms_message">Unable to gather list of new forms, please check the external storage and the config file and try again</string>
+    
+    <string name="config_manager_ui_dialog_verify_error_title">Form Verification Error</string>
+    <string name="config_manager_ui_dialog_no_files_message">No forms found in the database to verify</string>
+    <string name="config_manager_ui_dialog_verify_missing_file_message">A form file could not be found in the ODK data directory for validation, check the configuration file and try again</string>
     
     <!-- general survey strings -->
     <string name="survey_forms_ui_lbl_no_forms">No forms are available for this category at this time</string>
