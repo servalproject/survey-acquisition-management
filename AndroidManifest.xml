@@ -97,7 +97,7 @@
         </provider>
         <service 
             android:enabled="true" 
-            android:name=".LocationService" 
+            android:name="org.magdaaproject.sam.LocationService" 
             android:exported="false">
         </service>
     </application>

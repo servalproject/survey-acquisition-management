@@ -360,22 +360,14 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 	
 	private void startLocationListener() {
 		
-		Log.d(sLogTag, "starting location listener - 1");
-		
 		Intent mIntent = new Intent(this, LocationService.class);
 		startService(mIntent);
-		
-		Log.d(sLogTag, "starting location listener - 2");
 	}
 	
 	private void stopLocationListener() {
 		
-		Log.d(sLogTag, "stoping location listener - 3");
-		
 		Intent mIntent = new Intent(this, LocationService.class);
 		stopService(mIntent);
-		
-		Log.d(sLogTag, "stoping location listener - 4");
 	}
 
 	/*
