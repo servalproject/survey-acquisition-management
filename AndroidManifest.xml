@@ -59,7 +59,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- write files on external storage -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/> <!-- derive the device id -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- derive the device id -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- geocode sensor readings -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- preemptively listen for location to speed up survey completion -->
     
     <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/> <!-- add files to the Rhizome store for sharing -->
 
