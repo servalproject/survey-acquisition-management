@@ -278,7 +278,9 @@ public class ItemsContentProvider extends ContentProvider {
 		}
 
 		//notify any component interested about this change
-		getContext().getContentResolver().notifyChange(uri, null);
+		if(mCount > 0) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
 		return mCount;
 	}
 	
@@ -316,6 +318,57 @@ public class ItemsContentProvider extends ContentProvider {
 	 */
 	@Override
 	public synchronized int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-		throw new UnsupportedOperationException("Method not implemented");
+		
+		// get a connection to the database
+		database = databaseHelper.getWritableDatabase();
+		int mCount;
+
+		// determine what type of delete is required
+		switch(sUriMatcher.match(uri)) {
+		case sConfigsListUri:
+			mCount = database.update(ConfigsContract.Table.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case sConfigsItemUri:
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = ConfigsContract.Table._ID + " = ?";
+				selectionArgs = new String[0];
+				selectionArgs[0] = uri.getLastPathSegment();
+			}
+			mCount = database.update(ConfigsContract.Table.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case sFormsListUri:
+			mCount = database.update(FormsContract.Table.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case sFormsItemUri:
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = FormsContract.Table._ID + " = ?";
+				selectionArgs = new String[0];
+				selectionArgs[0] = uri.getLastPathSegment();
+			}
+			mCount = database.update(FormsContract.Table.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case sCategoriesListUri:
+			mCount = database.update(CategoriesContract.Table.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case sCategoriesItemUri:
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = CategoriesContract.Table._ID + " = ?";
+				selectionArgs = new String[0];
+				selectionArgs[0] = uri.getLastPathSegment();
+			}
+			mCount = database.update(CategoriesContract.Table.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		default:
+			// unknown uri found
+			Log.e(sTag, "unknown URI detected on delete: " + uri.toString());
+			throw new IllegalArgumentException("unknwon URI detected");
+		}
+
+		//notify any component interested about this change
+		if(mCount > 0) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
+		return mCount;
+		
 	}
 }
