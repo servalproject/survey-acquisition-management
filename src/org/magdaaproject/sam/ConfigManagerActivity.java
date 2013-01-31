@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import org.magdaaproject.sam.config.BundleConfig;
 import org.magdaaproject.sam.config.ConfigException;
 import org.magdaaproject.sam.config.ConfigLoaderTask;
+import org.magdaaproject.sam.config.FormVerifyTask;
 import org.magdaaproject.sam.content.ConfigsContract;
 import org.magdaaproject.sam.content.CategoriesContract;
 import org.magdaaproject.sam.content.FormsContract;
@@ -308,6 +309,22 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 		
 		TableLayout mLayout = (TableLayout) findViewById(R.id.config_manager_ui_table);
 		mLayout.setVisibility(View.VISIBLE);
+	}
+	
+	/**
+	 * undertake the validate forms task once the config has been loaded
+	 */
+	public void verifyForms() {
+		
+		// validate the installed forms
+		ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.config_manager_ui_progress_bar);
+		mProgressBar.setVisibility(View.VISIBLE);
+		
+		TextView mTextView = (TextView) findViewById(R.id.config_manager_ui_lbl_progress);
+		mTextView.setVisibility(View.VISIBLE);
+		
+		new FormVerifyTask(mProgressBar, mTextView, this).execute();
+		
 	}
 	
 	/**
