@@ -95,6 +95,11 @@
             android:exported="false" 
             android:authorities="org.servalproject.sam.provider.items">
         </provider>
+        <service 
+            android:enabled="true" 
+            android:name=".LocationService" 
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
