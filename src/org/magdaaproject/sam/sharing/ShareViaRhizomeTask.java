@@ -163,9 +163,16 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			return null;
 		}
 		
-		// create a zip file of the instance directory
+		// check to make sure the rhizome data directory exists
 		String mTempPath = Environment.getExternalStorageDirectory().getPath();
 		mTempPath += context.getString(R.string.system_file_path_rhizome_data);
+		
+		if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
+			Log.e(sLogTag, "expected rhizome directory is missing");
+			return null;
+		}
+		
+		// create a zip file of the instance directory
 		mTempPath += mInstanceFile.getName() + context.getString(R.string.system_file_instance_extension);
 		
 		try {
