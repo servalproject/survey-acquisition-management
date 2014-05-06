@@ -19,15 +19,13 @@ LOCAL_SRC_FILES := \
 	smac/visualise.c
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/smac/ $(TARGET_GLOBAL_CFLAGS) $(PRIVATE_ARM_CFLAGS)
-LOCAL_MODULE := smac
-LOCAL_LDFLAGS := -Wl,--no-gc-sections
-include $(BUILD_EXECUTABLE)
-	
+LOCAL_MODULE := libsmac
+include $(BUILD_SHARED_LIBRARY)
+
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
 	smac/extract_instance.c
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/smac/ $(TARGET_GLOBAL_CFLAGS) $(PRIVATE_ARM_CFLAGS)
-LOCAL_MODULE := extract_instance
-LOCAL_LDFLAGS := -Wl,--no-gc-sections
-include $(BUILD_EXECUTABLE)
+LOCAL_MODULE := libextractinstance
+include $(BUILD_SHARED_LIBRARY)
