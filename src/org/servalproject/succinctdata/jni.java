@@ -14,6 +14,10 @@ package org.servalproject.succinctdata;
 
 public class jni {
 
-	public static native byte[] xml2succinctdata(String xmlforminstance, String recipename, String succinctpath);	
+	static {
+		System.loadLibrary("smac");
+	}
+	
+	public static native byte[] xml2succinct(String xmlforminstance, String recipename, String succinctpath);	
 	
 }

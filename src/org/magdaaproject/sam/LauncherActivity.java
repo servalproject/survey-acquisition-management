@@ -69,6 +69,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.servalproject.succinctdata.jni;
+
 /**
  * the main activity for the application
  */
@@ -107,6 +109,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_device_id);
 		mTextView.setText(String.format(getString(R.string.launcher_ui_lbl_device_id), DeviceUtils.getDeviceId(getApplicationContext())));
 		mTextView = null;
+		
+		byte [] res= org.servalproject.succinctdata.jni.xml2succinct("<tag>stuff</tag>", "fish", "/foo/bar");
 		
 		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
