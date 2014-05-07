@@ -42,6 +42,7 @@ package org.magdaaproject.sam.sharing;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.servalproject.sam.R;
 import org.magdaaproject.utils.FileUtils;
@@ -113,6 +114,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		
 		String mInstancePath = null;
 		
+		// TODO: Figure out why the looping is here, since it just adds ~20sec delay from completion of
+		// form to when it is processed, seemingly for no useful reason.
 		while(mHaveInstance == false && mLoopCount <= sMaxLoops) {
 			
 			mCursor = mContentResolver.query(
@@ -129,7 +132,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				
 				// status is "complete" ODK has finished with the instance
 				if(mCursor.getString(0).equals(InstanceProviderAPI.STATUS_COMPLETE) == true) {
-					mInstancePath = mCursor.getString(1);
+					mInstancePath = mCursor.getString(1);					
 				}
 				
 			}
@@ -160,6 +163,27 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		if(FileUtils.isFileReadable(mInstancePath) == false) {
 			Log.w(sLogTag, "instance file is not accessible '" + mInstancePath + "'");
 			return null;
+		}
+		
+		// Succinct Data compression and spooling
+		// Read file and generate succinct data file for dispatch by inReach, SMS or other similar transport.
+		try {
+			// Get XML of form instance
+			String xmldata = new Scanner(new File(mInstancePath)).useDelimiter("\\Z").next();
+			// Convert to succinct data
+			byte [] res= org.servalproject.succinctdata.jni.xml2succinct(
+					xmldata, 
+					"nz_redcross_1a_people",
+					Environment.getExternalStorageDirectory().getPath()+
+					context.getString(R.string.system_file_path_succinct_specification_files_path));
+			if (res.length<1) {
+				// TODO Error producing succinct data -- report
+			}
+			// TODO Got succinct data, so write it to a spool somewhere
+			// (presumably in external:/servalproject/sams/sdspool or somewhere similar)
+			// TODO Now alert someone
+		} catch (IOException e) {
+			// TODO Error producing succinct data -- report
 		}
 		
 		// check to make sure the rhizome data directory exists

@@ -54,6 +54,7 @@ import org.servalproject.sam.R;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -106,12 +107,11 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		setContentView(R.layout.activity_launcher);
 		
 		// populate the device id field
+		
 		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_device_id);
 		mTextView.setText(String.format(getString(R.string.launcher_ui_lbl_device_id), DeviceUtils.getDeviceId(getApplicationContext())));
 		mTextView = null;
-		
-		byte [] res= org.servalproject.succinctdata.jni.xml2succinct("<tag>stuff</tag>", "fish", "/foo/bar");
-		
+				
 		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
 		mButton.setOnClickListener(this);
