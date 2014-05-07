@@ -154,7 +154,7 @@
     <string name="system_file_path_temp">/servalproject/sam/temp/</string>
     <string name="system_file_path_configs">/servalproject/sam/configs/</string>
     <string name="system_file_path_icons">/servalproject/sam/icons/</string>
-    <string name="system_file_config_extension">config.sam.serval</string>
+    <string name="system_file_config_extension">succinct.config</string>
     <string name="system_file_instance_extension">.instance.sam.serval</string>
     
     <string name="system_file_path_odk">/odk/</string>
