@@ -371,9 +371,9 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 					// delete the forms and instances directories
 					succinctPath = Environment.getExternalStorageDirectory().getPath();
 					succinctPath += context.getString(R.string.system_file_path_succinct_specification_files_path);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					
-					Log.e(sLogTag, "IOException occurred building succinctPath", e);
+					Log.e(sLogTag, "Exception occurred building succinctPath", e);
 					
 					publishProgress(
 							R.string.config_manager_ui_dialog_error_title,
