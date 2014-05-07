@@ -113,6 +113,7 @@
     <string name="config_manager_ui_dialog_unable_extract_forms_message">Unable to extract the forms, please check the config file and try again</string>
     <string name="config_manager_ui_dialog_unable_delete_odk_message">Unable to delete the existing ODK data, please check the external storage and try again</string>
     <string name="config_manager_ui_dialog_unable_install_new_forms_message">Unable to gather list of new forms, please check the external storage and the config file and try again</string>
+    <string name="config_manager_ui_dialog_unable_build_succinct_path">Unable to build succinctPath</string>
     
     <string name="config_manager_ui_dialog_verify_error_title">Form Verification Error</string>
     <string name="config_manager_ui_dialog_no_files_message">No forms found in the database to verify</string>
@@ -159,6 +160,8 @@
     <string name="system_file_path_odk">/odk/</string>
     <string name="system_file_path_odk_forms">/odk/forms/</string>
     <string name="system_file_path_odk_instances">/odk/instances/</string>
+    
+    <string name="system_file_path_succinct_specification_files_path">/succinct_recipes/</string>
     
     <!-- system contact strings -->
     <string name="system_contact_email">admin@servalproject.org</string>

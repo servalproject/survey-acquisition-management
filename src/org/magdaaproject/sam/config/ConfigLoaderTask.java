@@ -362,6 +362,41 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 		// extract the forms into the ODK directory
 		for(String mZipFile : mZipFileList) {
 			
+			// TODO extract the succinct data recipes file and stats.dat
+			if(mZipFile.endsWith("succinct.zip") == true) {
+				String succinctPath;
+				
+				try {
+					
+					// delete the forms and instances directories
+					succinctPath = Environment.getExternalStorageDirectory().getPath();
+					succinctPath += context.getString(R.string.system_file_path_succinct_specification_files_path);
+				} catch (IOException e) {
+					
+					Log.e(sLogTag, "IOException occurred building succinctPath", e);
+					
+					publishProgress(
+							R.string.config_manager_ui_dialog_error_title,
+							R.string.config_manager_ui_dialog_unable_build_succinct_path
+							);
+					return Integer.valueOf(sFailure);
+				}
+					
+				try {
+					FileUtils.extractFromZipFile(mZipFile, succinctPath);
+
+				} catch (IOException e) {
+					
+					Log.e(sLogTag, "IOException occurred while extracting succinct data specifications", e);
+					
+					publishProgress(
+							R.string.config_manager_ui_dialog_error_title,
+							R.string.config_manager_ui_dialog_unable_install_new_forms_message
+							);
+					return Integer.valueOf(sFailure);
+				}			
+			}
+							
 			// extract the forms
 			if(mZipFile.endsWith("forms.zip") == true) {
 			
