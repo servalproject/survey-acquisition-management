@@ -16,7 +16,8 @@ LOCAL_SRC_FILES := \
 	smac/recipe.c \
 	smac/smac.c \
 	smac/unicode.c \
-	smac/visualise.c
+	smac/visualise.c \
+	smac/jni.c
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/smac/ $(TARGET_GLOBAL_CFLAGS) $(PRIVATE_ARM_CFLAGS)
 LOCAL_MODULE := libsmac
