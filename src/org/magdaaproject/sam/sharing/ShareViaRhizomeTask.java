@@ -195,9 +195,10 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			String formname = null;
 			while (n!=null && formname == null) {
 				NamedNodeMap nnm = n.getAttributes();
-				Node id = nnm.getNamedItem("id");				
+				Node id = nnm.getNamedItem("version");				
 				if (id != null) 					
-					formname = n.getNodeName();
+					// Canonical form name includes version 
+					formname = n.getNodeName() + "." + id.getNodeValue();
 				n = d.getNextSibling();
 			}
 			
