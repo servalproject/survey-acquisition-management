@@ -42,12 +42,22 @@ package org.magdaaproject.sam.sharing;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Scanner;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.servalproject.sam.R;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.serval.RhizomeUtils;
 import org.odk.collect.InstanceProviderAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.zeroturnaround.zip.ZipException;
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -171,19 +181,42 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			// Get XML of form instance
 			String xmldata = new Scanner(new File(mInstancePath)).useDelimiter("\\Z").next();
 			// Convert to succinct data
+			DocumentBuilderFactory factory;
+			factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			StringReader sr = new StringReader(xmldata);
+			InputSource is = new InputSource(sr);
+			Document d = builder.parse(is);
+			Node n = d.getFirstChild();
+			String formname = null;
+			while (n!=null && formname == null) {
+				NamedNodeMap nnm = n.getAttributes();
+				Node id = nnm.getNamedItem("id");				
+				if (id != null) 					
+					formname = n.getNodeName();
+				n = d.getNextSibling();
+			}
+			
 			byte [] res= org.servalproject.succinctdata.jni.xml2succinct(
 					xmldata, 
-					"nz_redcross_1a_people",
+					formname,
 					Environment.getExternalStorageDirectory().getPath()+
 					context.getString(R.string.system_file_path_succinct_specification_files_path));
 			if (res.length<1) {
 				// TODO Error producing succinct data -- report
+			} else {
+				// TODO Got succinct data, so write it to a spool somewhere
+				// (presumably in external:/servalproject/sams/sdspool or somewhere similar)
+				// TODO Now alert someone
 			}
-			// TODO Got succinct data, so write it to a spool somewhere
-			// (presumably in external:/servalproject/sams/sdspool or somewhere similar)
-			// TODO Now alert someone
 		} catch (IOException e) {
 			// TODO Error producing succinct data -- report
+		} catch (SAXException e) {
+			// TODO Couldn't parse XML form instance
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		// check to make sure the rhizome data directory exists
