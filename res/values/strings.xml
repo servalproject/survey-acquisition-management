@@ -162,6 +162,7 @@
     <string name="system_file_path_odk_instances">/odk/instances/</string>
     
     <string name="system_file_path_succinct_specification_files_path">/servalproject/sam/succinct_recipes/</string>
+    <string name="system_file_path_succinct_data_spool_dir">/servalproject/sam/succinct_spool/</string>
     
     <!-- system contact strings -->
     <string name="system_contact_email">admin@servalproject.org</string>

@@ -41,8 +41,12 @@
 package org.magdaaproject.sam.sharing;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -208,6 +212,18 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				// TODO Got succinct data, so write it to a spool somewhere
 				// (presumably in external:/servalproject/sams/sdspool or somewhere similar)
 				// TODO Now alert someone
+				
+				// Name file after hash of contents.				
+				byte[] b = MessageDigest.getInstance("MD5").digest(res);
+				String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
+				File dir = new File(Environment.getExternalStorageDirectory(),
+						context.getString(R.string.system_file_path_succinct_data_spool_dir));
+				File file = new File(dir, filename);
+				// Write succinct data to file
+				dir.mkdirs();
+				FileOutputStream f = new FileOutputStream(file);
+				f.write(res);
+				f.close();
 			}
 		} catch (IOException e) {
 			// TODO Error producing succinct data -- report
@@ -215,6 +231,9 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			// TODO Couldn't parse XML form instance
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
