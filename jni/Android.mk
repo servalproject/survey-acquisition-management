@@ -18,7 +18,8 @@ LOCAL_SRC_FILES := \
 	smac/unicode.c \
 	smac/visualise.c \
 	smac/jni.c \
-	smac/dexml.c
+	smac/dexml.c \
+	smac/md5.c
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/smac/ $(TARGET_GLOBAL_CFLAGS) $(PRIVATE_ARM_CFLAGS)
 LOCAL_LDFLAGS := -llog

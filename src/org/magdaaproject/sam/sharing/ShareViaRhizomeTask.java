@@ -83,10 +83,10 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 	 * private class level constants
 	 */
 	//private static final boolean sVerboseLog = true;
-	private static final String sLogTag = "ShareViarRhizomeTask";
+	private static final String sLogTag = "ShareVia logcRhizomeTask";
 	
-	private static final int sMaxLoops = 10;
-	private static final int sSleepTime = 2000;
+	private static final int sMaxLoops = 5;
+	private static final int sSleepTime = 500;
 	
 	/*
 	 * private class level variables
@@ -193,21 +193,25 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			Document d = builder.parse(is);
 			Node n = d.getFirstChild();
 			String formname = null;
+			String formversion = null;
 			while (n!=null && formname == null) {
 				NamedNodeMap nnm = n.getAttributes();
 				Node id = nnm.getNamedItem("version");				
 				if (id != null) 					
 					// Canonical form name includes version 
-					formname = n.getNodeName() + "." + id.getNodeValue();
+					formname = n.getNodeName();
+					formversion = id.getNodeValue();
 				n = d.getNextSibling();
 			}
 			
 			byte [] res= org.servalproject.succinctdata.jni.xml2succinct(
 					xmldata, 
 					formname,
+					formversion,
 					Environment.getExternalStorageDirectory().getPath()+
 					context.getString(R.string.system_file_path_succinct_specification_files_path));
-			if (res.length<1) {
+			if (res.length<2) {
+				
 				// TODO Error producing succinct data -- report
 			} else {
 				// TODO Got succinct data, so write it to a spool somewhere

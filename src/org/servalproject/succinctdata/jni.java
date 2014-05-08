@@ -18,6 +18,6 @@ public class jni {
 		System.loadLibrary("smac");
 	}
 	
-	public static native byte[] xml2succinct(String xmlforminstance, String recipename, String succinctpath);	
+	public static native byte[] xml2succinct(String xmlforminstance, String formname, String formversion, String succinctpath);	
 	
 }
