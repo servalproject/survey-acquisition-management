@@ -67,6 +67,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -246,7 +247,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 
 				
 				// Now also consider sending by SMS
-				String smsnumber=null;
+				String smsnumber = null;
 				String smstext = null;
 				try {
 					String smsnumberfile = 
@@ -261,13 +262,18 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				
 				try {
 					if (smsnumber!= null) {
-						SmsManager smsManager = SmsManager.getDefault();
-						smsManager.sendTextMessage(smsnumber, null, smstext, null, null);
 						// Now tell the user it has happened
-						handler.post(new Runnable() {
-
+						final String smsnumber_final = smsnumber;
+						final String smstext_final = smstext;
+						handler.post(new Runnable() {							
+								
 					        @Override
 					        public void run() {
+							      Uri uri = Uri.parse("smsto:" + smsnumber_final);
+							        Intent smsSIntent = new Intent(Intent.ACTION_SENDTO, uri);
+							        smsSIntent.putExtra("sms_body", smstext_final);
+							            context.startActivity(smsSIntent);
+							        
 					        	Toast.makeText(context, "Succinct data message sent by SMS", Toast.LENGTH_SHORT).show();
 					        }
 					    });
