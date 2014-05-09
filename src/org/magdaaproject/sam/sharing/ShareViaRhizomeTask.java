@@ -71,7 +71,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * a class used to archive and share an instance file on the Serval Mesh via Rhizome
@@ -229,6 +233,56 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				FileOutputStream f = new FileOutputStream(file);
 				f.write(res);
 				f.close();
+				
+				// Now tell the user it has happened
+				Handler handler = new Handler(Looper.getMainLooper());
+				handler.post(new Runnable() {
+
+				        @Override
+				        public void run() {
+				        	Toast.makeText(context, "Succinct data message spooled", Toast.LENGTH_SHORT).show();
+				        }
+				    });
+
+				
+				// Now also consider sending by SMS
+				String smsnumber=null;
+				String smstext = null;
+				try {
+					String smsnumberfile = 
+						Environment.getExternalStorageDirectory()
+						+ context.getString(R.string.system_file_path_succinct_specification_files_path)
+						+ formname + "." + formversion + ".sms";
+					smsnumber = new Scanner(new File(smsnumberfile)).useDelimiter("\\Z").next();				
+					smstext= android.util.Base64.encodeToString(res, android.util.Base64.NO_WRAP);
+					
+				} catch (Exception e) {
+				}
+				
+				try {
+					if (smsnumber!= null) {
+						SmsManager smsManager = SmsManager.getDefault();
+						smsManager.sendTextMessage(smsnumber, null, smstext, null, null);
+						// Now tell the user it has happened
+						handler.post(new Runnable() {
+
+					        @Override
+					        public void run() {
+					        	Toast.makeText(context, "Succinct data message sent by SMS", Toast.LENGTH_SHORT).show();
+					        }
+					    });
+					}
+				} catch (Exception e) {
+					final String message = e.getLocalizedMessage();
+					handler.post(new Runnable() {
+
+				        @Override
+				        public void run() {
+				        	Toast.makeText(context, "Could not send Succinct data message by SMS:" + message, Toast.LENGTH_LONG).show();
+				        }
+				    });
+
+				}
 			}
 		} catch (IOException e) {
 			// TODO Error producing succinct data -- report
