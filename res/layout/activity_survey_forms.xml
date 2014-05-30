@@ -78,4 +78,20 @@
         android:contentDescription="@string/general_ui_btn_back_desc"
         android:text="@string/general_ui_btn_back_text"/>
 
+    <Button
+        android:id="@+id/getcsv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/general_ui_btn_back"
+        android:layout_alignRight="@+id/survey_ui_list_surveys"
+        android:text="Get CSV" />
+
+    <Button
+        android:id="@+id/getxml"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/getcsv"
+        android:layout_toLeftOf="@+id/getcsv"
+        android:text="Get XML" />
+
 </RelativeLayout>

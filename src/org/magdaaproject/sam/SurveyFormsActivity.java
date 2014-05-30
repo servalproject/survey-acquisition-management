@@ -40,6 +40,7 @@
  */
 package org.magdaaproject.sam;
 
+import java.io.File;
 import java.util.HashMap;
 
 import org.magdaaproject.sam.adapters.SurveyFormsAdapter;
@@ -59,6 +60,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -117,11 +119,62 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		mButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				SurveyFormsActivity.this.finish();
 			}
 			
 		});
+
+		// Setup update & view CSV button
+		Button mCSVButton = (Button) findViewById(R.id.getcsv);
+		mCSVButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String succinctPath = Environment.getExternalStorageDirectory().getPath()+
+				R.string.system_file_path_succinct_specification_files_path;
+				String rxSpoolDir = Environment.getExternalStorageDirectory().getPath()+
+						R.string.system_file_path_succinct_data_rxspool_dir;
+				String outputDir = Environment.getExternalStorageDirectory().getPath()+
+						R.string.system_file_path_succinct_data_output_dir;
+				
+				org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
+				
+				// Now open chooser to pick a file manager to view the directory
+				Intent intent = new Intent();
+				File file = new File(outputDir);
+				Uri uri = Uri.fromFile(file);				
+				intent.setAction(android.content.Intent.ACTION_VIEW);
+		        intent.setData(uri);
+		        intent.setDataAndType(uri, "text/csv");
+		        startActivity(Intent.createChooser(intent, "Open folder"));		        
+			}
+			
+		});
+
+		Button mXMLButton = (Button) findViewById(R.id.getcsv);
+		mXMLButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String succinctPath = Environment.getExternalStorageDirectory().getPath()+
+				R.string.system_file_path_succinct_specification_files_path;
+				String rxSpoolDir = Environment.getExternalStorageDirectory().getPath()+
+						R.string.system_file_path_succinct_data_rxspool_dir;
+				String outputDir = Environment.getExternalStorageDirectory().getPath()+
+						R.string.system_file_path_succinct_data_output_dir;
+				
+				org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
+				
+				// Now open chooser to pick a file manager to view the directory
+				Intent intent = new Intent();
+				File file = new File(outputDir);
+				Uri uri = Uri.fromFile(file);				
+				intent.setAction(android.content.Intent.ACTION_VIEW);
+		        intent.setData(uri);
+		        intent.setDataAndType(uri, "text/xml");
+		        startActivity(Intent.createChooser(intent, "Open folder"));		        
+			}
+			
+		});
+
 		
 		// determine if we're sharing saved instance data
 		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());

@@ -19,5 +19,6 @@ public class jni {
 	}
 	
 	public static native byte[] xml2succinct(String xmlforminstance, String formname, String formversion, String succinctpath);	
+	public static native int updatecsv(String succinctpath,String rxspooldir,String outputdir);	
 	
 }

@@ -227,7 +227,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				byte[] b = MessageDigest.getInstance("MD5").digest(res);
 				String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
 				File dir = new File(Environment.getExternalStorageDirectory(),
-						context.getString(R.string.system_file_path_succinct_data_spool_dir));
+						context.getString(R.string.system_file_path_succinct_data_txspool_dir));
 				File file = new File(dir, filename);
 				// Write succinct data to file
 				dir.mkdirs();
