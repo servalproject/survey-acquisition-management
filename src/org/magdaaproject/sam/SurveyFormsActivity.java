@@ -40,10 +40,13 @@
  */
 package org.magdaaproject.sam;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -61,6 +64,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
@@ -168,12 +172,47 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 						f.close();
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();					
+						// e.printStackTrace();					
 					}
 				}while(cursor.moveToNext());
 				
 				
-				org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
+				Log.d("SAM","About to call smac");
+				// org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
+				
+				try {
+					  AssetManager assetManager = getAssets();
+			          InputStream in = assetManager.open("smac");
+			          File outDir = new File(getFilesDir().getPath()+ "/bin");
+			          outDir.mkdirs();
+			          File outFile = new File(getFilesDir().getPath()+ "/bin", "smac");
+			          FileOutputStream out = new FileOutputStream(outFile);
+			          int len;
+			          byte[] buff = new byte[8192];
+			  		  while ((len = in.read(buff)) > 0) {
+						out.write(buff, 0, len);
+					  }
+			          in.close();
+			          in = null;
+			          out.flush();
+			          out.close();
+			          out = null;
+			          outFile.setExecutable(true);			          
+			        } catch(IOException e) {
+			            Log.e("tag", "Failed to copy asset file smac", e);
+			        }       
+				
+				String cmd = getFilesDir().getPath()+ "/bin/smac"; 
+				Process proc;
+				try {
+					proc = new ProcessBuilder(cmd,"recipe", "decompress", succinctPath,rxSpoolDir,outputDir).redirectErrorStream(true).start();
+					DataInputStream in = new DataInputStream(proc.getInputStream());
+					OutputStream out = proc.getOutputStream();
+					proc.waitFor();
+				} catch (Throwable e) {
+					Log.e("tag", "Failed to run smac", e);
+			}
+				
 				
 				// Now open chooser to pick a file manager to view the directory
 				Intent intent = new Intent();
