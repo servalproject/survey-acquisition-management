@@ -209,15 +209,31 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				n = d.getNextSibling();
 			}
 			
+			// XXX TODO Android does not reliably return the path to the external sdcard storage,
+			// sometimes instead returning the path to the internal sdcard storage.  This breaks
+			// succinct data.
+			String recipeDir = "/sdcard/"+
+			context.getString(R.string.system_file_path_succinct_specification_files_path);
+//			String recipeDir = Environment.getExternalStorageDirectory().getPath()+
+//					context.getString(R.string.system_file_path_succinct_specification_files_path);
 			byte [] res= org.servalproject.succinctdata.jni.xml2succinct(
 					xmldata, 
 					formname,
 					formversion,
-					Environment.getExternalStorageDirectory().getPath()+
-					context.getString(R.string.system_file_path_succinct_specification_files_path));
+					recipeDir);
 			if (res.length<2) {
 				
 				// TODO Error producing succinct data -- report
+				// XXX - we really need an error notification here, to say that succinct data has failed for this!				
+				Handler handler = new Handler(Looper.getMainLooper());
+				handler.post(new Runnable() {
+
+				        @Override
+				        public void run() {
+				        	Toast.makeText(context, "Error making succinct data", Toast.LENGTH_LONG).show();
+				        }
+				    });
+
 			} else {
 				// TODO Got succinct data, so write it to a spool somewhere
 				// (presumably in external:/servalproject/sams/sdspool or somewhere similar)

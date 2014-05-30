@@ -218,10 +218,15 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				Intent intent = new Intent();
 				File file = new File(outputDir);
 				Uri uri = Uri.fromFile(file);				
-				intent.setAction(android.content.Intent.ACTION_VIEW);
-		        intent.setData(uri);
-		        intent.setDataAndType(uri, "text/csv");
-		        startActivity(Intent.createChooser(intent, "Open folder"));		        
+				// intent.setAction(android.content.Intent.ACTION_VIEW);				
+				intent.setAction(Intent.ACTION_VIEW);
+				intent.setDataAndType(uri,"application/file");
+				startActivityForResult(Intent.createChooser(intent,"Open folder"), 0);
+		        // intent.setData(uri);
+		        // intent.setDataAndType(uri, "*/*");
+				// intent.setDataAndType(uri,"vnd.android.cursor.item/file");
+				// intent.putExtra(Intent.EXTRA_TITLE,"Succinct Data Output");
+		        // startActivity(intent);		        
 			}
 			
 		});
