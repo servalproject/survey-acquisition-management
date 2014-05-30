@@ -41,6 +41,11 @@
 package org.magdaaproject.sam;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.magdaaproject.sam.adapters.SurveyFormsAdapter;
@@ -63,6 +68,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -130,11 +136,42 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 			@Override
 			public void onClick(View arg0) {
 				String succinctPath = Environment.getExternalStorageDirectory().getPath()+
-				R.string.system_file_path_succinct_specification_files_path;
+				getString(R.string.system_file_path_succinct_specification_files_path);
 				String rxSpoolDir = Environment.getExternalStorageDirectory().getPath()+
-						R.string.system_file_path_succinct_data_rxspool_dir;
+						getString(R.string.system_file_path_succinct_data_rxspool_dir);
 				String outputDir = Environment.getExternalStorageDirectory().getPath()+
-						R.string.system_file_path_succinct_data_output_dir;
+						getString(R.string.system_file_path_succinct_data_output_dir);
+				
+				// Read any new SMS messages and put in the rxspool directory for processing
+				Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
+				cursor.moveToFirst();
+
+				do{
+				   String msgData = "";
+				   int idx = cursor.getColumnIndex("body");				   
+				   msgData = cursor.getString(idx);
+				   try {
+					    byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
+						byte[] b = MessageDigest.getInstance("MD5").digest(decodedBytes);
+						String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
+						File dir = new File(Environment.getExternalStorageDirectory(),
+										getString(R.string.system_file_path_succinct_data_rxspool_dir));
+						File file = new File(dir, filename);
+						// Write succinct data to file
+						dir.mkdirs();
+						dir = new File(Environment.getExternalStorageDirectory(),
+								getString(R.string.system_file_path_succinct_data_output_dir));
+						dir.mkdirs();
+						
+						FileOutputStream f = new FileOutputStream(file);
+						f.write(decodedBytes);
+						f.close();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();					
+					}
+				}while(cursor.moveToNext());
+				
 				
 				org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
 				
@@ -150,7 +187,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 			
 		});
 
-		Button mXMLButton = (Button) findViewById(R.id.getcsv);
+		Button mXMLButton = (Button) findViewById(R.id.getxml);
 		mXMLButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {

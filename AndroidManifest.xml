@@ -55,6 +55,7 @@
     
     <!-- uses permissions -->
     <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- write files on external storage -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/> <!-- derive the device id -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- derive the device id -->
