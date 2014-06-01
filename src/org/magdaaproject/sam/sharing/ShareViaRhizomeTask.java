@@ -274,6 +274,16 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 					smstext= android.util.Base64.encodeToString(res, android.util.Base64.NO_WRAP);
 					
 				} catch (Exception e) {
+					// Now tell the user it has happened
+					Handler handler1 = new Handler(Looper.getMainLooper());
+					handler1.post(new Runnable() {
+
+					        @Override
+					        public void run() {
+					        	Toast.makeText(context, "No SMS number configered, so not sending form.", Toast.LENGTH_LONG).show();
+					        }
+					    });
+
 				}
 				
 				try {
