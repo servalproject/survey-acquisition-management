@@ -151,11 +151,12 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				cursor.moveToFirst();
 
 				do{
-				   String msgData = "";
-				   int idx = cursor.getColumnIndex("body");				   
-				   msgData = cursor.getString(idx);
 				   try {
-					    byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
+					   String msgData = "";
+					   int idx = cursor.getColumnIndex("body");				   
+					   msgData = cursor.getString(idx);
+
+					   byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
 						byte[] b = MessageDigest.getInstance("MD5").digest(decodedBytes);
 						String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
 						File dir = new File(Environment.getExternalStorageDirectory(),
