@@ -79,6 +79,7 @@
         android:gravity="left|top"
         android:scrollHorizontally="true"
         android:scrollbars="vertical"
+        android:maxLines = "999"
     />
     
     <LinearLayout

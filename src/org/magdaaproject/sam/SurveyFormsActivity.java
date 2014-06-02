@@ -50,6 +50,7 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import org.magdaaproject.sam.adapters.SurveyFormsAdapter;
 import org.magdaaproject.sam.content.FormsContract;
@@ -72,6 +73,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -232,8 +234,20 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 
 				// More usefully for demo, show some CSV output from the first CSV file in the
 				// output directory.
-				TextView csvData = (TextView) findViewById(R.id.survey_forms_ui_csv_data);
-				csvData.setText("foo");
+				TextView csvTextView = (TextView) findViewById(R.id.survey_forms_ui_csv_data);
+				
+				File[] csvFiles = new File(outputDir,"csv").listFiles();
+				String csvData = "";
+				for (File csvFile : csvFiles) {
+					String fileContents = "";
+					try {
+						fileContents = new Scanner(csvFile).useDelimiter("\\Z").next();
+					} catch (Exception e) {
+					}
+					csvData = csvData + fileContents;					
+				}
+				csvTextView.setText(csvData);
+				csvTextView.setMovementMethod(new ScrollingMovementMethod());
 			}
 			
 		});
