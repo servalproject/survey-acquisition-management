@@ -41,13 +41,17 @@
  */
 package org.magdaaproject.sam.config;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.magdaaproject.sam.ConfigManagerActivity;
 import org.servalproject.sam.R;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.FileUtils;
 
+import android.content.res.AssetManager;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Environment;

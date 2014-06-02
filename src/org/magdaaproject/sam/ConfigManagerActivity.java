@@ -40,6 +40,10 @@
  */
 package org.magdaaproject.sam;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.magdaaproject.sam.config.BundleConfig;
@@ -60,9 +64,11 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -157,6 +163,32 @@ public class ConfigManagerActivity extends FragmentActivity implements OnClickLi
 		// determine which view fired the event
 		switch(view.getId()) {
 		case R.id.config_manager_ui_btn_load:
+			// Start by pulling out pre-loaded config file we include for convenience.
+			try {
+ 				  String mConfigPath = Environment.getExternalStorageDirectory().getPath();
+				  mConfigPath += getString(R.string.system_file_path_configs);
+				
+				  AssetManager assetManager = getAssets();
+		          InputStream in = assetManager.open("sample.succinct.config");
+		          File outDir = new File(mConfigPath);
+		          outDir.mkdirs();
+		          File outFile = new File(mConfigPath, "sample.succinct.config");
+		          FileOutputStream out = new FileOutputStream(outFile);
+		          int len;
+		          byte[] buff = new byte[8192];
+		  		  while ((len = in.read(buff)) > 0) {
+					out.write(buff, 0, len);
+				  }
+		          in.close();
+		          in = null;
+		          out.flush();
+		          out.close();
+		          out = null;
+		          outFile.setExecutable(true);			          
+		        } catch(IOException e) {
+		            Log.e("tag", "Failed to copy asset file smac", e);
+		        }       
+
 			 DialogFragment newFragment = ConfirmLoadConfig.newInstance(
 					 getString(R.string.config_manager_ui_dialog_confirm_load_title),
 					 getString(R.string.config_manager_ui_dialog_confirm_load_message));
