@@ -40,7 +40,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -49,49 +49,66 @@
     <!-- header -->
     <TextView
         android:id="@+id/survey_forms_ui_lbl_header"
+        android:layout_weight="10"
         style="@style/ui_elem_header" />
     
     <!-- no forms available label -->
     <TextView
         android:id="@+id/survey_forms_ui_lbl_no_forms"
         style="@style/ui_elem_sub_header_1"
+        android:layout_weight="50"
         android:text="@string/survey_forms_ui_lbl_no_forms"
-        android:layout_below="@id/survey_forms_ui_lbl_header"
         android:visibility="gone" />
     
     <!-- list view -->
     <ListView
         android:id="@+id/survey_ui_list_surveys"
         android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_below="@id/survey_forms_ui_lbl_header"
-		android:layout_margin="@dimen/ui_elem_margin_top"
-		android:layout_above="@id/general_ui_btn_back" >
+        android:layout_height="fill_parent"
+		android:layout_weight="50"
+		android:layout_margin="@dimen/ui_elem_margin_top" >
     </ListView>
     
+    <TextView
+        android:id="@+id/survey_forms_ui_csv_data"
+        style="@style/ui_elem_sub_header_1"
+        android:text="No CSV data loaded"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="50"
+        android:gravity="left|top"
+        android:scrollHorizontally="true"
+        android:scrollbars="vertical"
+    />
+    
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="-10"
+        android:gravity="center"        
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        >
     <!-- buttons -->
     <Button
         android:id="@+id/general_ui_btn_back"
-        style="@style/ui_elm_btn_back"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
+        style="@style/ui_elm_btn_back"    
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"          
         android:contentDescription="@string/general_ui_btn_back_desc"
+        android:visibility="gone"
         android:text="@string/general_ui_btn_back_text"/>
 
     <Button
-        android:id="@+id/getcsv"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/general_ui_btn_back"
-        android:layout_alignRight="@+id/survey_ui_list_surveys"
+        android:layout_width="wrap_content"          
+        android:id="@+id/getcsv"        
         android:text="Get CSV" />
 
     <Button
-        android:id="@+id/getxml"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/getcsv"
-        android:layout_toLeftOf="@+id/getcsv"
+        android:layout_width="wrap_content"          
+        android:id="@+id/getxml"  
+        android:visibility="gone"     
         android:text="Get XML" />
-
-</RelativeLayout>
+   </LinearLayout>
+</LinearLayout>

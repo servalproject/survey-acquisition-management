@@ -216,6 +216,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				
 				
 				// Now open chooser to pick a file manager to view the directory
+				// This doesn't actually work with most file managers.
 				Intent intent = new Intent();
 				File file = new File(outputDir);
 				Uri uri = Uri.fromFile(file);				
@@ -227,7 +228,12 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		        // intent.setDataAndType(uri, "*/*");
 				// intent.setDataAndType(uri,"vnd.android.cursor.item/file");
 				// intent.putExtra(Intent.EXTRA_TITLE,"Succinct Data Output");
-		        // startActivity(intent);		        
+		        // startActivity(intent);
+
+				// More usefully for demo, show some CSV output from the first CSV file in the
+				// output directory.
+				TextView csvData = (TextView) findViewById(R.id.survey_forms_ui_csv_data);
+				csvData.setText("foo");
 			}
 			
 		});
