@@ -14,6 +14,7 @@ LOCAL_SRC_FILES := \
 	smac/packed_stats.c \
 	smac/packedascii.c \
 	smac/recipe.c \
+	smac/map.c \
 	smac/smac.c \
 	smac/unicode.c \
 	smac/visualise.c \
@@ -40,6 +41,7 @@ LOCAL_SRC_FILES := \
 	smac/packed_stats.c \
 	smac/packedascii.c \
 	smac/recipe.c \
+	smac/map.c \
 	smac/smac.c \
 	smac/unicode.c \
 	smac/visualise.c \

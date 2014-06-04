@@ -214,23 +214,26 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 					proc.waitFor();
 				} catch (Throwable e) {
 					Log.e("tag", "Failed to run smac", e);
-			}
+				}
 				
-				
+				// Create map visualisations
+				try {
+					proc = new ProcessBuilder(cmd,"recipe", "map", succinctPath,outputDir).redirectErrorStream(true).start();
+					DataInputStream in = new DataInputStream(proc.getInputStream());
+					OutputStream out = proc.getOutputStream();
+					proc.waitFor();
+				} catch (Throwable e) {
+					Log.e("tag", "Failed to run smac", e);
+				}
+			
 				// Now open chooser to pick a file manager to view the directory
 				// This doesn't actually work with most file managers.
 				Intent intent = new Intent();
-				File file = new File(outputDir);
+				File file = new File(outputDir+"/maps/index.html");
 				Uri uri = Uri.fromFile(file);				
-				// intent.setAction(android.content.Intent.ACTION_VIEW);				
 				intent.setAction(Intent.ACTION_VIEW);
-				intent.setDataAndType(uri,"application/file");
-				startActivityForResult(Intent.createChooser(intent,"Open folder"), 0);
-		        // intent.setData(uri);
-		        // intent.setDataAndType(uri, "*/*");
-				// intent.setDataAndType(uri,"vnd.android.cursor.item/file");
-				// intent.putExtra(Intent.EXTRA_TITLE,"Succinct Data Output");
-		        // startActivity(intent);
+				intent.setDataAndType(uri,"text/html");
+				startActivity(intent);
 
 				// More usefully for demo, show some CSV output from the first CSV file in the
 				// output directory.
