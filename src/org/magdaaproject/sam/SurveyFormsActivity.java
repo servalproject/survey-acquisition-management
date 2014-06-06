@@ -183,9 +183,11 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				Log.d("SAM","About to call smac");
 				// org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
 				
+				
 				try {
 					  AssetManager assetManager = getAssets();
-			          InputStream in = assetManager.open("smac");
+					  InputStream in = assetManager.open("smac");
+
 			          File outDir = new File(getFilesDir().getPath()+ "/bin");
 			          outDir.mkdirs();
 			          File outFile = new File(getFilesDir().getPath()+ "/bin", "smac");
@@ -202,6 +204,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 			          out = null;
 			          outFile.setExecutable(true);			          
 			        } catch(IOException e) {
+						Log.e("tag", "Failed to load assets. Problem may be because ndk-build has not been done before building project.", e);
 			            Log.e("tag", "Failed to copy asset file smac", e);
 			        }       
 				

@@ -43,6 +43,7 @@ package org.magdaaproject.sam.sharing;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.security.MessageDigest;
@@ -68,6 +69,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -216,6 +218,23 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			context.getString(R.string.system_file_path_succinct_specification_files_path);
 //			String recipeDir = Environment.getExternalStorageDirectory().getPath()+
 //					context.getString(R.string.system_file_path_succinct_specification_files_path);
+			
+			
+			File libDir = new File(context.getFilesDir().getPath()+ "/lib");
+			File[] libContents = libDir.listFiles();
+			if( (!libDir.exists()) || (libContents == null)|| (libContents.length == 0)) {
+				Log.e(sLogTag, "Failed to load lib. Problem may be because ndk-build has not been done before building project.");
+				Handler handler = new Handler(Looper.getMainLooper());
+				handler.post(new Runnable() {
+
+				        @Override
+				        public void run() {
+				        	Toast.makeText(context, "Failed to load lib/. Problem may be because ndk-build has not been done before building project.", Toast.LENGTH_LONG).show();
+				        }
+				    });
+			}
+		    
+			
 			byte [] res= org.servalproject.succinctdata.jni.xml2succinct(
 					xmldata, 
 					formname,
