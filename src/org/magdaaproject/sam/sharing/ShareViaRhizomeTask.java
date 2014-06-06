@@ -220,16 +220,15 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 //					context.getString(R.string.system_file_path_succinct_specification_files_path);
 			
 			
-			File libDir = new File(context.getFilesDir().getPath()+ "/lib");
-			File[] libContents = libDir.listFiles();
-			if( (!libDir.exists()) || (libContents == null)|| (libContents.length == 0)) {
-				Log.e(sLogTag, "Failed to load lib. Problem may be because ndk-build has not been done before building project.");
+			//We check if libsmac is here before continue.
+			File lib = new File(context.getFilesDir().getPath()+ "/../lib/libsmac.so");
+			if(!lib.isFile()) {
+				Log.e(sLogTag, "Failed to load /lib/libsmac.so. Problem may be because ndk-build has not been done before building project.");
 				Handler handler = new Handler(Looper.getMainLooper());
 				handler.post(new Runnable() {
-
 				        @Override
 				        public void run() {
-				        	Toast.makeText(context, "Failed to load lib/. Problem may be because ndk-build has not been done before building project.", Toast.LENGTH_LONG).show();
+				        	Toast.makeText(context, "Failed to load /lib/libsmac.so. Problem may be because ndk-build has not been done before building project.", Toast.LENGTH_LONG).show();
 				        }
 				    });
 			}
