@@ -148,31 +148,44 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				String outputDir = Environment.getExternalStorageDirectory().getPath()+
 						getString(R.string.system_file_path_succinct_data_output_dir);
 				
+				//Create Rxspool directory
+				File dir = new File(Environment.getExternalStorageDirectory(),
+						getString(R.string.system_file_path_succinct_data_rxspool_dir));
+				dir.mkdirs();
+				
+				//Create ouput directory
+				File dirOutput = new File(Environment.getExternalStorageDirectory(),
+						getString(R.string.system_file_path_succinct_data_output_dir));
+				dirOutput.mkdirs();
+				
+				
 				// Read any new SMS messages and put in the rxspool directory for processing
 				Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
 				cursor.moveToFirst();
 
 				do{
 				   try {
-					   String msgData = "";
-					   int idx = cursor.getColumnIndex("body");				   
-					   msgData = cursor.getString(idx);
-
-					   byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
-						byte[] b = MessageDigest.getInstance("MD5").digest(decodedBytes);
-						String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
-						File dir = new File(Environment.getExternalStorageDirectory(),
-										getString(R.string.system_file_path_succinct_data_rxspool_dir));
-						File file = new File(dir, filename);
-						// Write succinct data to file
-						dir.mkdirs();
-						dir = new File(Environment.getExternalStorageDirectory(),
-								getString(R.string.system_file_path_succinct_data_output_dir));
-						dir.mkdirs();
+					   	//Get content from SMS
+					   	String msgData = "";
+					   	int idx = cursor.getColumnIndex("body");				   
+					   	msgData = cursor.getString(idx);
+					   	byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
+					   
+					   	//Get MD5 Hash from content
+					   	byte[] b = MessageDigest.getInstance("MD5").digest(decodedBytes);
 						
-						FileOutputStream f = new FileOutputStream(file);
-						f.write(decodedBytes);
-						f.close();
+					   	//Try to see if file already exists in Rxspool
+					   	String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
+						File file = new File(dir, filename);
+						if (!file.exists()) {
+							// Write succinct data to file
+							FileOutputStream f = new FileOutputStream(file);
+							f.write(decodedBytes);
+							f.close();
+						} else {
+							Log.d("SAM",filename+" already exists, skip next SMS");	
+							break;
+						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						// e.printStackTrace();					
