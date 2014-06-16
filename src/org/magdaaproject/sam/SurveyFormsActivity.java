@@ -169,22 +169,28 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 					   	String msgData = "";
 					   	int idx = cursor.getColumnIndex("body");				   
 					   	msgData = cursor.getString(idx);
-					   	byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
-					   
-					   	//Get MD5 Hash from content
-					   	byte[] b = MessageDigest.getInstance("MD5").digest(decodedBytes);
-						
-					   	//Try to see if file already exists in Rxspool
-					   	String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
-						File file = new File(dir, filename);
-						if (!file.exists()) {
-							// Write succinct data to file
-							FileOutputStream f = new FileOutputStream(file);
-							f.write(decodedBytes);
-							f.close();
-						} else {
-							Log.d("SAM",filename+" already exists, skip next SMS");	
-							break;
+					   	
+					   	//Check if no space in the SMS, avoid reading not succinct-data SMS.
+					   	if (msgData.indexOf(' ')==-1) {
+						   	byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
+						   
+						   	//Get MD5 Hash from content
+						   	byte[] b = MessageDigest.getInstance("MD5").digest(decodedBytes);
+							
+						   	//Try to see if file already exists in Rxspool
+						   	String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
+							File file = new File(dir, filename);
+							if (!file.exists()) {
+								// Write succinct data to file
+								FileOutputStream f = new FileOutputStream(file);
+								f.write(decodedBytes);
+								f.close();
+							} else {
+								Log.d("SAM",filename+" already exists in Rxspool, dont need to read older SMS.");	
+								break;
+							}
+					   	} else {
+							Log.d("SAM","This SMS contains spaces,it's not a succinct-data.");	
 						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
