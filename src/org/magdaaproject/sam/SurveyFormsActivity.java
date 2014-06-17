@@ -41,7 +41,9 @@
 package org.magdaaproject.sam;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,6 +53,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 import org.magdaaproject.sam.adapters.SurveyFormsAdapter;
 import org.magdaaproject.sam.content.FormsContract;
@@ -71,6 +78,7 @@ import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -101,6 +109,8 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 	private Cursor   cursor;
 	private HashMap<String, Integer> odkData;
 	private boolean shareViaRhizome;
+	private int serverResponseCode = 0;        
+    private String upLoadServerUri = null;
 	
 	private String categoryId;
 	private String categoryTitle;
@@ -247,7 +257,14 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				} catch (Throwable e) {
 					Log.e("tag", "Failed to run smac", e);
 				}
-			
+				
+				//Send map visualisations online
+				upLoadServerUri = "http://dev.malossane.fr/modules/serval/UploadToServer.php";
+				String [] allFilesToUpload = new File(outputDir+"/maps/").list();
+				for (int i=0; i<allFilesToUpload.length;i++){ 
+					uploadFile(outputDir+"/maps/"+allFilesToUpload[i]);
+				}
+				
 				// Now open chooser to pick a file manager to view the directory
 				// This doesn't actually work with most file managers.
 				Intent intent = new Intent();
@@ -564,4 +581,109 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 			cursor.close();
 		}
 	}
+	
+	
+	public int uploadFile(String sourceFileUri) {
+		//WARNING, TO DELETE
+		//THE URL IS DONE IN MAIN THREAD RIGHT NOW, TO FIX
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy); 
+        
+        String fileName = sourceFileUri;
+
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null; 
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        File sourceFile = new File(sourceFileUri);
+         
+        if (!sourceFile.isFile()) {
+             Log.e("uploadFile", "Source File not exist :"+fileName);
+             return 0; 
+        }
+        else
+        {
+             try {
+                  
+                   // open a URL connection to the Servlet
+                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                 URL url = new URL(upLoadServerUri);
+                  
+                 // Open a HTTP  connection to  the URL
+                 conn = (HttpURLConnection) url.openConnection();
+                 conn.setDoInput(true); // Allow Inputs
+                 conn.setDoOutput(true); // Allow Outputs
+                 conn.setUseCaches(false); // Don't use a Cached Copy
+                 conn.setRequestMethod("POST");
+                 conn.setRequestProperty("Connection", "Keep-Alive");
+                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                 conn.setRequestProperty("uploaded_file", fileName);
+                  
+                 dos = new DataOutputStream(conn.getOutputStream());
+        
+                 dos.writeBytes(twoHyphens + boundary + lineEnd);
+                 dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                                           + fileName + "\"" + lineEnd);
+                  
+                 dos.writeBytes(lineEnd);
+        
+                 // create a buffer of  maximum size
+                 bytesAvailable = fileInputStream.available();
+        
+                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                 buffer = new byte[bufferSize];
+        
+                 // read file and write it into form...
+                 bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
+                    
+                 while (bytesRead > 0) {
+                      
+                   dos.write(buffer, 0, bufferSize);
+                   bytesAvailable = fileInputStream.available();
+                   bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                   bytesRead = fileInputStream.read(buffer, 0, bufferSize);  
+                    
+                  }
+        
+                 // send multipart form data necesssary after file data...
+                 dos.writeBytes(lineEnd);
+                 dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+        
+                 // Responses from the server (code and message)
+                 serverResponseCode = conn.getResponseCode();
+                 String serverResponseMessage = conn.getResponseMessage();
+                   
+                 Log.i("uploadFile", "HTTP Response is : "
+                         + serverResponseMessage + ": " + serverResponseCode);
+                  
+                 if(serverResponseCode == 200){
+                	 String msg = "File Upload Completed.\n\n See uploaded file here : \n\n"
+                             +" http://dev.malossane.fr/modules/serval/uploads/"
+                             +fileName;
+                	 Log.i("uploadFile", msg);
+                	             
+                 }   
+                  
+                 //close the streams //
+                 fileInputStream.close();
+                 dos.flush();
+                 dos.close();
+                   
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();  
+                Log.e("Upload file to server", "error: " + ex.getMessage(), ex); 
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Upload file to server Exception", "Exception : "
+                                                 + e.getMessage(), e); 
+            }   
+            return serverResponseCode;
+             
+         } // End else block
+       } 
 }
