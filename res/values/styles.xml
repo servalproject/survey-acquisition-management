@@ -1,0 +1,196 @@
+<!-- 
+/*
+ * Copyright (C) 2013 The Serval Project
+ * Portions Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the Serval SAM Software, a fork of the MaGDAA SAM software
+ * which is located here: https://github.com/magdaaproject/survey-acquisition-management
+ *
+ * Serval SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+/*
+ * Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the MaGDAA SAM Software
+ *
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="AppTheme" parent="@android:style/Theme" />
+    
+    <!-- base content styles -->
+    <style name="ui_elem_content" parent="ui_elem_wrap">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+
+    <style name="ui_elem_wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <style name="ui_elem_layout_default">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ui_elem_layout_match">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="ui_elem_layout_fill">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <style name="ui_elem_layout_fill_with_margins">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+
+    <style name="ui_elem_layout_fill_all">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+    </style>
+    
+    <!-- header style -->
+    <style name="ui_elem_header" parent="ui_elem_content">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <style name="ui_elem_sub_header_1" parent="ui_elem_content">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+         <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <style name="ui_elem_sub_header_2" parent="ui_elem_content">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+         <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <!-- button styles -->
+    <style name="ui_elem_button_default">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">8sp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+    </style>
+    
+    <style name="ui_elem_btn_list_blue" parent="ui_elem_layout_fill">
+        <item name="android:background">@drawable/button_blue</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:layout_margin">3sp</item>
+        <item name="android:paddingLeft">15sp</item>
+        <item name="android:paddingRight">15sp</item>
+    </style>
+    
+    <style name="ui_elem_btn_list_gold" parent="ui_elem_layout_fill">
+        <item name="android:background">@drawable/button_gold</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="ui_elem_fake_button_header" parent="ui_elem_sub_header_1">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="ui_elem_fake_button_sub_header" parent="ui_elem_sub_header_2">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="ui_elem_btn_border">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:paddingRight">@dimen/ui_elem_xl_padding_right</item>
+        <item name="android:paddingLeft">@dimen/ui_elem_xl_padding_left</item> 
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_red" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_red</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_gold" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_gold</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_blue" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_blue</item>
+    </style>
+    
+    <style name="ui_elem_btn_border_green" parent="ui_elem_btn_border">
+        <item name="android:background">@drawable/button_green</item>
+    </style>
+    
+    <style name="ui_elm_btn_back" parent="ui_elem_btn_border_green">
+        <item name="android:drawableLeft">@drawable/ic_action_arrow_left</item>
+    </style>
+    
+    <!-- text styles -->
+    <style name="ui_elem_text_default" parent="ui_elem_wrap">
+        <item name="android:textSize">10sp</item>
+    </style>
+    
+    <style name="ui_elem_text_label" parent="ui_elem_text_default">
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="ui_elem_text_fill" parent="ui_elem_layout_fill">
+        <item name="android:textSize">10sp</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_xl_margin_right</item>
+    </style>
+      
+</resources>

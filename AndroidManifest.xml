@@ -1,0 +1,106 @@
+<!-- 
+/*
+ * Copyright (C) 2013 The Serval Project
+ * Portions Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the Serval SAM Software, a fork of the MaGDAA SAM software
+ * which is located here: https://github.com/magdaaproject/survey-acquisition-management
+ *
+ * Serval SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+/*
+ * Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the MaGDAA SAM Software
+ *
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.servalproject.sam"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
+    
+    <!-- uses features -->
+    <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
+    <uses-feature android:required="true" android:name="android.hardware.wifi"/>
+    
+    <!-- uses permissions -->
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- write files on external storage -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/> <!-- derive the device id -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- derive the device id -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- preemptively listen for location to speed up survey completion -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!--  for displaying maps -->
+    
+    <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/> <!-- add files to the Rhizome store for sharing -->
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/system_application_name"
+        android:theme="@style/AppTheme" 
+        android:allowBackup="false">
+        <activity
+            android:name="org.magdaaproject.sam.LauncherActivity"
+            android:label="@string/system_application_default_label" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity 
+            android:name="org.magdaaproject.sam.PreferencesActivity"
+            android:label="@string/system_application_default_label"> 
+        </activity>
+        <activity 
+            android:name="org.magdaaproject.sam.ConfigManagerActivity"
+            android:label="@string/system_application_default_label"> 
+        </activity>
+        <activity 
+            android:name="org.magdaaproject.sam.SurveyFormsActivity"
+            android:label="@string/system_application_default_label"> 
+        </activity>
+        <provider 
+            android:enabled="true" 
+            android:name="org.magdaaproject.sam.content.ItemsContentProvider" 
+            android:exported="false" 
+            android:authorities="org.servalproject.sam.provider.items">
+        </provider>
+        <service 
+            android:enabled="true" 
+            android:name="org.magdaaproject.sam.LocationService" 
+            android:exported="false">
+        </service>
+    </application>
+
+</manifest>

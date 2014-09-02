@@ -1,0 +1,191 @@
+<!-- 
+/*
+ * Copyright (C) 2013 The Serval Project
+ * Portions Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the Serval SAM Software, a fork of the MaGDAA SAM software
+ * which is located here: https://github.com/magdaaproject/survey-acquisition-management
+ *
+ * Serval SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+/*
+ * Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the MaGDAA SAM Software
+ *
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical"
+    android:background="#ff111111" >
+    
+    <!-- header -->
+    <TextView
+        android:id="@+id/config_manager_ui_lbl_header"
+        style="@style/ui_elem_header"
+        android:text="@string/config_manager_ui_lbl_header" />
+    
+    <TextView
+        android:id="@+id/config_manager_ui_lbl_subheader"
+        style="@style/ui_elem_sub_header_1"
+        android:text="@string/config_manager_ui_lbl_subheader"
+        android:layout_below="@+id/config_manager_ui_lbl_header" />
+
+    <TableLayout
+        android:id="@+id/config_manager_ui_table"
+        style="@style/ui_elem_layout_fill_with_margins"
+        android:layout_below="@+id/config_manager_ui_lbl_subheader">
+
+        <TableRow
+            android:id="@+id/config_manager_ui_table_row_1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_title"
+                style="@style/ui_elem_text_label"
+                android:text="@string/config_manager_ui_lbl_title"/>
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_title_text"
+                style="@style/ui_elem_text_default"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/config_manager_ui_table_row_2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_description"
+                style="@style/ui_elem_text_label"
+                android:text="@string/config_manager_ui_lbl_description"/>
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_description_text"
+                style="@style/ui_elem_text_default"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/config_manager_ui_table_row_3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_version"
+                style="@style/ui_elem_text_label"
+                android:text="@string/config_manager_ui_lbl_version"/>
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_version_text"
+                style="@style/ui_elem_text_default"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/config_manager_ui_table_row_4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" > 
+            
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_author"
+                style="@style/ui_elem_text_label"
+                android:text="@string/config_manager_ui_lbl_author"/>
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_author_text"
+                style="@style/ui_elem_text_default"/>
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/config_manager_ui_table_row_5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" > 
+            
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_author_email"
+                style="@style/ui_elem_text_label"
+                android:text="@string/config_manager_ui_lbl_author_email"/>
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_author_email_text"
+                style="@style/ui_elem_text_default"
+                android:autoLink="email"/>
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/config_manager_ui_table_row_6"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" > 
+            
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_last_updated"
+                style="@style/ui_elem_text_label"
+                android:text="@string/config_manager_ui_lbl_last_updated"/>
+            <TextView
+                android:id="@+id/config_manager_ui_lbl_last_updated_text"
+                style="@style/ui_elem_text_default"/>
+        </TableRow>
+    </TableLayout>
+    
+    <!-- progress bar -->
+    <ProgressBar
+        android:id="@+id/config_manager_ui_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/config_manager_ui_lbl_subheader"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/ui_elem_margin_top"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:visibility="gone"/>
+    
+     <TextView
+        android:id="@+id/config_manager_ui_lbl_progress"
+        style="@style/ui_elem_text_label"
+        android:text="@string/config_manager_ui_lbl_progress"
+        android:layout_below="@+id/config_manager_ui_progress_bar"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+    
+    <!-- buttons -->
+     <Button
+        android:id="@+id/general_ui_btn_back"
+        style="@style/ui_elm_btn_back"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/general_ui_btn_back_desc"
+        android:text="@string/general_ui_btn_back_text"/>
+     
+    <Button
+        android:id="@+id/config_manager_ui_btn_load"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/config_manager_ui_btn_load"
+        android:text="@string/config_manager_ui_btn_load"
+        android:drawableLeft="@drawable/ic_action_gear"/>
+
+</RelativeLayout>

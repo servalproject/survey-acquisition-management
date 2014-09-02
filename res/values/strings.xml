@@ -1,0 +1,175 @@
+<!-- 
+/*
+ * Copyright (C) 2013 The Serval Project
+ * Portions Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the Serval SAM Software, a fork of the MaGDAA SAM software
+ * which is located here: https://github.com/magdaaproject/survey-acquisition-management
+ *
+ * Serval SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+/*
+ * Copyright (C) 2012, 2013 The MaGDAA Project
+ *
+ * This file is part of the MaGDAA SAM Software
+ *
+ * MaGDAA SAM Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
+<resources>
+
+    <!-- application wide strings -->
+    <string name="system_application_name">Serval - SAM</string>
+    <string name="system_application_default_label">Serval - SAM</string>
+    
+    <!-- launcher activity screen -->
+    <string name="launcher_ui_lbl_header">Survey Acquisition Management</string>
+    
+    <string name="launcher_ui_btn_settings">Preferences</string>
+    <string name="launcher_ui_btn_contact">Email Serval</string>
+    
+    <string name="launcher_ui_dialog_no_external_storage_message">External storage, such as an SD Card, must be enabled before using this application</string>
+    <string name="launcher_ui_dialog_no_external_storage_title">External Storage</string>
+    
+    <string name="launcher_ui_dialog_no_serval_mesh_message">The Serval Mesh software is not installed, please install it before using this application</string>
+    <string name="launcher_ui_dialog_no_serval_mesh_title">Serval Mesh</string>
+    
+    <string name="launcher_ui_dialog_no_odk_collect_message">The ODK Collect software is not installed, please install it before using this application</string>
+    <string name="launcher_ui_dialog_no_odk_collect_title">ODK Collect</string>
+ 
+    <string name="launcher_ui_lbl_device_id">Device ID: %s</string>
+    
+    <string name="list_view_category_icon">Category Icon</string>
+    
+    <string name="launcher_menu_acknowledgements">Acknowledgements</string>
+    
+    <!-- config manager activity strings -->
+    <string name="config_manager_ui_lbl_header">Configuration Manager</string>
+    <string name="config_manager_ui_lbl_subheader">Currently Loaded Configuration</string>
+    <string name="config_manager_ui_lbl_subheader_alt">No Configuration Currently Available</string>
+    
+    <string name="config_manager_ui_lbl_title">Title:</string>
+    <string name="config_manager_ui_lbl_description">Description:</string>
+    <string name="config_manager_ui_lbl_version">Version:</string>
+    <string name="config_manager_ui_lbl_author">Author:</string>
+    <string name="config_manager_ui_lbl_author_email">Author Email:</string>
+    <string name="config_manager_ui_lbl_last_updated">Last Updated:</string>
+    
+    <string name="config_manager_ui_btn_load">Load Configuration</string>
+    
+    <string name="config_manager_ui_lbl_progress">Loading Configuration&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_error">No configuration loaded, due to prior errors.</string>
+    
+    <string name="config_manager_ui_lbl_verify_error">Some forms failed verification, unexpected behaviour may occur, check configuration and try again.</string>
+    
+    <string name="config_manager_ui_lbl_progress_01">Looking for new configuration file&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_02">Loading configuration index&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_03">Deleting configuration data&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_04">Importing configuration data&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_05">Extracting new Forms&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_06">Deleting existing ODK data&#8230;</string>
+    <string name="config_manager_ui_lbl_progress_07">Installing new forms existing ODK data&#8230;</string>
+    
+    <string name="config_manager_ui_dialog_confirm_load_title">Import New Configuration?</string>
+    <string name="config_manager_ui_dialog_confirm_load_message">Importing a new configuration will delete any existing configuration data, as well as data held by ODK collect.\nAre you sure you wish to continue?</string>
+    
+    <string name="config_manager_ui_dialog_confirm_odk_title">Launch ODK?</string>
+    <string name="config_manager_ui_dialog_confirm_odk_message">To complete importing a new configuration the ODK Collect application must be started. To return to %s use the standard Android back button</string>
+
+    <string name="config_manager_ui_dialog_complete_title">Import Complete</string>
+    <string name="config_manager_ui_dialog_complete_message">The import of the new configuration is complete</string>
+    
+    <string name="config_manager_ui_dialog_error_title">Config File Error</string>
+    <string name="config_manager_ui_dialog_no_config_files_message">Unable to find a config file, please check the directory and load a config file on this device and try again</string>
+    <string name="config_manager_ui_dialog_too_many_config_files_message">There are too many config files, please delete all unnecessary files so that only one remains, and try again</string>
+    <string name="config_manager_ui_dialog_unable_open_config_index_message">Unable to open the config index file, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_unable_parse_config_message">Unable to parse the config index file, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_invalid_config_message">The config index file failed to validate, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_unable_import_config_message">Unable to import the config index, please check the file and then try again</string>
+    <string name="config_manager_ui_dialog_unable_extract_forms_message">Unable to extract the forms, please check the config file and try again</string>
+    <string name="config_manager_ui_dialog_unable_delete_odk_message">Unable to delete the existing ODK data, please check the external storage and try again</string>
+    <string name="config_manager_ui_dialog_unable_install_new_forms_message">Unable to gather list of new forms, please check the external storage and the config file and try again</string>
+    <string name="config_manager_ui_dialog_unable_build_succinct_path">Unable to build succinctPath</string>
+    
+    <string name="config_manager_ui_dialog_verify_error_title">Form Verification Error</string>
+    <string name="config_manager_ui_dialog_no_files_message">No forms found in the database to verify</string>
+    <string name="config_manager_ui_dialog_verify_missing_file_message">A form file could not be found in the ODK data directory for validation, check the configuration file and try again</string>
+    
+    <!-- general survey strings -->
+    <string name="survey_forms_ui_lbl_no_forms">No forms are available for this category at this time</string>
+    
+    <string name="surveys_ui_dialog_missing_form_title">Missing Form Error</string>
+    <string name="surveys_ui_dialog_missing_form_message">The matching form in ODK Collect cannot be found. Please check the configuration and try again</string>
+    
+    <string name="surveys_ui_dialog_odk_database_error_title">ODK Database Error</string>
+    <string name="surveys_ui_dialog_odk_database_error_message">Unable to access the ODK database, please confirm ODK is installed and configured before continuing</string>
+    
+    <string name="surveys_ui_toast_msg_missing_uri">Missing data from ODK, unable to share instance data over Rhizome</string>
+        
+    <!-- preferences activity strings -->
+    <string name="preferences_ui_lbl_header">Serval SAM Preferences</string>
+    
+    <!-- preferences related strings -->
+    <string name="preferences_sharing_title">Data Sharing</string>
+    
+    <string name="preferences_sharing_bundles_title">Create Bundles</string>
+    <string name="preferences_sharing_bundles_description">Create bundles of finalised survey forms</string>
+    
+    <string name="preferences_sharing_rhizome_title">Share Bundles</string>
+    <string name="preferences_sharing_rhizome_description">Share bundles on the mesh network</string>
+    
+    <string name="preferences_config_title">Configuration</string>
+    <string name="preferences_view_config_title">View Configuration Details</string>
+    
+    <!-- genera UI related strings -->
+    <string name="general_ui_btn_back_desc">Back Button</string>
+    <string name="general_ui_btn_back_text">Back</string>
+    
+    <!-- file system related strings -->
+    <string name="system_file_path_rhizome_data">/servalproject/rhizome/sam/</string>
+    <string name="system_file_path_temp">/servalproject/sam/temp/</string>
+    <string name="system_file_path_configs">/servalproject/sam/configs/</string>
+    <string name="system_file_path_icons">/servalproject/sam/icons/</string>
+    <string name="system_file_config_extension">succinct.config</string>
+    <string name="system_file_instance_extension">.instance.sam.serval</string>
+    
+    <string name="system_file_path_odk">/odk/</string>
+    <string name="system_file_path_odk_forms">/odk/forms/</string>
+    <string name="system_file_path_odk_instances">/odk/instances/</string>
+    
+    <string name="system_file_path_succinct_specification_files_path">/servalproject/sam/succinct_recipes/</string>
+    <string name="system_file_path_succinct_data_txspool_dir">/servalproject/sam/succinct_txspool/</string>
+    <string name="system_file_path_succinct_data_rxspool_dir">/servalproject/sam/succinct_rxspool/</string>
+    <string name="system_file_path_succinct_data_output_dir">/servalproject/sam/succinct_output/</string>
+    
+    <!-- system contact strings -->
+    <string name="system_contact_email">admin@servalproject.org</string>
+    <string name="system_contact_email_subject">Feedback on the Serval SAM application</string>
+    <string name="system_contact_email_chooser">Send feedback email&#8230;</string>
+    <string name="system_acknowledgments_uri">http://developer.servalproject.org</string>
+
+</resources>
