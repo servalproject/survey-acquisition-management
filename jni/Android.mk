@@ -14,13 +14,13 @@ LOCAL_SRC_FILES := \
 	smac/packed_stats.c \
 	smac/packedascii.c \
 	smac/recipe.c \
-	smac/map.c \
 	smac/smac.c \
 	smac/unicode.c \
 	smac/visualise.c \
 	smac/jni.c \
-	smac/dexml.c \
-	smac/md5.c
+	smac/map.c \
+	smac/md5.c \
+	smac/dexml.c
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/smac/ $(TARGET_GLOBAL_CFLAGS) $(PRIVATE_ARM_CFLAGS)
 LOCAL_LDFLAGS := -llog
@@ -41,13 +41,13 @@ LOCAL_SRC_FILES := \
 	smac/packed_stats.c \
 	smac/packedascii.c \
 	smac/recipe.c \
-	smac/map.c \
 	smac/smac.c \
 	smac/unicode.c \
 	smac/visualise.c \
 	smac/jni.c \
-	smac/dexml.c \
-	smac/md5.c
+	smac/map.c \
+	smac/md5.c \
+	smac/dexml.c
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/smac/ $(TARGET_GLOBAL_CFLAGS) $(PRIVATE_ARM_CFLAGS)
 LOCAL_LDFLAGS := -llog
