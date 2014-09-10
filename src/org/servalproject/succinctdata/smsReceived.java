@@ -164,7 +164,7 @@ public class smsReceived extends BroadcastReceiver {
     }
     else
     {
-         int serverResponseCode;
+         int serverResponseCode = 999;
 		try {
               
                // open a URL connection to the Servlet
