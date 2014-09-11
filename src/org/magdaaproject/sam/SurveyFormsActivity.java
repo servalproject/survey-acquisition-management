@@ -148,6 +148,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 
 		// Setup update & view CSV button
 		Button mCSVButton = (Button) findViewById(R.id.getcsv);
+		if (mCSVButton != null)
 		mCSVButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
