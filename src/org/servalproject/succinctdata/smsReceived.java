@@ -51,6 +51,8 @@ public class smsReceived extends BroadcastReceiver {
 		Cursor cursor = c.getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
 		cursor.moveToFirst();
 
+		int dups=0;
+		
 		do{
 			try {
 				//Get content from SMS
@@ -59,7 +61,21 @@ public class smsReceived extends BroadcastReceiver {
 				msgData = cursor.getString(idx);
 				
 				//Check if no space in the SMS, avoid reading not succinct-data SMS.
-				if (msgData.indexOf(' ')==-1) {
+				//inReach messages have a space, but only after the main body, so just make sure the space doesn't happen to often.
+				Log.d("SAM","msgData.indexof(' ') = " + msgData.indexOf(' ') + " : text is : " + msgData);
+				if (msgData.split(" ")[0].equals("(1/2)")) {
+					// multi-SMS inReach message, so skip the (1/2) at the start, and grab the second word which
+					// is the message.
+					msgData = msgData.split(" ")[1];
+				}
+				if (msgData.indexOf(' ')==-1||msgData.indexOf(' ')>20) {
+					{
+						// Trim at first space so that we can process inReach messages
+						// (for SMS succinct data messages this will have no effect, as they are one word anyway)
+						msgData = msgData.split(" ")[0];
+					}
+									
+					Log.d("SAM","Procesing message as potential succinct data : " + msgData);
 					byte[] decodedBytes = android.util.Base64.decode(msgData,android.util.Base64.DEFAULT);
 					
 					//Get MD5 Hash from content
@@ -74,8 +90,11 @@ public class smsReceived extends BroadcastReceiver {
 						f.write(decodedBytes);
 						f.close();
 					} else {
-						Log.d("SAM",filename+" already exists in Rxspool, dont need to read older SMS.");	
-						break;
+						Log.d("SAM",filename+" already exists in Rxspool, dont need to read older SMS.");
+						// if we see too many already seen messages, then stop looking.
+						// (we only allow this overlap to help debug as we fix filtering bugs)
+						dups++; 
+						if (dups>20) break; else continue;
 					}
 				} else {
 					Log.d("SAM","This SMS contains spaces,it's not a succinct-data.");	
