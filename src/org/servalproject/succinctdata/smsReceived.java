@@ -29,6 +29,12 @@ public class smsReceived extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context c, Intent arg1) {
+		// Give Android time to finish adding the SMS to the database.
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e1) {
+		}
+		
 		String succinctPath = Environment.getExternalStorageDirectory().getPath()+
 				c.getString(R.string.system_file_path_succinct_specification_files_path);
 		String rxSpoolDir = Environment.getExternalStorageDirectory().getPath()+
