@@ -73,7 +73,7 @@ public class WeatherReading extends SensorReading implements Comparable<WeatherR
 	}
 
 	/**
-	 * get the temperature in ¼C
+	 * get the temperature in Â°C
 	 * 
 	 * @return the temperature
 	 */
@@ -110,7 +110,7 @@ public class WeatherReading extends SensorReading implements Comparable<WeatherR
 
 	/**
 	 * get the direction of the wind 
-	 * (0¡ is no wind data, 90¡ is East, 180¡ is South, 270¡ is West and 360¡ is north)
+	 * (0Â° is no wind data, 90Â° is East, 180Â° is South, 270Â° is West and 360Â° is north)
 	 * 
 	 * @return the weatherDirection
 	 */
@@ -155,7 +155,7 @@ public class WeatherReading extends SensorReading implements Comparable<WeatherR
 	}
 
 	/**
-	 * set the temperature in ¼C
+	 * set the temperature in Â°C
 	 * 
 	 * @param temperature the temperature to set
 	 */
