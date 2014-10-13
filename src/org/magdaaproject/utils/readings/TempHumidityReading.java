@@ -90,7 +90,7 @@ public class TempHumidityReading extends SensorReading implements Comparable<Tem
 //		mBuilder.append(this.getTimestamp() + ",");
 //		
 //		mBuilder.append("temperature: ");
-//		mBuilder.append(temp + "¼C,");
+//		mBuilder.append(temp + "Â°C,");
 //		
 //		mBuilder.append("relative humidity: ");
 //		mBuilder.append(humidity + "%");
