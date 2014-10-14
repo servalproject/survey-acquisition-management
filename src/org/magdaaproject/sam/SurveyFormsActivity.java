@@ -457,7 +457,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		Intent mIntent = new Intent(this, LocationService.class);
 		stopService(mIntent);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
