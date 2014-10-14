@@ -55,6 +55,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.TransportSelectActivity;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.serval.RhizomeUtils;
 import org.odk.collect.InstanceProviderAPI;
@@ -68,7 +69,6 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -79,6 +79,7 @@ import android.os.Looper;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
+import android.content.Intent;
 
 /**
  * a class used to archive and share an instance file on the Serval Mesh via Rhizome
@@ -269,6 +270,14 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				f.write(res);
 				f.close();
 				
+				// Launch transport chooser activity, passing in the uncompressed and compressed data
+				Intent intent = new Intent(context, TransportSelectActivity.class);
+				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
+				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
+				intent.putExtra("org.servalproject.succinctdata.FORMNAME", formname);
+				intent.putExtra("org.servalproject.succinctdata.FORMVERSION", formversion);
+				context.startActivity(intent);
+				
 				// Now tell the user it has happened
 				Handler handler = new Handler(Looper.getMainLooper());
 				handler.post(new Runnable() {
@@ -278,62 +287,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				        	Toast.makeText(context, "Succinct data message spooled", Toast.LENGTH_SHORT).show();
 				        }
 				    });
-
 				
-				// Now also consider sending by SMS
-				String smsnumber = null;
-				String smstext = null;
-				try {
-					String smsnumberfile = 
-						Environment.getExternalStorageDirectory()
-						+ context.getString(R.string.system_file_path_succinct_specification_files_path)
-						+ formname + "." + formversion + ".sms";
-					smsnumber = new Scanner(new File(smsnumberfile)).useDelimiter("\\Z").next();				
-					smstext= android.util.Base64.encodeToString(res, android.util.Base64.NO_WRAP);
-					
-				} catch (Exception e) {
-					// Now tell the user it has happened
-					Handler handler1 = new Handler(Looper.getMainLooper());
-					handler1.post(new Runnable() {
-
-					        @Override
-					        public void run() {
-					        	Toast.makeText(context, "No SMS number configered, so not sending form.", Toast.LENGTH_LONG).show();
-					        }
-					    });
-
-				}
-				
-				try {
-					if (smsnumber!= null) {
-						// Now tell the user it has happened
-						final String smsnumber_final = smsnumber;
-						final String smstext_final = smstext;
-						handler.post(new Runnable() {							
-								
-					        @Override
-					        public void run() {
-							      Uri uri = Uri.parse("smsto:" + smsnumber_final);
-							        Intent smsSIntent = new Intent(Intent.ACTION_SENDTO, uri);
-							        smsSIntent.putExtra("sms_body", smstext_final);
-							            context.startActivity(smsSIntent);
-							        
-					        	Toast.makeText(context, "Succinct data message sent by SMS", Toast.LENGTH_SHORT).show();
-					        }
-					    });
-					}
-				} catch (Exception e) {
-					final String message = e.getLocalizedMessage();
-					handler.post(new Runnable() {
-
-				        @Override
-				        public void run() {
-				        	Toast.makeText(context, "Could not send Succinct data message by SMS:" + message, Toast.LENGTH_LONG).show();
-				        }
-				    });
-
-				}
-			}
+							}
 		} catch (IOException e) {
 			// TODO Error producing succinct data -- report
 		} catch (SAXException e) {
