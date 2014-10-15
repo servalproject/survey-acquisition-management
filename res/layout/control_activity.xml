@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    android:background="@drawable/main_header_selector" >
+
+	<LinearLayout
+		android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        
+    	<Button
+        	android:id="@+id/trackingButton"
+        	android:text="Start Tracking"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_margin="10dip"
+        	android:onClick="onTrackingButton" />
+    	
+    	<Button
+        	android:id="@+id/emergencyButton"
+        	android:text="Declare Emergency"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_margin="10dip"
+       		android:onClick="onEmergencyButton" />
+    	
+    	<Button
+        	android:id="@+id/gpsButton"
+        	android:text="Request GPS Reports"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_margin="10dip"
+        	android:onClick="onRequestGpsButton" />
+    	
+    	<Button
+    	    android:id="@+id/textMessageButton"
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:layout_margin="10dip"
+    	    android:onClick="textMessageClicked"
+    	    android:text="Send Text Message" />
+    	
+    	<Button
+        	android:id="@+id/referencePointButton"
+        	android:text="Send Reference Point"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_margin="10dip"
+        	android:onClick="onReferencePointButton" />
+	
+	</LinearLayout>
+	
+</ScrollView>

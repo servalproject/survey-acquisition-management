@@ -63,6 +63,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- preemptively listen for location to speed up survey completion -->
     <uses-permission android:name="android.permission.INTERNET" /> <!--  for displaying maps -->
     
+    <!--  For inReach stuff -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    
+    
     <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/> <!-- add files to the Rhizome store for sharing -->
 
     <application
@@ -111,6 +118,25 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        
+        <!-- inReach related activities and intents -->
+        <activity android:name=".InReachAppActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name=".DeviceLogActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name=".DeviceInfoActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name=".DeviceControlsActivity" android:label="@string/system_application_name" ></activity>
+        <activity
+            android:name="org.servalproject.servalsatellitemessenger.MessageComposeActivity"
+            android:label="@string/system_application_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="inreachto" />
+            </intent-filter>            
+        </activity>
+        <service
+            android:name=".service.InReachService" android:enabled="true" android:label="inReach Device Service">
+        </service>
+        
     </application>
 
 </manifest>

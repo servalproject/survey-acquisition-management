@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    tools:context=".MessageComposeActivity" >
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/editText2"
+        android:layout_alignTop="@+id/textView1"
+        android:layout_toRightOf="@+id/textView1"
+        android:ems="10"
+        android:hint="Enter phone number or email address"
+        android:inputType="textEmailAddress" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/editText1"
+        android:layout_marginTop="17dp"
+        android:ems="10"
+        android:hint="Enter message to send"
+        android:inputType="textImeMultiLine"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/editText2"
+        android:text="Send" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="To:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>
