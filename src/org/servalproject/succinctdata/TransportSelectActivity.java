@@ -107,7 +107,7 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             	    					// request failed - make red
             	    					button.setBackgroundColor(0xffff0000);
             	    					button.setText("Failed (HTTP status " + httpStatus + "). Touch to retry.");
-            	    				} else {
+            	    				} else {            	    					
             	    					// request succeeded - make green/blue for colour blind people
             	    					button.setBackgroundColor(0xff00ff40);
             	    					button.setText("Sent " + len + " bytes.");            	    					
@@ -116,6 +116,12 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             	    		});            	    		
             	    	} catch (Exception e) {
             	    		e.printStackTrace();
+            	    		activity.runOnUiThread(new Runnable() {
+            	    			public void run() {
+            	    		button.setBackgroundColor(0xffff0000);
+	    					button.setText("Failed (no internet connection?). Touch to retry.");
+            	    			}
+            	    		});
             	    	}
             	    }
             	});
