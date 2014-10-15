@@ -72,6 +72,8 @@ import android.widget.TextView;
 
 import org.servalproject.succinctdata.jni;
 
+import com.delorme.inreachapp.InReachApplication;
+
 /**
  * the main activity for the application
  */
@@ -89,6 +91,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	private static final String sLogTag = "LauncherActivity";
 	
 	private static final int sReturnFromConfigManager = 0;
+
+	public static InReachApplication inreachapplication;
 
 	/*
 	 * private class level variables

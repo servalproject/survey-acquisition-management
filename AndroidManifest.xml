@@ -120,10 +120,10 @@
         </receiver>
         
         <!-- inReach related activities and intents -->
-        <activity android:name=".InReachAppActivity" android:label="@string/system_application_name" ></activity>
-        <activity android:name=".DeviceLogActivity" android:label="@string/system_application_name" ></activity>
-        <activity android:name=".DeviceInfoActivity" android:label="@string/system_application_name" ></activity>
-        <activity android:name=".DeviceControlsActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name="com.delorme.inreachapp.InReachAppActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name="com.delorme.inreachapp.DeviceLogActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name="com.delorme.inreachapp.DeviceInfoActivity" android:label="@string/system_application_name" ></activity>
+        <activity android:name="com.delorme.inreachapp.DeviceControlsActivity" android:label="@string/system_application_name" ></activity>
         <activity
             android:name="org.servalproject.servalsatellitemessenger.MessageComposeActivity"
             android:label="@string/system_application_name" >
@@ -134,7 +134,7 @@
             </intent-filter>            
         </activity>
         <service
-            android:name=".service.InReachService" android:enabled="true" android:label="inReach Device Service">
+            android:name="com.delorme.inreachapp.service.InReachService" android:enabled="true" android:label="inReach Device Service">
         </service>
         
     </application>
