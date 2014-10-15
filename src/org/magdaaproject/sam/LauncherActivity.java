@@ -123,6 +123,9 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		mButton = (Button) findViewById(R.id.launcher_ui_btn_update_forms);
 		mButton.setOnClickListener(this);
 
+		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
+		mButton.setOnClickListener(this);
+
 		// check on external storage
 		if(FileUtils.isExternalStorageAvailable() == false) {
 			allowStart = false;
@@ -331,6 +334,10 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			startActivity(mIntent);
 			break;
 		case R.id.launcher_ui_btn_update_forms:
+			mIntent = new Intent(this, org.servalproject.succinctdata.DownloadForms.class);
+			startActivity(mIntent);
+			break;
+		case R.id.launcher_ui_btn_contact:
 			// show the contact information stuff
 			// XXX fix
 			contactUs();

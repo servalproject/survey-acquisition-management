@@ -59,7 +59,7 @@
 		android:layout_height="fill_parent"
 		android:layout_below="@id/launcher_ui_lbl_header"
 		android:layout_margin="@dimen/ui_elem_margin_top"
-		android:layout_above="@+id/launcher_ui_btn_contact">
+		android:layout_above="@+id/launcher_ui_btn_manage_inreach">
     </ListView>
     
     <!-- device id -->
@@ -72,7 +72,7 @@
     <Button
         android:id="@+id/launcher_ui_btn_update_forms"
         style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_lbl_device_id"
+        android:layout_above="@id/launcher_ui_btn_contact"
         android:layout_alignParentLeft="true"
         android:contentDescription="Update Forms"
         android:text="Update forms"
@@ -81,10 +81,19 @@
      <Button
         android:id="@+id/launcher_ui_btn_manage_inreach"
         style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_lbl_device_id"
+        android:layout_above="@id/launcher_ui_btn_contact"
         android:layout_alignParentRight="true"
         android:contentDescription="Manage inReach"
         android:text="Manage inReach"
         />
 
+          <Button
+        android:id="@+id/launcher_ui_btn_contact"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_above="@id/launcher_ui_lbl_device_id"
+        android:layout_width="fill_parent"
+		android:contentDescription="Contact us"
+        android:text="Contact us"
+        />
+     
 </RelativeLayout>
