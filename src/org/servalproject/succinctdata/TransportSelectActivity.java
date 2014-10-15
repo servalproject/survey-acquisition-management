@@ -12,8 +12,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.servalproject.sam.R;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,8 +39,9 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 	private Button mButton_cell = null;
 	private Button mButton_sms = null;
 	private Button mButton_inreach = null;
+	private Button mButton_cancel = null;
 	
-	private TransportSelectActivity me = this;
+	final private TransportSelectActivity me = this;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,8 +67,8 @@ public class TransportSelectActivity extends Activity implements OnClickListener
        mButton_inreach.setOnClickListener(this);
        mButton_inreach.setText("inReach(satellite) (" + succinctData.length + " bytes)");
        
-       Button mButton = (Button) findViewById(R.id.transport_cancel);
-       mButton.setOnClickListener(this);
+       mButton_cancel = (Button) findViewById(R.id.transport_cancel);
+       mButton_cancel.setOnClickListener(this);
 
 }
 	
@@ -81,6 +86,7 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             	Thread thread = new Thread(new Runnable(){
             		
             		Button button = mButton_cell;
+            		Button cancelButton = mButton_cancel;
             		int len = xmlData.length();
             		TransportSelectActivity activity = me;
             		
@@ -109,8 +115,9 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             	    					button.setText("Failed (HTTP status " + httpStatus + "). Touch to retry.");
             	    				} else {            	    					
             	    					// request succeeded - make green/blue for colour blind people
-            	    					button.setBackgroundColor(0xff00ff40);
-            	    					button.setText("Sent " + len + " bytes.");            	    					
+            	    					button.setBackgroundColor(0xff00ff60);
+            	    					button.setText("Sent " + len + " bytes.");   
+            	    					cancelButton.setText("Done");
             	    				}
             	    			}
             	    		});            	    		
@@ -130,6 +137,10 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             case R.id.transport_select_sms:
             	// Send SMS
             	// Now also consider sending by SMS
+            	
+            	mButton_sms.setBackgroundColor(0xffffff00);
+            	mButton_sms.setText("Attempting to send by SMS");
+            	
 				String smsnumber = null;
 				String smstext = null;
 				try {
@@ -138,20 +149,59 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 						+ getString(R.string.system_file_path_succinct_specification_files_path)
 						+ formname + "." + formversion + ".sms";
 					smsnumber = new Scanner(new File(smsnumberfile)).useDelimiter("\\Z").next();				
-					smstext= android.util.Base64.encodeToString(succinctData, android.util.Base64.NO_WRAP);
+					smstext= android.util.Base64.encodeToString(succinctData, android.util.Base64.NO_WRAP);					
 					
-					sendSms(smsnumber,smstext);
+					Intent sentIntent = new Intent("SUCCINCT_DATA_SMS_SEND_STATUS");
+				     /*Create Pending Intents*/
+				    PendingIntent sentPI = PendingIntent.getBroadcast(
+				       getApplicationContext(), 0, sentIntent,
+				       PendingIntent.FLAG_UPDATE_CURRENT);
+					
+				    getApplicationContext().registerReceiver(new BroadcastReceiver() {
+				    	public void onReceive(Context context, Intent intent) {
+				    		String result = "";
+				    		int colour = 0xffff0000;
+						
+				    		switch (getResultCode()) {
+							case Activity.RESULT_OK:
+								result = "Succinct Data Successfully Sent";
+								colour = 0xff00ff60;
+								break;
+							case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+								result = "Transmission failed";
+								break;
+							case SmsManager.RESULT_ERROR_RADIO_OFF:
+								result = "Radio off";
+								break;
+							case SmsManager.RESULT_ERROR_NULL_PDU:
+								result = "No PDU defined";
+								break;
+							case SmsManager.RESULT_ERROR_NO_SERVICE:
+								result = "No service";
+								break;
+						}
+						
+				    	mButton_sms.setBackgroundColor(colour);
+				    	if (colour==0xffff0000) {
+							// sending failed
+							mButton_sms.setText("Failed to send by SMS ("+result+"). Touch to retry.");
+						} else {
+							// sending succeeded
+							mButton_sms.setText("Sent " + succinctData.length + " bytes.");
+							mButton_cancel.setText("Done");
+						}
+				    }
+				    }, new IntentFilter("SUCCINCT_DATA_SMS_SEND_STATUS"));
+				    
+					int result = sendSms(smsnumber,smstext,sentPI);
+					if (result!=0) {
+						mButton_sms.setBackgroundColor(0xffff0000);
+		            	mButton_sms.setText("Failed to send by SMS. Touch to retry.");
+					}
 				} catch (Exception e) {
-					// Now tell the user it has happened
-					Handler handler1 = new Handler(Looper.getMainLooper());
-					handler1.post(new Runnable() {
-
-					        @Override
-					        public void run() {
-					        	Toast.makeText(getApplicationContext(), "No SMS number configered, so not sending form.", Toast.LENGTH_LONG).show();
-					        }
-					    });
-
+					// Now tell the user it has happened					
+					mButton_sms.setBackgroundColor(0xffff0000);
+	            	mButton_sms.setText("Failed to send by SMS. Touch to retry.");	            	
 				}				
             	break;
             case R.id.transport_select_inreach:
@@ -163,12 +213,15 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             }
     }
 
-	private void sendSms(String phonenumber,String message)
+	private int sendSms(String phonenumber,String message,PendingIntent p)
 	{
 		SmsManager manager = SmsManager.getDefault();
-		manager.sendTextMessage(phonenumber, null, message,
-				// XXX Replace these with sentIntent and deliveryIntent later
-				null, null);
+		try {
+			manager.sendTextMessage(phonenumber, null, message,
+					p, null);
+			return 0;
+		} catch (Exception e) {
+			return -1;
+		}
 	}
-	
 }
