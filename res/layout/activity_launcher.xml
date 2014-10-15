@@ -68,6 +68,16 @@
         style="@style/ui_elem_sub_header_1"
         android:layout_alignParentBottom="true" />
      
+    <Button
+        android:id="@+id/launcher_ui_btn_contact"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_above="@id/launcher_ui_lbl_device_id"
+        android:layout_width="fill_parent"
+		android:contentDescription="Contact us"
+        android:text="Contact us"
+        />
+    
+    
     <!-- buttons -->
     <Button
         android:id="@+id/launcher_ui_btn_update_forms"
@@ -85,15 +95,6 @@
         android:layout_alignParentRight="true"
         android:contentDescription="Manage inReach"
         android:text="Manage inReach"
-        />
-
-          <Button
-        android:id="@+id/launcher_ui_btn_contact"
-        style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_lbl_device_id"
-        android:layout_width="fill_parent"
-		android:contentDescription="Contact us"
-        android:text="Contact us"
         />
      
 </RelativeLayout>
