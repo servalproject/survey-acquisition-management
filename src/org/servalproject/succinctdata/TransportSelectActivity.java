@@ -32,6 +32,12 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 	private String formname = null;
 	private String formversion = null;
 	
+	private Button mButton_cell = null;
+	private Button mButton_sms = null;
+	private Button mButton_inreach = null;
+	
+	private TransportSelectActivity me = this;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
@@ -44,19 +50,19 @@ public class TransportSelectActivity extends Activity implements OnClickListener
        formname = intent.getStringExtra("org.servalproject.succinctdata.FORMNAME");
        formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
        
-       Button mButton = (Button) findViewById(R.id.transport_select_cellulardata);
-       mButton.setOnClickListener(this);
-       mButton.setText("WiFi/Cellular data (" + xmlData.length() + " bytes)");
+       mButton_cell = (Button) findViewById(R.id.transport_select_cellulardata);
+       mButton_cell.setOnClickListener(this);
+       mButton_cell.setText("WiFi/Cellular data (" + xmlData.length() + " bytes)");
        
-       mButton = (Button) findViewById(R.id.transport_select_sms);
-       mButton.setOnClickListener(this);
-       mButton.setText("SMS (" + succinctData.length + " bytes)");
+       mButton_sms = (Button) findViewById(R.id.transport_select_sms);
+       mButton_sms.setOnClickListener(this);
+       mButton_sms.setText("SMS (" + succinctData.length + " bytes)");
        
-       mButton = (Button) findViewById(R.id.transport_select_inreach);
-       mButton.setOnClickListener(this);
-       mButton.setText("inReach(satellite) (" + succinctData.length + " bytes)");
+       mButton_inreach = (Button) findViewById(R.id.transport_select_inreach);
+       mButton_inreach.setOnClickListener(this);
+       mButton_inreach.setText("inReach(satellite) (" + succinctData.length + " bytes)");
        
-       mButton = (Button) findViewById(R.id.transport_cancel);
+       Button mButton = (Button) findViewById(R.id.transport_cancel);
        mButton.setOnClickListener(this);
 
 }
@@ -64,13 +70,20 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 	public void onClick(View view) {
 
             Intent mIntent;
-            
 
             // determine which button was touched
             switch(view.getId()){
             case R.id.transport_select_cellulardata:
             	// Push XML by HTTP
+            	// make button yellow while attempting to send
+            	mButton_cell.setBackgroundColor(0xffffff00);
+            	mButton_cell.setText("Attempting to send by WiFi/cellular");
             	Thread thread = new Thread(new Runnable(){
+            		
+            		Button button = mButton_cell;
+            		int len = xmlData.length();
+            		TransportSelectActivity activity = me;
+            		
             	    @Override
             	    public void run() {
             	    	try {
@@ -87,7 +100,20 @@ public class TransportSelectActivity extends Activity implements OnClickListener
             	    		httppost.setEntity(reqEntity);
             	    		HttpResponse response = httpclient.execute(httppost);
             	    		// Do something with response...
-            	    		Toast.makeText(getApplicationContext(), "HTTP upload response was " + response, 5);
+            	    		final int httpStatus = response.getStatusLine().getStatusCode();
+            	    		activity.runOnUiThread(new Runnable() {
+            	    			public void run() {
+            	    				if (httpStatus != 200 ) {
+            	    					// request failed - make red
+            	    					button.setBackgroundColor(0xffff0000);
+            	    					button.setText("Failed (HTTP status " + httpStatus + "). Touch to retry.");
+            	    				} else {
+            	    					// request succeeded - make green/blue for colour blind people
+            	    					button.setBackgroundColor(0xff00ff40);
+            	    					button.setText("Sent " + len + " bytes.");            	    					
+            	    				}
+            	    			}
+            	    		});            	    		
             	    	} catch (Exception e) {
             	    		e.printStackTrace();
             	    	}
