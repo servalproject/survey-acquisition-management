@@ -113,10 +113,10 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		mTextView = null;
 				
 		// setup the buttons
-		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_settings);
+		Button mButton = (Button) findViewById(R.id.launcher_ui_btn_manage_inreach);
 		mButton.setOnClickListener(this);
 
-		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
+		mButton = (Button) findViewById(R.id.launcher_ui_btn_update_forms);
 		mButton.setOnClickListener(this);
 
 		// check on external storage
@@ -322,12 +322,13 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 
 		// determine which button was touched
 		switch(view.getId()){
-		case R.id.launcher_ui_btn_settings:
-			mIntent = new Intent(this, org.magdaaproject.sam.PreferencesActivity.class);
+		case R.id.launcher_ui_btn_manage_inreach:
+			mIntent = new Intent(this, com.delorme.inreachapp.InReachAppActivity.class);
 			startActivity(mIntent);
 			break;
-		case R.id.launcher_ui_btn_contact:
+		case R.id.launcher_ui_btn_update_forms:
 			// show the contact information stuff
+			// XXX fix
 			contactUs();
 			break;
 		case R.id.list_view_categories_btn:

@@ -43,11 +43,11 @@
 <resources>
 
     <!-- application wide strings -->
-    <string name="system_application_name">Serval - SAM</string>
-    <string name="system_application_default_label">Serval - SAM</string>
+    <string name="system_application_name">Succinct Data Collector</string>
+    <string name="system_application_default_label">Succinct Data Collector</string>
     
     <!-- launcher activity screen -->
-    <string name="launcher_ui_lbl_header">Survey Acquisition Management</string>
+    <string name="launcher_ui_lbl_header">Succinct Data Collector</string>
     
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email Serval</string>
@@ -55,10 +55,10 @@
     <string name="launcher_ui_dialog_no_external_storage_message">External storage, such as an SD Card, must be enabled before using this application</string>
     <string name="launcher_ui_dialog_no_external_storage_title">External Storage</string>
     
-    <string name="launcher_ui_dialog_no_serval_mesh_message">The Serval Mesh software is not installed, please install it before using this application</string>
+    <string name="launcher_ui_dialog_no_serval_mesh_message">The Serval Mesh software is not installed, some features will not be available.</string>
     <string name="launcher_ui_dialog_no_serval_mesh_title">Serval Mesh</string>
     
-    <string name="launcher_ui_dialog_no_odk_collect_message">The ODK Collect software is not installed, please install it before using this application</string>
+    <string name="launcher_ui_dialog_no_odk_collect_message">The ODK Collect software is not installed, you must install it to be able to use this application</string>
     <string name="launcher_ui_dialog_no_odk_collect_title">ODK Collect</string>
  
     <string name="launcher_ui_lbl_device_id">Device ID: %s</string>
@@ -131,7 +131,7 @@
     <string name="surveys_ui_toast_msg_missing_uri">Missing data from ODK, unable to share instance data over Rhizome</string>
         
     <!-- preferences activity strings -->
-    <string name="preferences_ui_lbl_header">Serval SAM Preferences</string>
+    <string name="preferences_ui_lbl_header">Succinct Data Preferences</string>
     
     <!-- preferences related strings -->
     <string name="preferences_sharing_title">Data Sharing</string>
@@ -168,7 +168,7 @@
     
     <!-- system contact strings -->
     <string name="system_contact_email">admin@servalproject.org</string>
-    <string name="system_contact_email_subject">Feedback on the Serval SAM application</string>
+    <string name="system_contact_email_subject">Feedback on the Succinct Data application</string>
     <string name="system_contact_email_chooser">Send feedback email&#8230;</string>
     <string name="system_acknowledgments_uri">http://developer.servalproject.org</string>
 

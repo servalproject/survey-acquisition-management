@@ -69,22 +69,22 @@
         android:layout_alignParentBottom="true" />
      
    <!-- buttons -->
-    <Button
-        android:id="@+id/launcher_ui_btn_contact"
+        <Button
+        android:id="@+id/launcher_ui_btn_update_forms"
         style="@style/ui_elem_btn_border_red"
         android:layout_above="@id/launcher_ui_lbl_device_id"
         android:layout_alignParentLeft="true"
-        android:contentDescription="@string/launcher_ui_btn_contact"
-        android:text="@string/launcher_ui_btn_contact"
-        android:drawableLeft="@drawable/ic_action_gmail"/>
+        android:contentDescription="Update Forms"
+        android:text="Update forms"
+        />
     
      <Button
-        android:id="@+id/launcher_ui_btn_settings"
+        android:id="@+id/launcher_ui_btn_manage_inreach"
         style="@style/ui_elem_btn_border_red"
         android:layout_above="@id/launcher_ui_lbl_device_id"
         android:layout_alignParentRight="true"
-        android:contentDescription="@string/launcher_ui_btn_settings"
-        android:text="@string/launcher_ui_btn_settings"
-        android:drawableLeft="@drawable/ic_action_settings"/>
+        android:contentDescription="Manage inReach"
+        android:text="Manage inReach"
+        />
 
 </RelativeLayout>
