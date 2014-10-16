@@ -102,6 +102,10 @@
             android:name="org.servalproject.succinctdata.TransportSelectActivity"
             android:label="@string/system_application_default_label"> 
         </activity>
+        <activity 
+            android:name="org.servalproject.succinctdata.DownloadForms"
+            android:label="@string/system_application_default_label"> 
+        </activity>
         <provider 
             android:enabled="true" 
             android:name="org.magdaaproject.sam.content.ItemsContentProvider" 
