@@ -1,5 +1,10 @@
 package org.servalproject.succinctdata;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -45,6 +50,8 @@ public class DownloadForms extends Activity implements OnClickListener {
 		label_action = (TextView) findViewById(R.id.download_action);
 		progress = (ProgressBar) findViewById(R.id.download_progress);
 		
+		label_action.setText("Preparing HTTP request");
+		
 		Thread thread = new Thread(new Runnable(){
 
 			DownloadForms activity = me;
@@ -65,6 +72,7 @@ public class DownloadForms extends Activity implements OnClickListener {
 					HttpResponse response = httpclient.execute(httpget);
 					// Do something with response...
 					final int httpStatus = response.getStatusLine().getStatusCode();
+										
 					activity.runOnUiThread(new Runnable() {
 												
 						public void run() {
@@ -75,13 +83,77 @@ public class DownloadForms extends Activity implements OnClickListener {
 								progress_bar.setVisibility(android.view.View.GONE);
 							} else {            	    					
 								// request succeeded - make green/blue for colour blind people
-								label.setText("Downloaded: installing new forms.");
+								label.setText("Downloading ...");
 								// XXX save form file
 								// XXX launch activity to install new forms 
 								// finish();
 							}
 						}
-					});            	    		
+					});
+
+					// Prepare to write data to file, and tell progress bar what we are doing.
+					InputStream input = response.getEntity().getContent();
+					final long length = response.getEntity().getContentLength();
+					activity.runOnUiThread(new Runnable() {						
+						public void run() {
+							progress_bar.setMax((int)length);
+							progress_bar.setProgress(0);
+							progress_bar.setIndeterminate(false);
+							progress_bar.postInvalidate();
+						}
+					});
+					
+					try {
+						String mConfigPath = Environment.getExternalStorageDirectory().getPath();
+						mConfigPath += getString(R.string.system_file_path_configs);
+					    final File file = new File(mConfigPath, "default.succinct.config");
+					    final OutputStream output = new FileOutputStream(file);
+					    int bytes = 0;
+					    try {
+					        try {
+					            final byte[] buffer = new byte[16384];
+					            int read;
+
+					            while ((read = input.read(buffer)) != -1) {
+					                output.write(buffer, 0, read);
+					                bytes += read;
+					                final int readBytes = bytes;
+					                activity.runOnUiThread(new Runnable() {						
+										public void run() {
+											progress_bar.setProgress(readBytes);
+											label.setText("Downloading ("+readBytes+" bytes)");
+											progress_bar.postInvalidate();
+											label.postInvalidate();
+										}
+									});
+					            }
+					            output.flush();
+					            
+					            // All done
+					            activity.runOnUiThread(new Runnable() {
+									public void run() {
+										label.setText("Download succeeded.");
+										button.setBackgroundColor(0xff00ff60);
+										progress_bar.setVisibility(android.view.View.GONE);
+									}
+								}); 
+					        } finally {
+					            output.close();
+					        }
+					    } catch (Exception e) {
+							activity.runOnUiThread(new Runnable() {
+								public void run() {
+									label.setText("Failed (download error?).");
+									button.setBackgroundColor(0xffff0000);
+									progress_bar.setVisibility(android.view.View.GONE);
+								}
+							});					        
+					    }
+					} finally {
+					    input.close();
+					}
+					
+
 				} catch (Exception e) {
 					activity.runOnUiThread(new Runnable() {
 						public void run() {
