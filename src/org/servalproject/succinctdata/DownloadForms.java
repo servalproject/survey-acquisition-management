@@ -11,6 +11,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.magdaaproject.sam.ConfigManagerActivity;
+import org.magdaaproject.sam.config.ConfigLoaderTask;
 import org.servalproject.sam.R;
 
 import android.app.Activity;
@@ -128,12 +130,17 @@ public class DownloadForms extends Activity implements OnClickListener {
 					            }
 					            output.flush();
 					            
-					            // All done
+					            // All done					            
 					            activity.runOnUiThread(new Runnable() {
+					            	Activity activity = me;
 									public void run() {
 										label.setText("Download succeeded.");
 										button.setBackgroundColor(0xff00ff60);
 										progress_bar.setVisibility(android.view.View.GONE);
+										// load the config file by launching configmanageractivity
+										Intent intent = new Intent(activity, org.magdaaproject.sam.ConfigManagerActivity.class);
+										startActivity(intent);
+										finish();
 									}
 								}); 
 					        } finally {
