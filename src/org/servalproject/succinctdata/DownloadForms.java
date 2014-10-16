@@ -98,7 +98,6 @@ public class DownloadForms extends Activity implements OnClickListener {
 						public void run() {
 							progress_bar.setMax((int)length);
 							progress_bar.setProgress(0);
-							progress_bar.setIndeterminate(false);
 							progress_bar.postInvalidate();
 						}
 					});
