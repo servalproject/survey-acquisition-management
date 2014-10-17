@@ -1,10 +1,13 @@
 package org.servalproject.succinctdata;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
@@ -114,10 +117,11 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 						HttpClient httpclient = new DefaultHttpClient();
 
 						HttpPost httppost = new HttpPost(url);
-
-						StringEntity reqEntity = new StringEntity(xmlData);
+						
+						InputStream stream = new ByteArrayInputStream(xmlData.getBytes());
+						InputStreamEntity reqEntity = new InputStreamEntity(stream, -1);
 						reqEntity.setContentType("text/xml");
-						reqEntity.setChunked(true); // Send in multiple parts if needed
+						reqEntity.setChunked(true); // Send in multiple parts if needed						
 						httppost.setEntity(reqEntity);
 						HttpResponse response = httpclient.execute(httppost);
 						// Do something with response...

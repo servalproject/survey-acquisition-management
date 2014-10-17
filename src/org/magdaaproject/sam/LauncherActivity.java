@@ -1,6 +1,12 @@
 /*
- * Copyright (C) 2013 The Serval Project
+ * Copyright (C) 2013-2014 The Serval Project
  * Portions Copyright (C) 2012, 2013 The MaGDAA Project
+ * Portions derived from deLorme 2012:
+ *  * A base class for maintaining the global state
+ *  * of the InReachService.
+ *  *
+ *  * @author Eric Semle
+ *  * @since inReachApp (07 May 2012)
  *
  * This file is part of the Serval SAM Software, a fork of the MaGDAA SAM software
  * which is located here: https://github.com/magdaaproject/survey-acquisition-management
@@ -55,9 +61,13 @@ import org.servalproject.sam.R;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.preference.PreferenceManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
@@ -72,12 +82,13 @@ import android.widget.TextView;
 
 import org.servalproject.succinctdata.jni;
 
-import com.delorme.inreachapp.InReachApplication;
+import com.delorme.inreachapp.service.InReachService;
+import com.delorme.inreachapp.utils.LogEventHandler;
 
 /**
  * the main activity for the application
  */
-public class LauncherActivity extends FragmentActivity implements OnClickListener {
+public class LauncherActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
 	
 	/*
 	 * public constants
@@ -92,8 +103,6 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	
 	private static final int sReturnFromConfigManager = 0;
 
-	public static InReachApplication inreachapplication;
-
 	/*
 	 * private class level variables
 	 */
@@ -101,6 +110,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	private ListView listView;
 	private Cursor cursor;
 
+	public static LauncherActivity me = null;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -110,7 +121,9 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
 		
-		// populate the device id field
+		// populate the device id field		
+		
+		me=this;
 		
 		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_device_id);
 		mTextView.setText(String.format(getString(R.string.launcher_ui_lbl_device_id), DeviceUtils.getDeviceId(getApplicationContext())));
@@ -197,6 +210,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		
 		// populate the UI
 		populateUserInterface();
+		
+		startService();
 	}
 	
 	private void populateUserInterface() {
@@ -412,5 +427,111 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		if(cursor != null) {
 			cursor.close();
 		}
+		
+		stopService();
 	}
+	
+    /**
+     * Invoked when the service is binded
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    {
+        m_service = ((InReachService.InReachBinder)service).getService();
+        
+        LogEventHandler handler = LogEventHandler.getInstance();
+        m_messenger = new Messenger(handler);
+        m_service.registerMessenger(m_messenger);
+    }
+
+    /**
+     * Invoked when the service is disconnected
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    @Override
+    public void onServiceDisconnected(ComponentName name)
+    {
+        if (m_service != null)
+        {
+            m_service.unregisterMessenger(m_messenger);
+            m_service = null;
+        }
+    }
+   
+    /**
+     * Returns the binded InReach Service
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    public InReachService getService()
+    {
+        return m_service;
+    }
+    
+    /**
+     * Starts the InReachService and binds it to the application
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    public void startService()
+    {
+        if (m_serviceStarted)
+            return;
+        
+        Intent intent = new Intent(this, InReachService.class);  
+        
+        startService(intent);
+        bindService(intent, this, BIND_AUTO_CREATE); 
+        
+        m_serviceStarted = true;
+    }
+    
+    /**
+     * Unbinds the InReachService and stops the service.
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    public void stopService()
+    {
+        if (!m_serviceStarted)
+            return;
+        
+        Intent intent = new Intent(this, InReachService.class);  
+        
+        unbindService(this);
+        stopService(intent);
+        
+        m_serviceStarted = false;
+    }
+    
+    /** Boolean flag as to whether or not the service has been started */
+    public boolean m_serviceStarted = false;
+    
+    /** The bound inReach service */
+    public InReachService m_service = null;
+    
+    /** The messenger for the LogEventHandler */
+    public Messenger m_messenger = null;
+    
+    /** A handler for all inReach events that logs them */
+    public LogEventHandler m_eventHandler = null;
+
 }
