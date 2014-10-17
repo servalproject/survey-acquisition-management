@@ -3,6 +3,7 @@ package org.servalproject.succinctdata;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
@@ -12,7 +13,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.magdaaproject.sam.LauncherActivity;
 import org.servalproject.sam.R;
+
+import com.delorme.inreachcore.InReachManager;
+import com.delorme.inreachcore.OutboundMessage;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -215,41 +220,29 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 			break;
 		case R.id.transport_select_inreach:
 			// Send intent to inReach
-			final String inreachtext= android.util.Base64.encodeToString(succinctData, android.util.Base64.NO_WRAP);
-			Intent sentIntent = new Intent("SUCCINCT_DATA_INREACH_SEND_STATUS");
-			/*Create Pending Intents*/
-			PendingIntent sentPI = PendingIntent.getBroadcast(
-					getApplicationContext(), 0, sentIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-
-			getApplicationContext().registerReceiver(new BroadcastReceiver() {
-				public void onReceive(Context context, Intent intent) {
-					String result = "";
-					int colour = 0xffff0000;
-
-					switch (getResultCode()) {
-					case Activity.RESULT_OK:
-						result = "Succinct Data Successfully Sent";
-						colour = 0xff00ff60;
-						break;
-					default:
-						result = "Transmission failed";
-						break;						
-					}
-
-					mButton_inreach.setBackgroundColor(colour);
-					if (colour==0xffff0000) {
-						// sending failed
-						mButton_inreach.setText("Failed to send by inReach. Touch to retry.");
-					} else {
-						// sending succeeded
-						mButton_inreach.setText("Sent " + inreachtext.length() + " bytes.");
-						mButton_cancel.setText("Done");
-					}
-				}
-			}, new IntentFilter("SUCCINCT_DATA_INREACH_SEND_STATUS"));
-			int result = sendInReach(inreachtext,sentPI);
-
+			InReachManager manager = LauncherActivity.me.getService().getManager();
+	        final OutboundMessage message = new OutboundMessage();
+	        message.setAddressCode(OutboundMessage.AC_FreeForm);
+	        message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
+	        // XXX set message identifier to first few bytes of hash of data
+	        int ms_messageIdentifier = 0;
+	        message.setIdentifier(ms_messageIdentifier);
+	        message.addAddress(smsnumber);
+	        message.setText(smstext);
+	        
+	        // queue the message for sending
+	        if (!manager.sendMessage(message))
+	        {
+	        	// Failed
+	        	mButton_inreach.setText("Failed to send by inReach. Touch to retry.");
+		        mButton_inreach.setBackgroundColor(0xffff0000);
+	        }
+	        else
+	        {
+	        	// Success
+	        	mButton_inreach.setText("Queued " + smstext.length() + " bytes.");
+	        	mButton_inreach.setBackgroundColor(0xff00ff60);
+	        }			
 			break;
 		case R.id.transport_cancel:
 			finish();
