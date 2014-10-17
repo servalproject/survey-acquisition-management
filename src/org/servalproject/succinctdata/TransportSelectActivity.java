@@ -3,7 +3,10 @@ package org.servalproject.succinctdata;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
@@ -224,8 +227,19 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 	        final OutboundMessage message = new OutboundMessage();
 	        message.setAddressCode(OutboundMessage.AC_FreeForm);
 	        message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
-	        // XXX set message identifier to first few bytes of hash of data
+	        // Set message identifier to first few bytes of hash of data
 	        int ms_messageIdentifier = 0;
+	        try {
+	        	MessageDigest md;
+				md = MessageDigest.getInstance("SHA-1");
+		        md.update(smstext.getBytes("iso-8859-1"), 0, smstext.length());
+		        byte[] sha1hash = md.digest();
+		        ms_messageIdentifier = sha1hash[0] + (sha1hash[1]<<8) + (sha1hash[2]<<16)+ (sha1hash[3]<<24);
+			} catch (Exception e) {
+				Random r = new Random();
+				int i1 = r.nextInt(1000000000);
+				ms_messageIdentifier = i1;
+			}
 	        message.setIdentifier(ms_messageIdentifier);
 	        message.addAddress(smsnumber);
 	        message.setText(smstext);
