@@ -175,7 +175,7 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 				// Now open chooser to pick a file manager to view the directory
 				// This doesn't actually work with most file managers, but hopefully
 				// will launch a browser
-				Intent intent = new Intent();
+				Intent intent = new Intent();				
 				File file = new File(outputDir+"/maps/index.html");
 				Uri uri = Uri.fromFile(file);				
 				intent.setAction(Intent.ACTION_VIEW);

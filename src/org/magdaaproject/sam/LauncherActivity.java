@@ -137,7 +137,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		mButton.setOnClickListener(this);
 
 		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
-		mButton.setOnClickListener(this);
+		if (mButton!=null)
+			mButton.setOnClickListener(this);
 
 		// check on external storage
 		if(FileUtils.isExternalStorageAvailable() == false) {
@@ -196,14 +197,14 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 				null, 
 				null);
 		
-		if(mCursor == null || mCursor.getCount() == 0) {
-			
-			// send user to config manager screen
-			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
-			startActivityForResult(mIntent, sReturnFromConfigManager);
-			
-			return;
-		} 
+//		if(mCursor == null || mCursor.getCount() == 0) {
+//			
+//			// send user to config manager screen
+//			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
+//			startActivityForResult(mIntent, sReturnFromConfigManager);
+//			
+//			return;
+//		} 
 		
 		mCursor.close();
 		mCursor = null;
@@ -230,17 +231,25 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 				null);
 		
 		// double check the server
-		if(mCursor == null || mCursor.getCount() == 0) {
-			// send user to config manager screen
-			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
-			startActivityForResult(mIntent, sReturnFromConfigManager);
-			return;
-		}
+//		if(mCursor == null || mCursor.getCount() == 0) {
+//			// send user to config manager screen
+//			Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
+//			startActivityForResult(mIntent, sReturnFromConfigManager);
+//			return;
+//		}
 		
 		// update the header
-		mCursor.moveToFirst();
-		TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
-		mTextView.setText(mCursor.getString(0));
+		if (mCursor!=null) {
+			try {
+				mCursor.moveToFirst();
+				if (mCursor.getString(0)!=null) {
+					TextView mTextView = (TextView) findViewById(R.id.launcher_ui_lbl_header);
+					mTextView.setText(mCursor.getString(0));
+				}
+			} catch (Exception e) {
+				Log.d("succinctdata",e.toString());
+			}
+		}
 		
 		// build the list of category data
 		// the order of this array is very important
