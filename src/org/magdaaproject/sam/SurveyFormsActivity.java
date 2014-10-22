@@ -185,30 +185,30 @@ public class SurveyFormsActivity extends FragmentActivity implements OnClickList
 		});
 		
 
-		Button mXMLButton = (Button) findViewById(R.id.getxml);
-		mXMLButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				String succinctPath = Environment.getExternalStorageDirectory().getPath()+
-				R.string.system_file_path_succinct_specification_files_path;
-				String rxSpoolDir = Environment.getExternalStorageDirectory().getPath()+
-						R.string.system_file_path_succinct_data_rxspool_dir;
-				String outputDir = Environment.getExternalStorageDirectory().getPath()+
-						R.string.system_file_path_succinct_data_output_dir;
-				
-				org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
-				
-				// Now open chooser to pick a file manager to view the directory
-				Intent intent = new Intent();
-				File file = new File(outputDir);
-				Uri uri = Uri.fromFile(file);				
-				intent.setAction(android.content.Intent.ACTION_VIEW);
-		        intent.setData(uri);
-		        intent.setDataAndType(uri, "text/xml");
-		        startActivity(Intent.createChooser(intent, "Open folder"));		        
-			}
-			
-		});
+//		Button mXMLButton = (Button) findViewById(R.id.getxml);
+//		mXMLButton.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View arg0) {
+//				String succinctPath = Environment.getExternalStorageDirectory().getPath()+
+//				R.string.system_file_path_succinct_specification_files_path;
+//				String rxSpoolDir = Environment.getExternalStorageDirectory().getPath()+
+//						R.string.system_file_path_succinct_data_rxspool_dir;
+//				String outputDir = Environment.getExternalStorageDirectory().getPath()+
+//						R.string.system_file_path_succinct_data_output_dir;
+//				
+//				org.servalproject.succinctdata.jni.updatecsv(succinctPath,rxSpoolDir,outputDir);
+//				
+//				// Now open chooser to pick a file manager to view the directory
+//				Intent intent = new Intent();
+//				File file = new File(outputDir);
+//				Uri uri = Uri.fromFile(file);				
+//				intent.setAction(android.content.Intent.ACTION_VIEW);
+//		        intent.setData(uri);
+//		        intent.setDataAndType(uri, "text/xml");
+//		        startActivity(Intent.createChooser(intent, "Open folder"));		        
+//			}
+//			
+//		});
 
 		
 		// determine if we're sharing saved instance data
