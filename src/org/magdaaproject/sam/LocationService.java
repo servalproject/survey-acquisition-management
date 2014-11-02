@@ -95,8 +95,14 @@ public class LocationService extends Service {
 		// start requesting location updates
 		//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, sOneMinute, sFiveMetres, locationListener);
 		//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, sOneMinute, sFiveMetres, locationListener);
+		try {
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		} catch (Exception e) {		
+		}
+		try {
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		} catch (Exception e) {
+		}
 		
 		locationListening = true;
 	}

@@ -28,6 +28,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -40,6 +41,7 @@ public class DownloadForms extends Activity implements OnClickListener {
 	final private DownloadForms me = this;
 	Button mButton_cancel = null;
 	TextView label_action = null;
+	TextView error_label = null;
 	ProgressBar progress = null;
 	
 	@Override
@@ -50,6 +52,7 @@ public class DownloadForms extends Activity implements OnClickListener {
 		mButton_cancel = (Button) findViewById(R.id.download_cancel);
 		mButton_cancel.setOnClickListener(this);
 		label_action = (TextView) findViewById(R.id.download_action);
+		error_label = (TextView) findViewById(R.id.error_message);
 		progress = (ProgressBar) findViewById(R.id.download_progress);
 		
 		label_action.setText("Preparing HTTP request");
@@ -107,6 +110,7 @@ public class DownloadForms extends Activity implements OnClickListener {
 					try {
 						String mConfigPath = Environment.getExternalStorageDirectory().getPath();
 						mConfigPath += getString(R.string.system_file_path_configs);
+						new File(mConfigPath).mkdirs();
 					    final File file = new File(mConfigPath, "default.succinct.config");
 					    final OutputStream output = new FileOutputStream(file);
 					    int bytes = 0;
@@ -146,10 +150,11 @@ public class DownloadForms extends Activity implements OnClickListener {
 					        } finally {
 					            output.close();
 					        }
-					    } catch (Exception e) {
+					    } catch (final Exception e) {
 							activity.runOnUiThread(new Runnable() {
 								public void run() {
 									label.setText("Failed (download error?).");
+									error_label.setText(e.toString());
 									button.setBackgroundColor(0xffff0000);
 									progress_bar.setVisibility(android.view.View.GONE);
 								}
@@ -160,10 +165,12 @@ public class DownloadForms extends Activity implements OnClickListener {
 					}
 					
 
-				} catch (Exception e) {
+				} catch (final Exception e) {
+					Log.d("succinctdata",e.toString());
 					activity.runOnUiThread(new Runnable() {
 						public void run() {
 							label.setText("Failed (no internet connection?).");
+							error_label.setText(e.toString());
 							button.setBackgroundColor(0xffff0000);
 							progress_bar.setVisibility(android.view.View.GONE);
 						}
