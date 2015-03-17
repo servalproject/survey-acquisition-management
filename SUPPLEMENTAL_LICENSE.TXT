@@ -1,0 +1,3 @@
+Flinders University and the Serval Project Inc. as owners of the copyright in this software grant the following license in addition to the GNU GPL:
+
+Binary versions of this application may be distributed by Flinders University, Serval Project Inc., New Zealand Red Cross, the International Federation of the Red Cross and their allies and associates for the purpose of responding to humanitarian needs, including evaluation and piloting.
