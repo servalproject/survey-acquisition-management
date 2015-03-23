@@ -235,12 +235,12 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			}
 		    
 			
-			byte [] res= org.servalproject.succinctdata.jni.xml2succinct(
+			String [] res= org.servalproject.succinctdata.jni.xml2succinctfragments(
 					xmldata, 
 					formname,
 					formversion,
-					recipeDir);
-			if (res.length<2) {
+					recipeDir,160);
+			if (res.length<1) {
 				
 				// TODO Error producing succinct data -- report
 				// XXX - we really need an error notification here, to say that succinct data has failed for this!				
@@ -253,23 +253,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				        }
 				    });
 
-			} else {
-				// TODO Got succinct data, so write it to a spool somewhere
-				// (presumably in external:/servalproject/sams/sdspool or somewhere similar)
-				// TODO Now alert someone
-				
-				// Name file after hash of contents.				
-				byte[] b = MessageDigest.getInstance("MD5").digest(res);
-				String filename = String.format("%02x%02x%02x%02x%02x%02x.sd", b[0],b[1],b[2],b[3],b[4],b[5]);
-				File dir = new File(Environment.getExternalStorageDirectory(),
-						context.getString(R.string.system_file_path_succinct_data_txspool_dir));
-				File file = new File(dir, filename);
-				// Write succinct data to file
-				dir.mkdirs();
-				FileOutputStream f = new FileOutputStream(file);
-				f.write(res);
-				f.close();
-				
+			} else {								
 				// Launch transport chooser activity, passing in the uncompressed and compressed data
 				Intent intent = new Intent(context, TransportSelectActivity.class);
 				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
@@ -295,9 +279,6 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			// TODO Couldn't parse XML form instance
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
