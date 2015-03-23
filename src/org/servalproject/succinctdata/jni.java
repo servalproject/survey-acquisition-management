@@ -17,8 +17,12 @@ public class jni {
 	static {
 		System.loadLibrary("smac");
 	}
-	
-	public static native byte[] xml2succinct(String xmlforminstance, String formname, String formversion, String succinctpath);	
-	public static native int updatecsv(String succinctpath,String rxspooldir,String outputdir);	
+
+    // Old deprecated call that returned bytes
+    //    public static native byte[] xml2succinct(String xmlforminstance, String formname, String formversion, String succinctpath);
+    // New call that provides encoded strings limited to some MTU
+    public static native String[] xml2succinctfragments(String xmlforminstance, String formname, String formversion, String succinctpath, int mtu);
+    // We no longer generate CSV locally
+    // public static native int updatecsv(String succinctpath,String rxspooldir,String outputdir);	
 	
 }
