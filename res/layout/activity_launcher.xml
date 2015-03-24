@@ -94,7 +94,18 @@
         android:layout_above="@id/launcher_ui_btn_contact"
         android:layout_alignParentRight="true"
         android:contentDescription="Manage inReach"
-        android:text="Manage inReach"
+        android:text="Manage inReach2"
         />
+     
+<!-- style="@android:style/ui_elem_btn_border_red" -->
+
+     <ProgressBar
+         android:id="@+id/check_if_connected_to_inreach"
+         style="@android:style/Widget.ProgressBar.Small"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@id/launcher_ui_btn_contact"
+         android:layout_centerInParent="true"
+         />
      
 </RelativeLayout>

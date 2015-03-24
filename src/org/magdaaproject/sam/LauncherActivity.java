@@ -47,6 +47,7 @@
 package org.magdaaproject.sam;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.magdaaproject.sam.adapters.CategoriesAdapter;
 import org.magdaaproject.sam.content.CategoriesContract;
@@ -62,6 +63,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.content.ComponentName;
@@ -79,9 +81,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+import android.bluetooth.BluetoothAdapter;
+
 
 import org.servalproject.succinctdata.jni;
 
+import com.delorme.inreachapp.service.InReachEventHandler;
+import com.delorme.inreachapp.service.InReachEvents;
 import com.delorme.inreachapp.service.InReachService;
 import com.delorme.inreachapp.utils.LogEventHandler;
 
@@ -112,6 +120,9 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 
 	public static LauncherActivity me = null;
 	
+	private ProgressBar progressBar;
+	private BluetoothAdapter BA;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -139,7 +150,10 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
 		if (mButton!=null)
 			mButton.setOnClickListener(this);
-
+		
+		//setup the progressBar
+		progressBar = (ProgressBar) findViewById(R.id.check_if_connected_to_inreach);
+		progressBar.setVisibility(View.GONE);
 		// check on external storage
 		if(FileUtils.isExternalStorageAvailable() == false) {
 			allowStart = false;
@@ -213,6 +227,11 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		populateUserInterface();
 		
 		startService();
+		
+		//GG activate bluetooth
+		BA = BluetoothAdapter.getDefaultAdapter();
+		//GG activate inReachService
+		
 	}
 	
 	private void populateUserInterface() {
@@ -353,9 +372,72 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 
 		// determine which button was touched
 		switch(view.getId()){
-		case R.id.launcher_ui_btn_manage_inreach:
-			mIntent = new Intent(this, com.delorme.inreachapp.InReachAppActivity.class);
-			startActivity(mIntent);
+		case R.id.launcher_ui_btn_manage_inreach: 
+			//mIntent = new Intent(this, com.delorme.inreachapp.InReachAppActivity.class);
+			//startActivity(mIntent);
+			//******* changes Guillaume *********************************************
+			
+			progressBar.setVisibility(View.VISIBLE);
+			if (BA == null) {
+				Toast.makeText(getApplicationContext(),"The device does not support Bluetooth.",Toast.LENGTH_LONG).show();
+			}
+			else if  (!BA.isEnabled()) {
+		        //Ask or not ask the user the permission that is the question 
+				//Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		         //startActivityForResult(enableBtIntent, 0);
+				BA.enable();
+		         Toast.makeText(getApplicationContext(),"Bluetooth turned on.\n" +
+		         		"Connecting to inReach.\nPlease wait.",Toast.LENGTH_LONG).show();
+			}
+			else {
+				Toast.makeText(getApplicationContext(),"Bluetooth is enabled.\n" +
+		         		"Connecting to inReach.\nPlease wait.",Toast.LENGTH_LONG).show();
+			}
+			
+			//onServiceConnected(new ComponentName("InReachService", "InReachBinder"), (IBinder)getService());
+			if (m_serviceStarted == true) {
+				Toast.makeText(getApplicationContext(),"Service already started. GG",
+		         		Toast.LENGTH_SHORT).show();
+				progressBar.setVisibility(View.GONE);
+			}
+			else {
+				startService();
+				Toast.makeText(getApplicationContext(),"Service started. GG",
+	         		Toast.LENGTH_SHORT).show();
+				progressBar.setVisibility(View.GONE);
+			}
+			
+			if (getService().isConnecting() == true) {
+				Toast.makeText(getApplicationContext(),"is connecting. GG",
+	         		Toast.LENGTH_SHORT).show();
+				
+			}
+			
+			if (getService().isConnected() == true) {
+				Toast.makeText(getApplicationContext(),"is connected. GG",
+	         		Toast.LENGTH_LONG).show();
+				
+				onServiceConnected(this.getComponentName(), (IBinder)getService());
+				List<String> event_list = m_eventHandler.getEvents();
+				if (event_list.contains(10) == true)
+					Toast.makeText(getApplicationContext(),"queue SYNc found",
+			         		Toast.LENGTH_LONG).show();
+
+			}
+			
+			onServiceConnected(startService(), this.getService().onBind());
+			//while (msg.what != 10)) {	
+			//}
+			
+			/*
+			 * 
+			 * switch (msg.what)
+			 * {
+			 * case InReachEvents.EVENT_MESSSAGE_QUEUE_SYNCED:
+			 * {
+			 * final Message msg = Message.obtain(null, InReachEvents.EVENT_MESSSAGE_QUEUE_SYNCED);
+			*/
+			//****************** changes ends *******************************************
 			break;
 		case R.id.launcher_ui_btn_update_forms:
 			mIntent = new Intent(this, org.servalproject.succinctdata.DownloadForms.class);
