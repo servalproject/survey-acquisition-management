@@ -47,6 +47,7 @@
 package org.magdaaproject.sam;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.magdaaproject.sam.adapters.CategoriesAdapter;
@@ -59,6 +60,7 @@ import org.magdaaproject.utils.OpenDataKitUtils;
 import org.magdaaproject.utils.serval.ServalUtils;
 import org.servalproject.sam.R;
 
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,7 +74,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,7 +95,11 @@ import org.servalproject.succinctdata.jni;
 import com.delorme.inreachapp.service.InReachEventHandler;
 import com.delorme.inreachapp.service.InReachEvents;
 import com.delorme.inreachapp.service.InReachService;
+import com.delorme.inreachapp.service.InReachService.InReachBinder;
 import com.delorme.inreachapp.utils.LogEventHandler;
+import com.delorme.inreachcore.BatteryStatus;
+import com.delorme.inreachcore.InReachDeviceSpecs;
+import com.delorme.inreachcore.InboundMessage;
 
 /**
  * the main activity for the application
@@ -151,7 +159,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		if (mButton!=null)
 			mButton.setOnClickListener(this);
 		
-		//setup the progressBar
+		//GG setup the progressBar
 		progressBar = (ProgressBar) findViewById(R.id.check_if_connected_to_inreach);
 		progressBar.setVisibility(View.GONE);
 		// check on external storage
@@ -226,11 +234,13 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		// populate the UI
 		populateUserInterface();
 		
+		
+		//GG activate inReachService
 		startService();
 		
 		//GG activate bluetooth
 		BA = BluetoothAdapter.getDefaultAdapter();
-		//GG activate inReachService
+		
 		
 	}
 	
@@ -394,49 +404,63 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		         		"Connecting to inReach.\nPlease wait.",Toast.LENGTH_LONG).show();
 			}
 			
-			//onServiceConnected(new ComponentName("InReachService", "InReachBinder"), (IBinder)getService());
+			
+			
 			if (m_serviceStarted == true) {
-				Toast.makeText(getApplicationContext(),"Service already started. GG",
-		         		Toast.LENGTH_SHORT).show();
-				progressBar.setVisibility(View.GONE);
+				
+				
 			}
 			else {
-				startService();
+				
 				Toast.makeText(getApplicationContext(),"Service started. GG",
 	         		Toast.LENGTH_SHORT).show();
-				progressBar.setVisibility(View.GONE);
-			}
-			
-			if (getService().isConnecting() == true) {
-				Toast.makeText(getApplicationContext(),"is connecting. GG",
-	         		Toast.LENGTH_SHORT).show();
 				
 			}
+						
+			/* *****************  Test with LogEventHandler ** does not work fully
+			m_eventHandler = LogEventHandler.getInstance();
 			
-			if (getService().isConnected() == true) {
-				Toast.makeText(getApplicationContext(),"is connected. GG",
-	         		Toast.LENGTH_LONG).show();
-				
-				onServiceConnected(this.getComponentName(), (IBinder)getService());
-				List<String> event_list = m_eventHandler.getEvents();
-				if (event_list.contains(10) == true)
-					Toast.makeText(getApplicationContext(),"queue SYNc found",
-			         		Toast.LENGTH_LONG).show();
 
+			List<String> event_list = m_eventHandler.getEvents();
+			if (event_list != null ){
+				Toast.makeText(getApplicationContext(), "nombre d'envents " + event_list.size(),
+			         		Toast.LENGTH_SHORT).show();
+
+				for (int i = 0; i < event_list.size(); ++i){
+				//Toast.makeText(getApplicationContext(), "Text event " + i + " : "	+ Html.fromHtml(event_list.get(i)), 
+					//Toast.LENGTH_SHORT).show();
+					if (event_list.get(i).matches("<font color=#ffffff>Message queue synchronized.</font><br />") == true){
+							progressBar.setVisibility(View.GONE);
+					}
+				}
+			}
+			*/
+			
+			/*  *****************  Test with InReachMessageHandler ** fully works
+			m_eventHandler = InReachMessageHandler.getInstance();
+			
+
+			List<String> event_list = m_eventHandler.getEvents();
+			if (event_list != null ){
+				Toast.makeText(getApplicationContext(), "nombre d'envents " + event_list.size(),
+			         		Toast.LENGTH_SHORT).show();
+
+				for (int i = 0; i < event_list.size(); ++i){
+					Toast.makeText(getApplicationContext(), "Text event " + i + " : "	+ event_list.get(i), 
+							Toast.LENGTH_SHORT).show();
+					if (event_list.get(i).matches("Message queue synchronized.") == true){
+							progressBar.setVisibility(View.GONE);
+					}
+				}
+			}
+			*/
+			if (InReachMessageHandler.getInstance().queuesynced == true){
+				progressBar.setVisibility(View.GONE);
+				Button mButton = (Button) findViewById(R.id.launcher_ui_btn_manage_inreach);
+				mButton.setText("connected to inReach");
+				mButton.setEnabled(false);
 			}
 			
-			onServiceConnected(startService(), this.getService().onBind());
-			//while (msg.what != 10)) {	
-			//}
-			
-			/*
-			 * 
-			 * switch (msg.what)
-			 * {
-			 * case InReachEvents.EVENT_MESSSAGE_QUEUE_SYNCED:
-			 * {
-			 * final Message msg = Message.obtain(null, InReachEvents.EVENT_MESSSAGE_QUEUE_SYNCED);
-			*/
 			//****************** changes ends *******************************************
 			break;
 		case R.id.launcher_ui_btn_update_forms:
@@ -522,6 +546,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		stopService();
 	}
 	
+	//GG no need to add the ServiceConnection because this launcher is the ServiceConnection
+	
     /**
      * Invoked when the service is binded
      * 
@@ -535,9 +561,11 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
     {
         m_service = ((InReachService.InReachBinder)service).getService();
         
-        LogEventHandler handler = LogEventHandler.getInstance();
+        InReachMessageHandler handler = InReachMessageHandler.getInstance();
         m_messenger = new Messenger(handler);
         m_service.registerMessenger(m_messenger);
+        
+        
     }
 
     /**
@@ -623,6 +651,6 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
     public Messenger m_messenger = null;
     
     /** A handler for all inReach events that logs them */
-    public LogEventHandler m_eventHandler = null;
-
+    public InReachMessageHandler m_eventHandler = null;
+    
 }

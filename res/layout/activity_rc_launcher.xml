@@ -43,69 +43,65 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="#ff111111" >
+    android:background="#ff111111"
+    android:gravity="bottom"
+    android:orientation="vertical" >
     
-    <!-- header -->
+    <!-- header
     <TextView
-        android:id="@+id/launcher_ui_lbl_header"
+        android:id="@+id/launcher_rc_ui_lbl_header"
         style="@style/ui_elem_header"
         android:text="@string/launcher_ui_lbl_header" />
-    
-    <!-- list of form categories -->
-    <ListView
-        android:id="@+id/launcher_ui_list_categories"
-        android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_below="@id/launcher_ui_lbl_header"
-		android:layout_margin="@dimen/ui_elem_margin_top"
-		android:layout_above="@+id/launcher_ui_btn_manage_inreach">
-    </ListView>
-    
-    <!-- device id -->
-    <TextView
-        android:id="@+id/launcher_ui_lbl_device_id"
-        style="@style/ui_elem_sub_header_1"
-        android:layout_alignParentBottom="true" />
-     
-    <Button
-        android:id="@+id/launcher_ui_btn_contact"
-        style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_lbl_device_id"
-        android:layout_width="fill_parent"
-		android:contentDescription="Contact us"
-        android:text="Contact us"
-        />
-    
-    
-    <!-- buttons -->
-    <Button
-        android:id="@+id/launcher_ui_btn_update_forms"
-        style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_btn_contact"
-        android:layout_alignParentLeft="true"
-        android:contentDescription="Update Forms"
-        android:text="@string/launcher_ui_btn_update_forms"
-        />
-    
-     <Button
-        android:id="@+id/launcher_ui_btn_manage_inreach"
-        style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_btn_contact"
-        android:layout_alignParentRight="true"
-        android:contentDescription="Manage inReach"
-        android:text="@string/launcher_ui_btn_manage_inreach"
-        />
-     
-<!-- style="@android:style/ui_elem_btn_border_red" -->
+        android:layout_below="@id/launcher_rc_ui_lbl_header"
+        style="@style/ui_elem_wrap"
+	-->
+    <CheckBox
+        android:id="@+id/launcher_rc_notify_ui_SD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SD is working" />
 
-     <ProgressBar
-         android:id="@+id/check_if_connected_to_inreach"
-         style="@android:style/Widget.ProgressBar.Small"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_above="@id/launcher_ui_btn_contact"
-         android:layout_centerInParent="true"
-         />
-     
+    <CheckBox
+        android:id="@+id/launcher_rc_notify_ui_SMS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_notify_ui_SD"
+        android:text="SMS" />
+     <CheckBox
+        android:id="@+id/launcher_rc_notify_ui_wifi_cellular_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_notify_ui_SMS"
+        android:text="WiFi/Cellular internet" />
+
+    <CheckBox
+        android:id="@+id/launcher_rc_notify_ui_inreach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_notify_ui_wifi_cellular_internet"
+        android:text="inReach" />
+
+    <Button
+        android:id="@+id/launcher_rc_number_of_message_queued"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_notify_ui_inreach"
+        android:text="Messages queued" />
+
+    <Button
+        android:id="@+id/launcher_rc_connection_to_inreach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_number_of_message_queued"
+        android:text="Connection state to inReach" />
+    
+    <Button
+        android:id="@+id/launcher_rc_go_to_regular_launcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_connection_to_inreach"
+        android:text="Use with ODK collector" />
+
+   
+    
 </RelativeLayout>

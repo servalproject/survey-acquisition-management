@@ -63,6 +63,8 @@
  
     <string name="launcher_ui_lbl_device_id">Device ID: %s</string>
     
+    <string name="launcher_ui_btn_update_forms">Update forms</string>
+    <string name="launcher_ui_btn_manage_inreach">Connect to inReach</string>
     <string name="list_view_category_icon">Category Icon</string>
     
     <string name="launcher_menu_acknowledgements">Acknowledgements</string>
