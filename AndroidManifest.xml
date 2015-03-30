@@ -84,13 +84,15 @@
         <activity
             android:name="org.magdaaproject.sam.LauncherActivity"
             android:label="@string/system_application_default_label" >
-            <!--  
+        </activity>
+        <activity
+            android:name="org.magdaaproject.sam.RCLauncherActivity"
+            android:label="@string/system_application_default_label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity
             android:name="org.magdaaproject.sam.RCLauncherActivity"
