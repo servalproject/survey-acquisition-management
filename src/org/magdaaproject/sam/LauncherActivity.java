@@ -326,37 +326,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
-		if(requestCode == sReturnFromConfigManager) {
-			
-			// check for an available config
-			ContentResolver mContentResolver = this.getContentResolver();
-			
-			String[] mProjection = new String[1];
-			mProjection[0] = ConfigsContract.Table.TITLE;
-			
-			Cursor mCursor = mContentResolver.query(
-					ConfigsContract.CONTENT_URI, 
-					mProjection, 
-					null, 
-					null, 
-					null);
-			
-			if(mCursor == null || mCursor.getCount() == 0) {
 				
-				// send user to config manager screen
-				Intent mIntent = new Intent(this, org.magdaaproject.sam.ConfigManagerActivity.class);
-				startActivityForResult(mIntent, sReturnFromConfigManager);
-				
-				return;
-			} 
-			
-			mCursor.close();
-			mCursor = null;
-			
-			// populate the UI
-			populateUserInterface();
-		}
 	}
 	
 	/*
