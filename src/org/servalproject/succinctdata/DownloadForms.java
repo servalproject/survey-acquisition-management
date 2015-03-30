@@ -116,9 +116,6 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 							} else {            	    					
 								// request succeeded - make green/blue for colour blind people
 								label.setText("Downloading ...");
-								// XXX save form file
-								// XXX launch activity to install new forms 
-								// finish();
 							}
 						}
 					});
@@ -196,21 +193,12 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 										button.setBackgroundColor(0xffffff00);
 										progress_bar.setVisibility(android.view.View.GONE);
 										activity.launchOdkViaDialog();
-									}
-								});					        
-					    		
-								activity.runOnUiThread(new Runnable() {
-									Activity activity = me;
-									public void run() {										
-										// All finished -- so close activity
-										label.setText("Forms updated ...");
-										button.setBackgroundColor(0xff00ff60);
-										progress_bar.setVisibility(android.view.View.GONE);
-										// Intent intent = new Intent(activity, org.magdaaproject.sam.ConfigManagerActivity.class);
+										// Intent intent = new Intent(activity, org.magdaaproject.sam.LauncherActivity.class);
 										// startActivity(intent);
 										// finish();
 									}
-								}); 
+								});					        
+					    										 
 					        } finally {
 					            output.close();
 					        }
