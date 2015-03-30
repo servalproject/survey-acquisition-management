@@ -195,7 +195,7 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 										label.setText("Launching ODK ...");
 										button.setBackgroundColor(0xffffff00);
 										progress_bar.setVisibility(android.view.View.GONE);
-										activity.launchOdk();
+										activity.launchOdkViaDialog();
 									}
 								});					        
 					    		
@@ -360,7 +360,7 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 	/**
 	 * confirm launching ODK to finalise installation
 	 */
-	public void finaliseInstall() {
+	public void launchOdkViaDialog() {
 		
 		DialogFragment newFragment = LaunchOdkDialog.newInstance(
 				 getString(R.string.config_manager_ui_dialog_confirm_odk_title),
