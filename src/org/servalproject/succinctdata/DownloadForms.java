@@ -36,6 +36,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -173,7 +174,8 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 					            });
 									
 					            // Now extract and load new configuration
-					    		new ConfigLoaderTask(progress, label, activity).execute();
+					            // (wait for completion)
+					    		new ConfigLoaderTask(progress, label, activity).execute().get();					    						    		
 					    		
 					            // Finished downloading, so inform user					            
 					            activity.runOnUiThread(new Runnable() {
@@ -185,8 +187,8 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 									}
 					            });
 
-					    		// Verify forms
-					    		new FormVerifyTask(progress, label, activity).execute();
+					    		// Verify forms (wait for completion)
+					    		new FormVerifyTask(progress, label, activity).execute().get();
 
 								activity.runOnUiThread(new Runnable() {
 									public void run() {
