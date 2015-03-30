@@ -257,7 +257,6 @@ public class FormVerifyTask extends AsyncTask<Void, Integer, Integer> {
 		case sSuccess:
 			progressBar.setVisibility(View.GONE);
 			textView.setVisibility(View.GONE);
-			context.finaliseInstall();
 			break;
 		}
     }
