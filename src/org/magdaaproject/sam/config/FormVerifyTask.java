@@ -19,13 +19,13 @@
  */
 package org.magdaaproject.sam.config;
 
-import org.magdaaproject.sam.ConfigManagerActivity;
 import org.magdaaproject.sam.content.FormsContract;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.xforms.XFormsException;
 import org.magdaaproject.utils.xforms.XFormsUtils;
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.DownloadForms;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -56,7 +56,7 @@ public class FormVerifyTask extends AsyncTask<Void, Integer, Integer> {
 	 */
 	private ProgressBar progressBar;
 	private TextView textView;
-	private ConfigManagerActivity context;
+	private DownloadForms context;
 	
 	private SparseArray<String> formList;
 	
@@ -64,10 +64,10 @@ public class FormVerifyTask extends AsyncTask<Void, Integer, Integer> {
 	 * construct a new instance of this object with reference to the status
 	 * UI variables
 	 */
-	public FormVerifyTask(ProgressBar progressBar, TextView textView, ConfigManagerActivity context) {
+	public FormVerifyTask(ProgressBar progressBar, TextView textView, DownloadForms runnable) {
 		this.progressBar = progressBar;
 		this.textView = textView;
-		this.context = context;
+		this.context = runnable;
 	}
 	
 	/*

@@ -46,8 +46,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.magdaaproject.sam.ConfigManagerActivity;
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.DownloadForms;
 import org.magdaaproject.sam.fragments.BasicAlertDialogFragment;
 import org.magdaaproject.utils.FileUtils;
 
@@ -81,16 +81,16 @@ public class ConfigLoaderTask extends AsyncTask<Void, Integer, Integer> {
 	 */
 	private ProgressBar progressBar;
 	private TextView textView;
-	private ConfigManagerActivity context;
+	private DownloadForms context;
 	
 	/*
 	 * construct a new instance of this object with reference to the status
 	 * UI variables
 	 */
-	public ConfigLoaderTask(ProgressBar progressBar, TextView textView, ConfigManagerActivity context) {
+	public ConfigLoaderTask(ProgressBar progressBar, TextView textView, DownloadForms runnable) {
 		this.progressBar = progressBar;
 		this.textView = textView;
-		this.context = context;
+		this.context = runnable;
 	}
 	
 	/*
