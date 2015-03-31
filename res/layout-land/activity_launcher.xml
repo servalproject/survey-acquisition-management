@@ -59,7 +59,7 @@
 		android:layout_height="fill_parent"
 		android:layout_below="@id/launcher_ui_lbl_header"
 		android:layout_margin="@dimen/ui_elem_margin_top"
-		android:layout_above="@id/launcher_ui_btn_contact" >
+		android:layout_above="@id/launcher_ui_btn_view_queue" >
     </ListView>
     
     <!-- device id -->
@@ -69,10 +69,21 @@
         android:layout_alignParentBottom="true" />
      
    <!-- buttons -->
-        <Button
-        android:id="@+id/launcher_ui_btn_update_forms"
+<Button
+        android:id="@+id/launcher_ui_btn_view_queue"
         style="@style/ui_elem_btn_border_red"
         android:layout_above="@id/launcher_ui_lbl_device_id"
+        android:layout_width="fill_parent"
+		android:contentDescription="View Message Queue"
+        android:text="View Message Queue"
+        />
+    
+    
+    <!-- buttons -->
+    <Button
+        android:id="@+id/launcher_ui_btn_update_forms"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_above="@id/launcher_ui_btn_view_queue"
         android:layout_alignParentLeft="true"
         android:contentDescription="Update Forms"
         android:text="Update forms"
@@ -81,10 +92,9 @@
      <Button
         android:id="@+id/launcher_ui_btn_manage_inreach"
         style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_lbl_device_id"
+        android:layout_above="@id/launcher_ui_btn_view_queue"
         android:layout_alignParentRight="true"
         android:contentDescription="Manage inReach"
         android:text="Manage inReach"
         />
-
 </RelativeLayout>

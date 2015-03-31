@@ -55,6 +55,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.SuccinctDataQueueService;
 import org.servalproject.succinctdata.TransportSelectActivity;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.serval.RhizomeUtils;
@@ -255,12 +256,20 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 
 			} else {								
 				// Launch transport chooser activity, passing in the uncompressed and compressed data
-				Intent intent = new Intent(context, TransportSelectActivity.class);
+				// Intent intent = new Intent(context, TransportSelectActivity.class);
+				// intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
+				// intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
+				// intent.putExtra("org.servalproject.succinctdata.FORMNAME", formname);
+				// intent.putExtra("org.servalproject.succinctdata.FORMVERSION", formversion);
+				// context.startActivity(intent);
+
+				// Pass message to queue
+				Intent intent = new Intent(context, SuccinctDataQueueService.class);
 				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
 				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
 				intent.putExtra("org.servalproject.succinctdata.FORMNAME", formname);
 				intent.putExtra("org.servalproject.succinctdata.FORMVERSION", formversion);
-				context.startActivity(intent);
+				context.startService(intent);
 				
 				// Now tell the user it has happened
 				Handler handler = new Handler(Looper.getMainLooper());

@@ -42,14 +42,14 @@ public class SuccinctDataQueueListViewActivity extends Activity {
 	 
 	  // The desired columns to be bound
 	  String[] columns = new String[] {
-	    SuccinctDataQueueDbAdapter.KEY_PREFIX,
+	    SuccinctDataQueueDbAdapter.KEY_FORM,
 	    SuccinctDataQueueDbAdapter.KEY_TIMESTAMP,
 	    SuccinctDataQueueDbAdapter.KEY_SUCCINCTDATA
 	  };
 	 
 	  // the XML defined views which the data will be bound to
 	  int[] to = new int[] { 
-	    R.id.prefix,
+	    R.id.form,
 	    R.id.timestamp,
 	    R.id.succinctdata,
 	  };
@@ -74,11 +74,7 @@ public class SuccinctDataQueueListViewActivity extends Activity {
 	   // Get the cursor, positioned to the corresponding row in the result set
 	   Cursor cursor = (Cursor) listView.getItemAtPosition(position);
 	 
-	   // Get the state's capital from this row in the database.
-	   String countryCode = 
-	    cursor.getString(cursor.getColumnIndexOrThrow("code"));
-	   Toast.makeText(getApplicationContext(),
-	     countryCode, Toast.LENGTH_SHORT).show();
+	   // XXX - Ask Queue service to try sending this message now.
 	 
 	   }
 	  });
