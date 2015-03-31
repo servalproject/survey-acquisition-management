@@ -3,7 +3,8 @@ package org.servalproject.succinctdata;
 public class SuccinctDataMessage {
 	  
 	 String prefix = null;
-	 String timestamp = null;
+	 String form = null;
+	 String timestamp = null;	 
 	 String succinctdata = null;
 	  
 	 public String getPrefix() {
@@ -11,6 +12,12 @@ public class SuccinctDataMessage {
 	 }
 	 public void setPrefix(String prefix) {
 	  this.prefix= prefix;
+	 }
+	 public String getForm() {
+	  return form;
+	 }
+	 public void setForm(String form) {
+	  this.form= form;
 	 }
 	 public String getTimestamp() {
 	  return timestamp;

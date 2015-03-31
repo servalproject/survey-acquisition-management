@@ -80,6 +80,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.servalproject.succinctdata.SuccinctDataQueueService;
 import org.servalproject.succinctdata.jni;
 
 import com.delorme.inreachapp.service.InReachService;
@@ -121,6 +122,10 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
 		
+		// Start message queue monitoring service
+		Intent mIntent = new Intent(this, SuccinctDataQueueService.class);
+		startService(mIntent);
+		
 		// populate the device id field		
 		
 		me=this;
@@ -136,7 +141,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		mButton = (Button) findViewById(R.id.launcher_ui_btn_update_forms);
 		mButton.setOnClickListener(this);
 
-		mButton = (Button) findViewById(R.id.launcher_ui_btn_contact);
+		mButton = (Button) findViewById(R.id.launcher_ui_btn_view_queue);
 		if (mButton!=null)
 			mButton.setOnClickListener(this);
 
@@ -331,10 +336,11 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			mIntent = new Intent(this, org.servalproject.succinctdata.DownloadForms.class);
 			startActivity(mIntent);
 			break;
-		case R.id.launcher_ui_btn_contact:
+		case R.id.launcher_ui_btn_view_queue:
 			// show the contact information stuff
 			// XXX fix
-			contactUs();
+			mIntent = new Intent(this, org.servalproject.succinctdata.SuccinctDataQueueListViewActivity.class);
+			startActivity(mIntent);			
 			break;
 		case R.id.list_view_categories_btn:
 			// a category button has been touched

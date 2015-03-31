@@ -107,7 +107,7 @@
             android:label="@string/system_application_default_label"> 
         </activity>
         <activity 
-            android:name="org.servalproject.succinctdata.SuccinctDataMessageQueueListViewActivity"
+            android:name="org.servalproject.succinctdata.SuccinctDataQueueListViewActivity"
             android:label="@string/succinct_data_message_queue_title"> 
         </activity>
         <provider 
@@ -119,6 +119,11 @@
         <service 
             android:enabled="true" 
             android:name="org.magdaaproject.sam.LocationService" 
+            android:exported="false">
+        </service>
+        <service 
+            android:enabled="true" 
+            android:name="org.servalproject.succinctdata.SuccinctDataQueueService" 
             android:exported="false">
         </service>
         <receiver android:name="org.servalproject.succinctdata.smsReceived">

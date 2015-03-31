@@ -15,6 +15,7 @@ public class SuccinctDataQueueDbAdapter {
  
  public static final String KEY_ROWID = "_id";
  public static final String KEY_PREFIX = "prefix";
+ public static final String KEY_FORM = "form";
  public static final String KEY_TIMESTAMP = "timestamp";
  public static final String KEY_SUCCINCTDATA = "succinctdata";
  
@@ -24,7 +25,7 @@ public class SuccinctDataQueueDbAdapter {
  
  private static final String DATABASE_NAME = "SuccinctDataQueue";
  private static final String SQLITE_TABLE = "QueuedMessages";
- private static final int DATABASE_VERSION = 1;
+ private static final int DATABASE_VERSION = 2;
  
  private final Context mCtx;
  
@@ -32,6 +33,7 @@ public class SuccinctDataQueueDbAdapter {
   "CREATE TABLE if not exists " + SQLITE_TABLE + " (" +
   KEY_ROWID + " integer PRIMARY KEY autoincrement," +
   KEY_PREFIX + "," +
+  KEY_FORM + "," +
   KEY_TIMESTAMP + "," +
   KEY_SUCCINCTDATA + "," +
   " UNIQUE (" + KEY_PREFIX +"));";
@@ -88,10 +90,11 @@ public class SuccinctDataQueueDbAdapter {
 	    }
 	}
  
- public long createQueuedMessage(String prefix, String succinctData) {
+ public long createQueuedMessage(String prefix, String succinctData, String formNameAndVersion) {
  
   ContentValues initialValues = new ContentValues();
   initialValues.put(KEY_PREFIX, prefix);
+  initialValues.put(KEY_FORM, prefix);
   initialValues.put(KEY_TIMESTAMP, getCurrentTimeStamp());
   initialValues.put(KEY_SUCCINCTDATA, succinctData);
   
@@ -103,13 +106,13 @@ public class SuccinctDataQueueDbAdapter {
   Cursor mCursor = null;
   if (inputText == null  ||  inputText.length () == 0)  {
    mCursor = mDb.query(SQLITE_TABLE, new String[] {KEY_ROWID,
-     KEY_PREFIX, KEY_TIMESTAMP, KEY_SUCCINCTDATA}, 
+     KEY_PREFIX, KEY_FORM, KEY_TIMESTAMP, KEY_SUCCINCTDATA}, 
      null, null, null, null, null);
  
   }
   else {
    mCursor = mDb.query(true, SQLITE_TABLE, new String[] {KEY_ROWID,
-     KEY_PREFIX, KEY_TIMESTAMP, KEY_SUCCINCTDATA}, 
+     KEY_PREFIX, KEY_FORM, KEY_TIMESTAMP, KEY_SUCCINCTDATA}, 
      KEY_PREFIX + " like '%" + inputText + "%'", null,
      null, null, null, null);
   }
@@ -123,7 +126,7 @@ public class SuccinctDataQueueDbAdapter {
  public Cursor fetchAllMessages() {
  
   Cursor mCursor = mDb.query(SQLITE_TABLE, new String[] {KEY_ROWID,
-    KEY_PREFIX, KEY_TIMESTAMP, KEY_SUCCINCTDATA}, 
+    KEY_PREFIX, KEY_FORM, KEY_TIMESTAMP, KEY_SUCCINCTDATA}, 
     null, null, null, null, null);
  
   if (mCursor != null) {

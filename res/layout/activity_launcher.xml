@@ -69,12 +69,12 @@
         android:layout_alignParentBottom="true" />
      
     <Button
-        android:id="@+id/launcher_ui_btn_contact"
+        android:id="@+id/launcher_ui_btn_view_queue"
         style="@style/ui_elem_btn_border_red"
         android:layout_above="@id/launcher_ui_lbl_device_id"
         android:layout_width="fill_parent"
-		android:contentDescription="Contact us"
-        android:text="Contact us"
+		android:contentDescription="View Message Queue"
+        android:text="View Message Queue"
         />
     
     
@@ -82,7 +82,7 @@
     <Button
         android:id="@+id/launcher_ui_btn_update_forms"
         style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_btn_contact"
+        android:layout_above="@id/launcher_ui_btn_view_queue"
         android:layout_alignParentLeft="true"
         android:contentDescription="Update Forms"
         android:text="Update forms"
@@ -91,7 +91,7 @@
      <Button
         android:id="@+id/launcher_ui_btn_manage_inreach"
         style="@style/ui_elem_btn_border_red"
-        android:layout_above="@id/launcher_ui_btn_contact"
+        android:layout_above="@id/launcher_ui_btn_view_queue"
         android:layout_alignParentRight="true"
         android:contentDescription="Manage inReach"
         android:text="Manage inReach"
