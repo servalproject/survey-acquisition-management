@@ -529,6 +529,13 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		startActivity(Intent.createChooser(mIntent, getString(R.string.system_contact_email_chooser)));
 	}
 	
+	
+	public void onBackPressed () {
+		super.onBackPressed();
+		Intent mIntent;
+		mIntent = new Intent(this, org.magdaaproject.sam.RCLauncherActivity.class);
+		startService(mIntent);
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()

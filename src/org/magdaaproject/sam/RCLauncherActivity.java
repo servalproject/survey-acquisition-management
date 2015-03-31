@@ -38,6 +38,10 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SD);
 		mcheckBox.setChecked(true);
 		mcheckBox.setEnabled(false);
+		
+		Intent mIntent;
+		mIntent = new Intent(this, org.magdaaproject.sam.LauncherActivity.class);
+		startService(mIntent);
 
 	}
 	

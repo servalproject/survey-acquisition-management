@@ -44,7 +44,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#ff111111"
-    android:gravity="bottom"
     android:orientation="vertical" >
     
     <!-- header
