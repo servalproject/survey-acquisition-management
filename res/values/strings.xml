@@ -174,4 +174,6 @@
     <string name="system_contact_email_chooser">Send feedback email&#8230;</string>
     <string name="system_acknowledgments_uri">http://developer.servalproject.org</string>
 
+    <string name="succinct_data_message_queue_title">Succinct Data Queued Messages</string>
+    
 </resources>
