@@ -90,10 +90,13 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 			TextView label = label_action; 
 			Button button = mButton_cancel;
 			ProgressBar progress_bar = progress;
-			
+						
 			@Override
 			public void run() {
 				try {
+					
+					button.setText("Cancel");
+					
 					// XXX make configurable!
 					String url = "http://serval1.csem.flinders.edu.au/succinctdata/default.succinct.config";
 
@@ -190,7 +193,8 @@ public class DownloadForms extends FragmentActivity implements OnClickListener {
 								activity.runOnUiThread(new Runnable() {
 									public void run() {
 										label.setText("Launching ODK ...");
-										button.setBackgroundColor(0xffffff00);
+										button.setBackgroundColor(0xff00ff60);
+										button.setText("Done");
 										progress_bar.setVisibility(android.view.View.GONE);
 										activity.launchOdkViaDialog();
 										// Intent intent = new Intent(activity, org.magdaaproject.sam.LauncherActivity.class);
