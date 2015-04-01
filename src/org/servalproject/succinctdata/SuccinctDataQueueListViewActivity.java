@@ -3,6 +3,10 @@ package org.servalproject.succinctdata;
 import org.servalproject.sam.R;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,11 +20,12 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
  
-public class SuccinctDataQueueListViewActivity extends Activity {
+public class SuccinctDataQueueListViewActivity extends Activity  {
 
 	 
 	 private SuccinctDataQueueDbAdapter dbHelper;
 	 private SimpleCursorAdapter dataAdapter;
+	 private BroadcastReceiver myReceiver = null;
 	 
 	 @Override
 	 public void onCreate(Bundle savedInstanceState) {
@@ -29,15 +34,27 @@ public class SuccinctDataQueueListViewActivity extends Activity {
 	 
 	  dbHelper = new SuccinctDataQueueDbAdapter(this);
 	  dbHelper.open();
-	 	 
-	  //Generate ListView from SQLite Database
-	  displayListView();
+
+	  onResume(savedInstanceState);
+	 }
 	 
+	 public void onResume(Bundle savedInstanceState) {
+		 //Generate ListView from SQLite Database
+		 displayListView();
+
+		 registerReceiver(myReceiver, new IntentFilter("SD_MESSAGE_QUEUE_UPDATED"));
+	 }
+	 
+	 public void onPause(Bundle savedInstanceState) {
+		 unregisterReceiver(myReceiver);
+	 }
+	 
+	 public void onReceive(Context context, Intent intent) {
+		 displayListView();
 	 }
 	 
 	 private void displayListView() {
-	 
-	 
+	 	 
 	  Cursor cursor = dbHelper.fetchAllMessages();
 	 
 	  // The desired columns to be bound
@@ -66,6 +83,7 @@ public class SuccinctDataQueueListViewActivity extends Activity {
 	  // Assign adapter to ListView
 	  listView.setAdapter(dataAdapter);
 	 
+	  listView.invalidate();	  
 	 
 	  listView.setOnItemClickListener(new OnItemClickListener() {
 	   @Override
@@ -74,27 +92,11 @@ public class SuccinctDataQueueListViewActivity extends Activity {
 	   // Get the cursor, positioned to the corresponding row in the result set
 	   Cursor cursor = (Cursor) listView.getItemAtPosition(position);
 	 
-	   // XXX - Ask Queue service to try sending this message now.
+	   // XXX Item was clicked on
 	 
 	   }
 	  });
-	 
-	  EditText myFilter = (EditText) findViewById(R.id.succinctDataQueueListFilter);
-	  myFilter.addTextChangedListener(new TextWatcher() {
-	 
-	   public void afterTextChanged(Editable s) {
-	   }
-	 
-	   public void beforeTextChanged(CharSequence s, int start, 
-	     int count, int after) {
-	   }
-	 
-	   public void onTextChanged(CharSequence s, int start, 
-	     int before, int count) {
-	    dataAdapter.getFilter().filter(s.toString());
-	   }
-	  });
-	   
+	 	   
 	  dataAdapter.setFilterQueryProvider(new FilterQueryProvider() {
 	         public Cursor runQuery(CharSequence constraint) {
 	             return dbHelper.fetchSuccinctDataByName(constraint.toString());

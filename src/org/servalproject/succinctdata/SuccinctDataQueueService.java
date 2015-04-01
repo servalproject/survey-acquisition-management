@@ -70,16 +70,20 @@ public class SuccinctDataQueueService extends Service {
 			String formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
 
 			// For each piece, create a message in the queue
+			Log.d("SuccinctData","Opening queue database");
 			if (db == null) {
 				db = new SuccinctDataQueueDbAdapter(this);
 				db.open();				
 			}
+			Log.d("SuccinctData","Opened queue database");
 			if (succinctData != null) {
 				for(int i = 0; i< succinctData.length;i ++) {
 					String piece = succinctData[i];
 					String prefix = piece.substring(0, 10);
 					db.createQueuedMessage(prefix, piece,formname+"/"+formversion);
 				}
+				Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
+				sendBroadcast(i);
 			}
 
 		} catch (Exception e) {
@@ -191,6 +195,8 @@ public class SuccinctDataQueueService extends Service {
 				if (messageSent == true) {
 					// Delete message from database
 					db.delete(piece);
+					Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
+					sendBroadcast(i);
 				}
 
 				c.moveToNext();
