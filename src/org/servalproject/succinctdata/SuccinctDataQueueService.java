@@ -126,7 +126,7 @@ public class SuccinctDataQueueService extends Service {
 	{
 		SuccinctDataQueueService.sms_tx_result = 0xbeef;
 
-		Intent sentIntent = new Intent();
+		Intent sentIntent = new Intent(SENT);
 		/*Create Pending Intents*/
 		PendingIntent p = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, sentIntent,
@@ -190,8 +190,7 @@ public class SuccinctDataQueueService extends Service {
 
 					// Else, if SMS is available, try to send messages that way
 				} else if (isSMSAvailable(s)) {
-					// XXX if (sendSMS(smsnumber,piece) == 0) messageSent=true;
-					messageSent=true;
+					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
 				} else if (false) {    		    
 					// Else, if inReach is available, try to send messages that way
 				}
