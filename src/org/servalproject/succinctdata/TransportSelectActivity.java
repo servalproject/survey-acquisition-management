@@ -298,6 +298,7 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 				// Failed
 				return -1;
 			}
+			
 		}        
 		return 0;
 	}
