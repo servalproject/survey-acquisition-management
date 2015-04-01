@@ -168,16 +168,22 @@ public class SuccinctDataQueueService extends Service {
 
 		String smsnumber = getString(R.string.succinct_data_sms_number);
 
+		long next_timeout = 5000;
+		
 		while(true) {
 			// Wait a little while before trying again
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(next_timeout);
 			} catch (Exception e) {
 			} 
 
 			// Get number of messages in database
 			Cursor c = db.fetchAllMessages();
-			if (c.getCount()==0) continue;
+			if (c.getCount()==0) {
+				// If no queued messages, wait only a few seconds
+				next_timeout = 5000;
+				continue;
+			} 
 
 			c.moveToFirst();
 			while (c.isAfterLast() == false) {
@@ -204,6 +210,16 @@ public class SuccinctDataQueueService extends Service {
 				}
 
 				c.moveToNext();
+			}
+			
+			// Check if we still have messages queued. If so, there is some problem
+			// with sending them, so hold off for a couple of minutes before trying again.
+			c = db.fetchAllMessages();
+			if (c.getCount()==0) {
+				// If no queued messages, wait only a few seconds
+				next_timeout = 5000;
+			} else {
+			    next_timeout = 120000;
 			}
 
 		}    
