@@ -1,8 +1,15 @@
 package org.servalproject.succinctdata;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Scanner;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.servalproject.sam.R;
 
 import android.app.Activity;
@@ -22,6 +29,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Button;
 
 public class SuccinctDataQueueService extends Service {
 
@@ -67,7 +75,7 @@ public class SuccinctDataQueueService extends Service {
 		// Check if the passed intent has a message to queue
 		try {
 			String succinctData[] = intent.getStringArrayExtra("org.servalproject.succinctdata.SUCCINCT");
-			//			String xmlData = intent.getStringExtra("org.servalproject.succinctdata.XML");
+			String xmlData = intent.getStringExtra("org.servalproject.succinctdata.XML");
 			String formname = intent.getStringExtra("org.servalproject.succinctdata.FORMNAME");
 			String formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
 
@@ -82,7 +90,7 @@ public class SuccinctDataQueueService extends Service {
 				for(int i = 0; i< succinctData.length;i ++) {
 					String piece = succinctData[i];
 					String prefix = piece.substring(0, 10);
-					db.createQueuedMessage(prefix, piece,formname+"/"+formversion);
+					db.createQueuedMessage(prefix, piece,formname+"/"+formversion,xmlData);
 				}
 				Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
 				LocalBroadcastManager lb = LocalBroadcastManager.getInstance(this);
@@ -115,13 +123,39 @@ public class SuccinctDataQueueService extends Service {
 
 	// Detecting internet access by Alexandre Jasmin from:
 	// http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
-	public boolean isMobileInternetAvailable() {
+	public boolean isInternetAvailable() {
 		ConnectivityManager connectivityManager 
 		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
+	private int sendViaCellular(String xmlData)
+	{
+		// XXX make configurable!
+		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
+
+		HttpClient httpclient = new DefaultHttpClient();
+		
+		HttpPost httppost = new HttpPost(url);
+
+		InputStream stream = new ByteArrayInputStream(xmlData.getBytes());
+		InputStreamEntity reqEntity = new InputStreamEntity(stream, -1);
+		reqEntity.setContentType("text/xml");
+		reqEntity.setChunked(true); // Send in multiple parts if needed						
+		httppost.setEntity(reqEntity);
+		int httpStatus = -1;
+		try {
+			HttpResponse response = httpclient.execute(httppost);
+			httpStatus = response.getStatusLine().getStatusCode();
+		} catch (Exception e) {
+			return -1;
+		}
+		// Do something with response...
+		if (httpStatus != 200 ) return -1;
+		else return 0;
+    }
+	
 	public int sendSMS(String smsnumber,String message)
 	{
 		SuccinctDataQueueService.sms_tx_result = 0xbeef;
@@ -189,16 +223,20 @@ public class SuccinctDataQueueService extends Service {
 			while (c.isAfterLast() == false) {
 				String prefix = c.getString(1);
 				String piece = c.getString(4);
+				String xml = c.getString(5);
 
 				// If data service is available, try to send messages that way
 				boolean messageSent = false;
-				if (false) {
-
-					// Else, if SMS is available, try to send messages that way
-				} else if (isSMSAvailable(s)) {
+				if ((messageSent==false)&&isInternetAvailable()) {					
+					if (sendViaCellular(xml) == 0) messageSent=true;					
+				} 
+				// Else, if SMS is available, try to send messages that way
+				if ((messageSent==false)&&isSMSAvailable(s)) {
 					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
-				} else if (false) {    		    
+				}
+				if ((messageSent==false)&&false) {    		    
 					// Else, if inReach is available, try to send messages that way
+					// XXX - Need synchronous inReach sending code here
 				}
 
 				if (messageSent == true) {
