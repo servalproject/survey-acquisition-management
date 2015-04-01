@@ -173,7 +173,6 @@
     <string name="system_acknowledgments_uri">http://developer.servalproject.org</string>
 
     <string name="succinct_data_message_queue_title">Succinct Data Queued Messages</string>
-    <!-- <string name="succinct_data_sms_number">+61481070417</string> -->
-    <string name="succinct_data_sms_number">+61427679796</string>
+    <string name="succinct_data_sms_number">+61481070417</string>
     
 </resources>
