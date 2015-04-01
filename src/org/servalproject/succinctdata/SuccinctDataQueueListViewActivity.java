@@ -9,6 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -42,17 +45,30 @@ public class SuccinctDataQueueListViewActivity extends Activity  {
 		 //Generate ListView from SQLite Database
 		 displayListView();
 
-		 registerReceiver(myReceiver, new IntentFilter("SD_MESSAGE_QUEUE_UPDATED"));
+		 myReceiver = new BroadcastReceiver() {
+			 @Override
+			 public void onReceive(Context context, Intent intent) {
+				 Handler refresh = new Handler(Looper.getMainLooper());
+				 refresh.post(new Runnable() {
+				     public void run()
+				     {
+				    	 displayListView();
+				     }
+				 });
+			 }
+			
+		 };
+		 
+		 IntentFilter f;
+	     f = new IntentFilter("SD_MESSAGE_QUEUE_UPDATED");
+	     f.addAction("SD_MESSAGE_QUEUE_UPDATED");
+	     LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, f);
 	 }
 	 
 	 public void onPause(Bundle savedInstanceState) {
 		 unregisterReceiver(myReceiver);
 	 }
-	 
-	 public void onReceive(Context context, Intent intent) {
-		 displayListView();
-	 }
-	 
+	  
 	 private void displayListView() {
 	 	 
 	  Cursor cursor = dbHelper.fetchAllMessages();

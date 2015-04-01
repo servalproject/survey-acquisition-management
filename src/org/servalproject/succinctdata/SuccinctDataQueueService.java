@@ -17,6 +17,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -83,7 +85,8 @@ public class SuccinctDataQueueService extends Service {
 					db.createQueuedMessage(prefix, piece,formname+"/"+formversion);
 				}
 				Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-				sendBroadcast(i);
+				LocalBroadcastManager lb = LocalBroadcastManager.getInstance(this);
+				lb.sendBroadcastSync(i);
 			}
 
 		} catch (Exception e) {
@@ -159,6 +162,7 @@ public class SuccinctDataQueueService extends Service {
 	{
 		// XXX - This really is ugly. We should edge detect everything instead of
 		// polling.
+		Looper.prepare();
 		SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(this);
 		db.open();
 
@@ -196,7 +200,8 @@ public class SuccinctDataQueueService extends Service {
 					// Delete message from database
 					db.delete(piece);
 					Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-					sendBroadcast(i);
+					LocalBroadcastManager lb = LocalBroadcastManager.getInstance(s);
+					lb.sendBroadcastSync(i);
 				}
 
 				c.moveToNext();
