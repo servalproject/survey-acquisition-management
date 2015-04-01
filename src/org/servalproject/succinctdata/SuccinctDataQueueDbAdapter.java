@@ -134,6 +134,12 @@ public class SuccinctDataQueueDbAdapter {
   }
   return mCursor;
  }
+
+public void delete(String piece) {
+	// Delete message using piece text as key
+	mDb.delete(SQLITE_TABLE, "SUCCINCTDATA=?", new String[] {piece});
+	
+}
  
 
 	
