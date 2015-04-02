@@ -235,12 +235,13 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				    });
 			}
 		    
-			
 			String [] res= org.servalproject.succinctdata.jni.xml2succinctfragments(
-					xmldata, 
+					xmldata,
+					null,
 					formname,
 					formversion,
 					recipeDir,160);
+			
 			if (res.length<1) {
 				
 				// TODO Error producing succinct data -- report
@@ -255,14 +256,6 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				    });
 
 			} else {								
-				// Launch transport chooser activity, passing in the uncompressed and compressed data
-				// Intent intent = new Intent(context, TransportSelectActivity.class);
-				// intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
-				// intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
-				// intent.putExtra("org.servalproject.succinctdata.FORMNAME", formname);
-				// intent.putExtra("org.servalproject.succinctdata.FORMVERSION", formversion);
-				// context.startActivity(intent);
-
 				// Pass message to queue
 				Intent intent = new Intent(context, SuccinctDataQueueService.class);
 				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);

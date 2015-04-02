@@ -20,8 +20,11 @@ public class jni {
 
     // Old deprecated call that returned bytes
     //    public static native byte[] xml2succinct(String xmlforminstance, String formname, String formversion, String succinctpath);
-    // New call that provides encoded strings limited to some MTU
-    public static native String[] xml2succinctfragments(String xmlforminstance, String formname, String formversion, String succinctpath, int mtu);
+    // New call that provides encoded strings limited to some MTU, and can compress directly
+	// from a form specification, without a recipe file
+    public static native String[] 
+    		xml2succinctfragments(String xmlforminstance, String xmlformspecification, 
+    		String formname, String formversion, String succinctpath, int mtu);
     // We no longer generate CSV locally
     // public static native int updatecsv(String succinctpath,String rxspooldir,String outputdir);	
 	
