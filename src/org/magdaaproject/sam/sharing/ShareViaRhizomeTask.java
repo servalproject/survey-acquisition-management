@@ -87,22 +87,22 @@ import android.content.Intent;
  *
  */
 public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
-	
+
 	/*
 	 * private class level constants
 	 */
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "ShareVia logcRhizomeTask";
-	
+
 	private static final int sMaxLoops = 5;
 	private static final int sSleepTime = 500;
-	
+
 	/*
 	 * private class level variables
 	 */
 	private Context context;
 	private Uri     instanceUri;
-	
+
 	/**
 	 * construct a new task object with required variables
 	 * 
@@ -121,49 +121,49 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 	 */
 	@Override
 	protected Integer doInBackground(Void... arg0) {
-		
+
 		// get information about this instance
 		ContentResolver mContentResolver = context.getContentResolver();
-		
+
 		String[] mProjection = new String[2];
 		mProjection[0] = InstanceProviderAPI.InstanceColumns.STATUS;
 		mProjection[1] = InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH;
-		
+
 		Cursor mCursor;
-		
+
 		// get the data, checking until the instance is finalised
 		boolean mHaveInstance = false;
 		int     mLoopCount = 0;
-		
+
 		String mInstancePath = null;
-		
+
 		// TODO: Figure out why the looping is here, since it just adds ~20sec delay from completion of
 		// form to when it is processed, seemingly for no useful reason.
 		while(mHaveInstance == false && mLoopCount <= sMaxLoops) {
-			
+
 			mCursor = mContentResolver.query(
 					instanceUri,
 					mProjection,
 					null,
 					null,
 					null);
-			
+
 			// check on the status of the instance
 			if(mCursor != null && mCursor.getCount() > 0) {
-				
+
 				mCursor.moveToFirst();
-				
+
 				// status is "complete" ODK has finished with the instance
 				if(mCursor.getString(0).equals(InstanceProviderAPI.STATUS_COMPLETE) == true) {
 					mInstancePath = mCursor.getString(1);					
 				}
-				
+
 			}
-			
+
 			if(mCursor != null) {
 				mCursor.close();
 			}
-			
+
 			// sleep the thread, an extra sleep even if the instance is finalised won't hurt
 			mLoopCount++;
 			try {
@@ -173,21 +173,21 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				return null;
 			}
 		}
-		
+
 		// check to see if an instance file was found
 		if(mInstancePath == null) {
 			return null;
 		}
-		
+
 		// parse the instance path
 		File mInstanceFile = new File(mInstancePath);
-		
+
 		// check to make sure file is accessible
 		if(FileUtils.isFileReadable(mInstancePath) == false) {
 			Log.w(sLogTag, "instance file is not accessible '" + mInstancePath + "'");
 			return null;
 		}
-		
+
 		// Succinct Data compression and spooling
 		// Read file and generate succinct data file for dispatch by inReach, SMS or other similar transport.
 		try {
@@ -209,72 +209,38 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				if (id != null) 					
 					// Canonical form name includes version 
 					formname = n.getNodeName();
-					formversion = id.getNodeValue();
+				formversion = id.getNodeValue();
 				n = d.getNextSibling();
 			}
-			
+
 			// XXX TODO Android does not reliably return the path to the external sdcard storage,
 			// sometimes instead returning the path to the internal sdcard storage.  This breaks
 			// succinct data.
 			String recipeDir = "/sdcard/"+
-			context.getString(R.string.system_file_path_succinct_specification_files_path);
-//			String recipeDir = Environment.getExternalStorageDirectory().getPath()+
-//					context.getString(R.string.system_file_path_succinct_specification_files_path);
-			
-			
+					context.getString(R.string.system_file_path_succinct_specification_files_path);
+			//			String recipeDir = Environment.getExternalStorageDirectory().getPath()+
+			//					context.getString(R.string.system_file_path_succinct_specification_files_path);
+
+
 			//We check if libsmac is here before continue.
 			File lib = new File(context.getFilesDir().getPath()+ "/../lib/libsmac.so");
 			if(!lib.isFile()) {
 				Log.e(sLogTag, "Failed to load /lib/libsmac.so. Problem may be because ndk-build has not been done before building project.");
 				Handler handler = new Handler(Looper.getMainLooper());
 				handler.post(new Runnable() {
-				        @Override
-				        public void run() {
-				        	Toast.makeText(context, "Failed to load /lib/libsmac.so. Problem may be because ndk-build has not been done before building project.", Toast.LENGTH_LONG).show();
-				        }
-				    });
+					@Override
+					public void run() {
+						Toast.makeText(context, "Failed to load /lib/libsmac.so. Problem may be because ndk-build has not been done before building project.", Toast.LENGTH_LONG).show();
+					}
+				});
 			}
-		    
-			String [] res= org.servalproject.succinctdata.jni.xml2succinctfragments(
-					xmldata,
-					null,
-					formname,
-					formversion,
-					recipeDir,160);
-			
-			if (res.length<1) {
-				
-				// TODO Error producing succinct data -- report
-				// XXX - we really need an error notification here, to say that succinct data has failed for this!				
-				Handler handler = new Handler(Looper.getMainLooper());
-				handler.post(new Runnable() {
 
-				        @Override
-				        public void run() {
-				        	Toast.makeText(context, "Error making succinct data", Toast.LENGTH_LONG).show();
-				        }
-				    });
-
-			} else {								
-				// Pass message to queue
-				Intent intent = new Intent(context, SuccinctDataQueueService.class);
-				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
-				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
-				intent.putExtra("org.servalproject.succinctdata.FORMNAME", formname);
-				intent.putExtra("org.servalproject.succinctdata.FORMVERSION", formversion);
-				context.startService(intent);
-				
-				// Now tell the user it has happened
-				Handler handler = new Handler(Looper.getMainLooper());
-				handler.post(new Runnable() {
-
-				        @Override
-				        public void run() {
-				        	Toast.makeText(context, "Succinct data message spooled", Toast.LENGTH_SHORT).show();
-				        }
-				    });
-				
-							}
+			int result = enqueueSuccinctData(context,xmldata,null,formname,formversion,recipeDir,160,mInstanceFile);
+			if ( result != 0) {
+				// Error queueing SD
+				Log.e(sLogTag, "Failed to enqueue succinct data.");
+			}
+			return result;
 		} catch (IOException e) {
 			// TODO Error producing succinct data -- report
 		} catch (SAXException e) {
@@ -284,54 +250,117 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// check to make sure the rhizome data directory exists
-		String mTempPath = Environment.getExternalStorageDirectory().getPath();
-		mTempPath += context.getString(R.string.system_file_path_rhizome_data);
-
-		if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
-
-			Log.e(sLogTag, "expected rhizome directory is missing");
-			return null;
-		}
-
-		// create a zip file of the instance directory
-		mTempPath += mInstanceFile.getName() + context.getString(R.string.system_file_instance_extension);
-		
-		try {
-			// create zip file, including parent directory
-			ZipUtil.pack(
-					new File(mInstanceFile.getParent()),
-					new File(mTempPath),
-					true);
-		} catch (ZipException e) {
-			Log.e(sLogTag, "unable to create the zip file", e);
-			return null;
-		}
-		
-		// share the file via Rhizome
-		try {
-			if(RhizomeUtils.shareFile(context, mTempPath)) {
-				Log.i(sLogTag, "new instance file shared via Rhizome '" + mTempPath + "'");
-				return 0;
-			} else {
-				return null;
-			}
-		} catch (IOException e) {
-			Log.e(sLogTag, "unable to share the zip file", e);
-			return null;
-		}
+		return -99;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 	 */
 	@Override
-    protected void onPostExecute(Integer result) {
-		
+	protected void onPostExecute(Integer result) {
+
 		//TODO determine if need do anything once file shared, especially on UI thread?
-		
+
 	}
 
+	public static int enqueueSuccinctData(final Context context, 
+			String xmldata, String xmlformspec,
+			String formname,String formversion,
+			String recipeDir,int mtu, File mInstanceFile) {
+
+		String errorstring = null;
+		String okstring = null;
+
+		try {
+
+			String [] res= org.servalproject.succinctdata.jni.xml2succinctfragments(
+					xmldata,
+					xmlformspec,
+					formname,
+					formversion,
+					recipeDir,mtu);
+
+			if (res.length<1) {
+
+				// TODO Error producing succinct data -- report
+				// XXX - we really need an error notification here, to say that succinct data has failed for this!
+				errorstring = "Error making succinct data";
+
+			} else {								
+				// Pass message to queue
+				Intent intent = new Intent(context, SuccinctDataQueueService.class);
+				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
+				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
+				intent.putExtra("org.servalproject.succinctdata.FORMNAME", formname);
+				intent.putExtra("org.servalproject.succinctdata.FORMVERSION", formversion);
+				context.startService(intent);					
+
+				// Now tell the user it has happened
+				okstring = "Succinct data message spooled";
+
+			}
+
+			final String e = errorstring;
+			final String o = okstring;
+
+			Handler handler = new Handler(Looper.getMainLooper());
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (e!=null)
+						Toast.makeText(context, e, Toast.LENGTH_LONG).show();
+					else
+						Toast.makeText(context, o, Toast.LENGTH_SHORT).show();
+				}
+			});				
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (false) {
+
+			// check to make sure the rhizome data directory exists
+			String mTempPath = Environment.getExternalStorageDirectory().getPath();
+			mTempPath += context.getString(R.string.system_file_path_rhizome_data);
+
+			if(FileUtils.isDirectoryWriteable(mTempPath) == false) {
+
+				Log.e(sLogTag, "expected rhizome directory is missing");
+				return -2;
+			}
+
+			// create a zip file of the instance directory
+			mTempPath += mInstanceFile.getName() + context.getString(R.string.system_file_instance_extension);
+
+			try {
+				// create zip file, including parent directory
+				ZipUtil.pack(
+						new File(mInstanceFile.getParent()),
+						new File(mTempPath),
+						true);
+			} catch (ZipException e) {
+				Log.e(sLogTag, "unable to create the zip file", e);
+				return -3;
+			}
+
+			// share the file via Rhizome
+			try {
+				if(RhizomeUtils.shareFile(context, mTempPath)) {
+					Log.i(sLogTag, "new instance file shared via Rhizome '" + mTempPath + "'");
+					return 0;
+				} else {
+					return -4;
+				}
+			} catch (IOException e) {
+				Log.e(sLogTag, "unable to share the zip file", e);
+				return -5;
+			}
+		}
+
+		return 0;
+	}
 }
