@@ -1,4 +1,4 @@
-<!-- 
+<!--
 /*
  * Copyright (C) 2013 The Serval Project
  * Portions Copyright (C) 2012, 2013 The MaGDAA Project
@@ -48,36 +48,39 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="17" />
-    
+
     <!-- uses features -->
-    <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
-    <uses-feature android:required="true" android:name="android.hardware.wifi"/>
-    
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" />
+
     <!-- uses permissions -->
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- write files on external storage -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/> <!-- derive the device id -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- write files on external storage -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- derive the device id -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- derive the device id -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- derive the device id -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- preemptively listen for location to speed up survey completion -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!--  for displaying maps -->
-    
-    <!--  For inReach stuff -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- for displaying maps -->
+
+
+    <!-- For inReach stuff -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    
-    
-    <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/> <!-- add files to the Rhizome store for sharing -->
+    <uses-permission android:name="org.servalproject.rhizome.ADD_FILE" /> <!-- add files to the Rhizome store for sharing -->
 
     <application
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/system_application_name"
-        android:theme="@style/AppTheme" 
-        android:allowBackup="false">
+        android:theme="@style/AppTheme" >
         <activity
             android:name="org.magdaaproject.sam.LauncherActivity"
             android:label="@string/system_application_default_label" >
@@ -87,70 +90,94 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity 
+        <activity
             android:name="org.magdaaproject.sam.PreferencesActivity"
-            android:label="@string/system_application_default_label"> 
+            android:label="@string/system_application_default_label" >
         </activity>
-        <activity 
+        <activity
             android:name="org.magdaaproject.sam.ConfigManagerActivity"
-            android:label="@string/system_application_default_label"> 
+            android:label="@string/system_application_default_label" >
         </activity>
-        <activity 
+        <activity
             android:name="org.magdaaproject.sam.SurveyFormsActivity"
-            android:label="@string/system_application_default_label"> 
+            android:label="@string/system_application_default_label" >
         </activity>
-        <activity 
+        <activity
             android:name="org.servalproject.succinctdata.TransportSelectActivity"
-            android:label="@string/system_application_default_label"> 
+            android:label="@string/system_application_default_label" >
         </activity>
-        <activity 
+        <activity
             android:name="org.servalproject.succinctdata.DownloadForms"
-            android:label="@string/system_application_default_label"> 
+            android:label="@string/system_application_default_label" >
         </activity>
-        <activity 
+        <activity
             android:name="org.servalproject.succinctdata.SuccinctDataQueueListViewActivity"
-            android:label="@string/succinct_data_message_queue_title"> 
+            android:label="@string/succinct_data_message_queue_title" >
         </activity>
-        <provider 
-            android:enabled="true" 
-            android:name="org.magdaaproject.sam.content.ItemsContentProvider" 
-            android:exported="false" 
-            android:authorities="org.servalproject.sam.provider.items">
+
+        <provider
+            android:name="org.magdaaproject.sam.content.ItemsContentProvider"
+            android:authorities="org.servalproject.sam.provider.items"
+            android:enabled="true"
+            android:exported="false" >
         </provider>
-        <service 
-            android:enabled="true" 
-            android:name="org.magdaaproject.sam.LocationService" 
-            android:exported="false">
+
+        <service
+            android:name="org.magdaaproject.sam.LocationService"
+            android:enabled="true"
+            android:exported="false" >
         </service>
-        <service 
-            android:enabled="true" 
-            android:name="org.servalproject.succinctdata.SuccinctDataQueueService" 
-            android:exported="false">
+        <service
+            android:name="org.servalproject.succinctdata.SuccinctDataQueueService"
+            android:enabled="true"
+            android:exported="false" >
         </service>
-        <receiver android:name="org.servalproject.succinctdata.smsReceived">
+
+        <receiver android:name="org.servalproject.succinctdata.smsReceived" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        
+        <receiver android:name="ReceiveNewMagpiRecord" >
+            <intent-filter>
+                <action android:name="org.servalproject.succinctdata.ReceiveNewMagpiRecord" />
+            </intent-filter>
+        </receiver>
+
         <!-- inReach related activities and intents -->
-        <activity android:name="com.delorme.inreachapp.InReachAppActivity" android:label="@string/system_application_name" ></activity>
-        <activity android:name="com.delorme.inreachapp.DeviceLogActivity" android:label="@string/system_application_name" ></activity>
-        <activity android:name="com.delorme.inreachapp.DeviceInfoActivity" android:label="@string/system_application_name" ></activity>
-        <activity android:name="com.delorme.inreachapp.DeviceControlsActivity" android:label="@string/system_application_name" ></activity>
+        <activity
+            android:name="com.delorme.inreachapp.InReachAppActivity"
+            android:label="@string/system_application_name" >
+        </activity>
+        <activity
+            android:name="com.delorme.inreachapp.DeviceLogActivity"
+            android:label="@string/system_application_name" >
+        </activity>
+        <activity
+            android:name="com.delorme.inreachapp.DeviceInfoActivity"
+            android:label="@string/system_application_name" >
+        </activity>
+        <activity
+            android:name="com.delorme.inreachapp.DeviceControlsActivity"
+            android:label="@string/system_application_name" >
+        </activity>
         <activity
             android:name="org.servalproject.servalsatellitemessenger.MessageComposeActivity"
             android:label="@string/system_application_name" >
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="inreachto" />
-            </intent-filter>            
+            </intent-filter>
         </activity>
+
         <service
-            android:name="com.delorme.inreachapp.service.InReachService" android:enabled="true" android:label="inReach Device Service">
+            android:name="com.delorme.inreachapp.service.InReachService"
+            android:enabled="true"
+            android:label="inReach Device Service" >
         </service>
-        
     </application>
 
 </manifest>
