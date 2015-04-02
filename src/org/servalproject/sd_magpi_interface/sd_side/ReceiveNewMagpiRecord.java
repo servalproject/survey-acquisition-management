@@ -1,8 +1,13 @@
 package org.servalproject.sd_magpi_interface.sd_side;
 
+import java.io.File;
+
+import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ReceiveNewMagpiRecord extends BroadcastReceiver {
@@ -14,7 +19,14 @@ public class ReceiveNewMagpiRecord extends BroadcastReceiver {
 		String recordBundle = intent.getStringExtra("recordBundle");
 		String formSpecification =  intent.getStringExtra("formSpecification");
 		
-
+		int result = ShareViaRhizomeTask.enqueueSuccinctData(context, 
+					completedRecord, formSpecification,
+					null, null, null, 160, null);
+		if ( result != 0) {
+			// Error queueing SD
+			Log.e("SuccinctData", "Failed to enqueue succinct data received from magpi.");
+		}
+		
 	}
 
 }
