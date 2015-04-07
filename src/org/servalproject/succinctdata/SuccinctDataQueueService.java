@@ -34,11 +34,15 @@ import android.widget.Button;
 public class SuccinctDataQueueService extends Service {
 
 	private String SENT = "SMS_SENT";
-	private String DELIVERED = "SMS_DELIVERED";
 
 	public static int sms_tx_result = -1; 
 	public static PendingIntent sms_tx_pintent = null;
 
+	private static Long pendingInReachMessageId = -1L;
+	private static String pendingInReachMessagePiece = null;
+	
+	private boolean inReachReadyAndAvailable = false;
+	
 	private SuccinctDataQueueDbAdapter db = null;
 	Thread messageSenderThread = null;
 
@@ -234,9 +238,13 @@ public class SuccinctDataQueueService extends Service {
 				if ((messageSent==false)&&isSMSAvailable(s)) {
 					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
 				}
-				if ((messageSent==false)&&false) {    		    
+				if ((messageSent==false)&&(inReachReadyAndAvailable==true)) {    		    
 					// Else, if inReach is available, try to send messages that way
-					// XXX - Need synchronous inReach sending code here
+					if (dispatchViaInReach(smsnumber,piece) == 0) {
+						// Mark inreach busy until it confirms handover of the message
+						// to the satellite constellation.
+						inReachReadyAndAvailable = false;
+					}
 				}
 
 				if (messageSent == true) {
@@ -261,5 +269,35 @@ public class SuccinctDataQueueService extends Service {
 			}
 
 		}    
+	}
+
+	private int dispatchViaInReach(String smsnumber, String piece) {		
+		// XXX - Need synchronous inReach sending code here				
+		
+		// XXX - tie piece to inReach message ID so that when the inReach
+		// indicates that it has been delivered, we can remove the relevant 
+		// piece from the database, even if it has taken hours for the inReach
+		// to deliver it.
+		Long inReachMessageId = 99L;  // XXX - Get real message ID
+		rememberPendingInReachMessage(inReachMessageId,piece);
+							
+		return -1;
+	}
+
+	private void rememberPendingInReachMessage(Long inReachMessageId,
+			String piece) {
+		pendingInReachMessageId = inReachMessageId;
+		pendingInReachMessagePiece = piece;		
+	}
+	
+	private void sawInReachMessageConfirmation(Service s, Long inReachMessageId) {
+		if (inReachMessageId == pendingInReachMessageId) {
+			// We know about this one, delete the corresponding piece from the
+			// database.
+			db.delete(pendingInReachMessagePiece);
+			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
+			LocalBroadcastManager lb = LocalBroadcastManager.getInstance(s);
+			lb.sendBroadcastSync(i);
+		}
 	}
 }
