@@ -104,7 +104,7 @@
          style="@android:style/Widget.ProgressBar.Small"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_above="@id/launcher_ui_btn_contact"
+         android:layout_above="@id/launcher_ui_btn_view_queue"
          android:layout_centerInParent="true"
          />
      
