@@ -184,7 +184,7 @@ public class InReachMessageHandler extends Handler{
                 
                 addEvent(text);
                 
-                queuesynced = true;
+                setQueueynced(true);
                 		
                 break;
             }
@@ -402,6 +402,17 @@ public class InReachMessageHandler extends Handler{
         }
     }
     
+    
+    private static void setQueueynced(boolean state) {
+    	ms_logInstance.queuesynced = state;
+    }
+    
+    public static boolean getQueueynced(){
+    	return ms_logInstance.queuesynced;
+    }
+    
+    
+    
     /**
      * A listener for events.
      * 
@@ -434,5 +445,6 @@ public class InReachMessageHandler extends Handler{
     private List<String> m_events = new ArrayList<String>();
     
     
-    public boolean queuesynced = false;
+    private static boolean queuesynced = false;
+    
 }

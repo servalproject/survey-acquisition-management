@@ -134,7 +134,6 @@
             android:enabled="true"
             android:exported="false" >
         </provider>
-
         <service
             android:name="org.magdaaproject.sam.LocationService"
             android:enabled="true"

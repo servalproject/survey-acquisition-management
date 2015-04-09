@@ -4,12 +4,14 @@ import org.servalproject.sam.R;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 public class RCLauncherActivity extends FragmentActivity implements OnClickListener {
 
@@ -56,6 +58,11 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			break;
 			
 		case R.id.launcher_rc_connection_to_inreach:
+			if(Looper.getMainLooper().getThread() == Thread.currentThread()) {
+				// Current Thread is Main Thread.
+				Toast.makeText(getApplicationContext(), "in main thread", 
+						Toast.LENGTH_SHORT).show();
+			}
 			break;
 			
 		case R.id.launcher_rc_go_to_regular_launcher:

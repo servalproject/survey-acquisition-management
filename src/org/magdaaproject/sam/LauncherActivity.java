@@ -65,6 +65,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.preference.PreferenceManager;
@@ -429,13 +430,18 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 				}
 			}
 			*/
-			if (InReachMessageHandler.getInstance().queuesynced == true){
+			if (InReachMessageHandler.getInstance().getQueueynced() == true){
 				progressBar.setVisibility(View.GONE);
 				Button mButton = (Button) findViewById(R.id.launcher_ui_btn_manage_inreach);
 				mButton.setText("connected to inReach");
 				mButton.setEnabled(false);
 			}
 			
+			if(Looper.getMainLooper().getThread() == Thread.currentThread()) {
+				// Current Thread is Main Thread.
+				Toast.makeText(getApplicationContext(), "in main thread", 
+						Toast.LENGTH_SHORT).show();
+			}
 			//****************** changes ends *******************************************
 			break;
 		case R.id.launcher_ui_btn_update_forms:
@@ -507,10 +513,11 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	
 	
 	public void onBackPressed () {
-		super.onBackPressed();
+		
 		Intent mIntent;
 		mIntent = new Intent(this, org.magdaaproject.sam.RCLauncherActivity.class);
-		startService(mIntent);
+		startActivity(mIntent);
+		super.onBackPressed();
 	}
 	/*
 	 * (non-Javadoc)
@@ -530,6 +537,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	}
 	
 	//GG no need to add the ServiceConnection because this launcher is the ServiceConnection
+	//GG Service connection is used to connect the main thread to a service
 	
     /**
      * Invoked when the service is binded
