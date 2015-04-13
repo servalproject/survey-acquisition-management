@@ -80,7 +80,7 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/system_application_name"
-        android:theme="@style/AppTheme" >
+        android:name="org.magdaaproject.sam.SamApplication">
         <activity
             android:name="org.magdaaproject.sam.LauncherActivity"
             android:label="@string/system_application_default_label" >

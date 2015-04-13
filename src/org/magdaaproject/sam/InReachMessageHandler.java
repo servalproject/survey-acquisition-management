@@ -5,15 +5,23 @@ import java.util.Date;
 import java.util.List;
 
 import com.delorme.inreachapp.service.InReachEvents;
+import com.delorme.inreachapp.service.InReachService;
 import com.delorme.inreachcore.BatteryStatus;
 import com.delorme.inreachcore.InReachDeviceSpecs;
 import com.delorme.inreachcore.InboundMessage;
 import com.delorme.inreachcore.MessageTypes;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
+import 	android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 
 
 /**
@@ -23,12 +31,18 @@ import android.os.Message;
  *
  */
 
-public class InReachMessageHandler extends Handler{
+public class InReachMessageHandler extends Handler implements ServiceConnection {
 
 
-
+	private final Context context;
+	private static final BluetoothAdapter BA = BluetoothAdapter.getDefaultAdapter();
+	
+	
     
-    /**
+    private InReachMessageHandler(Context c) {
+    	this.context = c;
+	}
+	/**
      * Returns a single instance of the LogEventHandler
      * 
      * @author Eric Semle
@@ -38,11 +52,29 @@ public class InReachMessageHandler extends Handler{
      */
     public static InReachMessageHandler getInstance()
     {
+        return ms_logInstance;
+    }
+    
+    /**
+     * create a single instance of the LogEventHandler
+     * @param c the context
+     * @return
+     */
+    public static InReachMessageHandler createInstance(Context c)
+    {
         if (ms_logInstance == null)
         {
-            ms_logInstance = new InReachMessageHandler();
+            ms_logInstance = new InReachMessageHandler(c);
+            
+            if (BA == null) {
+				
+			}
+			else if  (!BA.isEnabled()) {
+				BA.enable();
+			}
         }
         return ms_logInstance;
+    	
     }
     
     /**
@@ -95,6 +127,12 @@ public class InReachMessageHandler extends Handler{
             case InReachEvents.EVENT_CONNECTION_STATUS_UPDATE:
             {
             	
+            	// restarts all the variables to their default value if the inReach is disconnected
+            	if (msg.arg1 == InReachEvents.VALUE_FALSE) {
+            		m_queuesynced = false;
+            		m_queued_count = 0;
+            	}
+            	
                 final String text = (msg.arg1 == InReachEvents.VALUE_TRUE ?
                     "inReachManager connected to device." :
                     "inReachManager disconnected from device.");
@@ -117,6 +155,8 @@ public class InReachMessageHandler extends Handler{
                 final String text = String.format("%s queued with id: %d",
                     type, msg.arg2);
                 
+                m_queued_count++;
+                
                 addEvent(text);
                 break;
             }
@@ -126,6 +166,8 @@ public class InReachMessageHandler extends Handler{
                 final String text = String.format(
                     "%s successfully sent with id: %d",
                     type, msg.arg2);
+                
+                
                 
                 addEvent(text);
                 break;
@@ -184,8 +226,7 @@ public class InReachMessageHandler extends Handler{
                 
                 addEvent(text);
                 
-                setQueueynced(true);
-                		
+                m_queuesynced = true;	
                 break;
             }
             case InReachEvents.EVENT_EMERGENCY_MODE_UPDATE:
@@ -403,14 +444,120 @@ public class InReachMessageHandler extends Handler{
     }
     
     
-    private static void setQueueynced(boolean state) {
-    	ms_logInstance.queuesynced = state;
+   
+    public static final boolean getQueueynced(){
+    	return m_queuesynced;
     }
     
-    public static boolean getQueueynced(){
-    	return ms_logInstance.queuesynced;
+    public static final boolean isInreachAvailable(){
+    	return m_queuesynced and (m_queued_count = 0);
     }
     
+    
+    /**
+     * Invoked when the service is binded
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    {
+        m_service = ((InReachService.InReachBinder)service).getService();
+        
+        InReachMessageHandler handler = InReachMessageHandler.getInstance();
+        m_messenger = new Messenger(handler);
+        m_service.registerMessenger(m_messenger);
+        
+        
+    }
+
+    /**
+     * Invoked when the service is disconnected
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    @Override
+    public void onServiceDisconnected(ComponentName name)
+    {
+        if (m_service != null)
+        {
+            m_service.unregisterMessenger(m_messenger);
+            m_service = null;
+        }
+    }
+   
+    /**
+     * Returns the binded InReach Service
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    public InReachService getService()
+    {
+        return m_service;
+    }
+    
+    /**
+     * Starts the InReachService and binds it to the application
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    public void startService()
+    {
+        if (m_serviceStarted)
+            return;
+        
+        Intent intent = new Intent(this.context, InReachService.class);  
+        
+        this.context.startService(intent);
+        this.context.bindService(intent, this, this.context.BIND_AUTO_CREATE); 
+        
+        m_serviceStarted = true;
+    }
+    
+    /**
+     * Unbinds the InReachService and stops the service.
+     * 
+     * @author Eric Semle
+     * @since inReachApp (07 May 2012)
+     * @version 1.0
+     * @bug AND-1009
+     */
+    public void stopService()
+    {
+        if (!m_serviceStarted)
+            return;
+        
+        Intent intent = new Intent(this.context, InReachService.class);  
+        
+        this.context.unbindService(this);
+        this.context.stopService(intent);
+        
+        m_serviceStarted = false;
+    }
+    
+    /** Boolean flag as to whether or not the service has been started */
+    public boolean m_serviceStarted = false;
+    
+    /** The bound inReach service */
+    public InReachService m_service = null;
+    
+    /** The messenger for the LogEventHandler */
+    public Messenger m_messenger = null;
+    
+    /** A handler for all inReach events that logs them */
+    public InReachMessageHandler m_eventHandler = null;
     
     
     /**
@@ -445,6 +592,13 @@ public class InReachMessageHandler extends Handler{
     private List<String> m_events = new ArrayList<String>();
     
     
-    private static boolean queuesynced = false;
+    private static boolean m_queuesynced = false;
+    private static int m_queued_count = 0; 
+    
+    
+    
+    
+    
+    
     
 }

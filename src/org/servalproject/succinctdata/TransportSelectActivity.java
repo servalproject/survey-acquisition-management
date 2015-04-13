@@ -16,7 +16,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.magdaaproject.sam.InReachMessageHandler;
 import org.magdaaproject.sam.LauncherActivity;
+
 import org.servalproject.sam.R;
 
 import com.delorme.inreachcore.InReachManager;
@@ -270,7 +272,7 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 
 	private int sendInReach(String phonenumber, String [] succinctData, PendingIntent p)
 	{
-		InReachManager manager = LauncherActivity.me.getService().getManager();
+		InReachManager manager = InReachMessageHandler.getInstance().getService().getManager();
 		for(int i=0;i<succinctData.length;i++) {
 			final OutboundMessage message = new OutboundMessage();
 			message.setAddressCode(OutboundMessage.AC_FreeForm);

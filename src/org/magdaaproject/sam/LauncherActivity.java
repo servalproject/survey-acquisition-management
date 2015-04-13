@@ -106,7 +106,7 @@ import com.delorme.inreachcore.InboundMessage;
 /**
  * the main activity for the application
  */
-public class LauncherActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
+public class LauncherActivity extends FragmentActivity implements OnClickListener {
 	
 	/*
 	 * public constants
@@ -131,7 +131,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 	public static LauncherActivity me = null;
 	
 	private ProgressBar progressBar;
-	private BluetoothAdapter BA;
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -242,10 +242,10 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		
 		
 		//GG activate inReachService
-		startService();
+		//XXX startService();
 		
 		//GG activate bluetooth
-		BA = BluetoothAdapter.getDefaultAdapter();
+		//XXX BA = BluetoothAdapter.getDefaultAdapter();
 		
 		
 	}
@@ -364,6 +364,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			//******* changes Guillaume *********************************************
 			
 			progressBar.setVisibility(View.VISIBLE);
+			/* XXX
 			if (BA == null) {
 				Toast.makeText(getApplicationContext(),"The device does not support Bluetooth.",Toast.LENGTH_LONG).show();
 			}
@@ -380,18 +381,9 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		         		"Connecting to inReach.\nPlease wait.",Toast.LENGTH_LONG).show();
 			}
 			
+			*/
 			
 			
-			if (m_serviceStarted == true) {
-				
-				
-			}
-			else {
-				
-				Toast.makeText(getApplicationContext(),"Service started. GG",
-	         		Toast.LENGTH_SHORT).show();
-				
-			}
 						
 			/* *****************  Test with LogEventHandler ** does not work fully
 			m_eventHandler = LogEventHandler.getInstance();
@@ -430,18 +422,13 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 				}
 			}
 			*/
-			if (InReachMessageHandler.getInstance().getQueueynced() == true){
+			if (InReachMessageHandler.getQueueynced() == true){
 				progressBar.setVisibility(View.GONE);
 				Button mButton = (Button) findViewById(R.id.launcher_ui_btn_manage_inreach);
 				mButton.setText("connected to inReach");
 				mButton.setEnabled(false);
 			}
 			
-			if(Looper.getMainLooper().getThread() == Thread.currentThread()) {
-				// Current Thread is Main Thread.
-				Toast.makeText(getApplicationContext(), "in main thread", 
-						Toast.LENGTH_SHORT).show();
-			}
 			//****************** changes ends *******************************************
 			break;
 		case R.id.launcher_ui_btn_update_forms:
@@ -511,7 +498,8 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		startActivity(Intent.createChooser(mIntent, getString(R.string.system_contact_email_chooser)));
 	}
 	
-	
+	// does not work, I wanted to keep alive the service started in this activity when it 
+	// then user presses the back button
 	public void onBackPressed () {
 		
 		Intent mIntent;
@@ -533,12 +521,14 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			cursor.close();
 		}
 		
-		stopService();
+		//XXX stopService();
 	}
 	
 	//GG no need to add the ServiceConnection because this launcher is the ServiceConnection
 	//GG Service connection is used to connect the main thread to a service
 	
+	
+	/* XXX
     /**
      * Invoked when the service is binded
      * 
@@ -546,7 +536,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
      * @since inReachApp (07 May 2012)
      * @version 1.0
      * @bug AND-1009
-     */
+     *
     @Override
     public void onServiceConnected(ComponentName name, IBinder service)
     {
@@ -566,7 +556,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
      * @since inReachApp (07 May 2012)
      * @version 1.0
      * @bug AND-1009
-     */
+     *
     @Override
     public void onServiceDisconnected(ComponentName name)
     {
@@ -584,7 +574,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
      * @since inReachApp (07 May 2012)
      * @version 1.0
      * @bug AND-1009
-     */
+     *
     public InReachService getService()
     {
         return m_service;
@@ -597,7 +587,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
      * @since inReachApp (07 May 2012)
      * @version 1.0
      * @bug AND-1009
-     */
+     *
     public void startService()
     {
         if (m_serviceStarted)
@@ -618,7 +608,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
      * @since inReachApp (07 May 2012)
      * @version 1.0
      * @bug AND-1009
-     */
+     *
     public void stopService()
     {
         if (!m_serviceStarted)
@@ -632,16 +622,16 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
         m_serviceStarted = false;
     }
     
-    /** Boolean flag as to whether or not the service has been started */
+    /** Boolean flag as to whether or not the service has been started *
     public boolean m_serviceStarted = false;
     
-    /** The bound inReach service */
+    /** The bound inReach service *
     public InReachService m_service = null;
     
-    /** The messenger for the LogEventHandler */
+    /** The messenger for the LogEventHandler *
     public Messenger m_messenger = null;
     
-    /** A handler for all inReach events that logs them */
+    /** A handler for all inReach events that logs them *
     public InReachMessageHandler m_eventHandler = null;
-    
+    */
 }

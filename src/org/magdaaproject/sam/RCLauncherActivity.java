@@ -2,7 +2,10 @@ package org.magdaaproject.sam;
 
 import org.servalproject.sam.R;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +21,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	/*
 	 * private class level constants
 	 */
+
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "RCLauncherActivity";
 	
@@ -41,6 +45,12 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mcheckBox.setChecked(true);
 		mcheckBox.setEnabled(false);
 
+        /*
+        Intent mIntent;
+		mIntent = new Intent(this, org.magdaaproject.sam.SamInReachService.class);
+		
+		startService(mIntent);
+		*/
 	}
 	
 	/*
@@ -58,10 +68,9 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			break;
 			
 		case R.id.launcher_rc_connection_to_inreach:
-			if(Looper.getMainLooper().getThread() == Thread.currentThread()) {
-				// Current Thread is Main Thread.
-				Toast.makeText(getApplicationContext(), "in main thread", 
-						Toast.LENGTH_SHORT).show();
+			if (InReachMessageHandler.getQueueynced() == true){
+				Button mButton = (Button) findViewById(R.id.launcher_rc_connection_to_inreach);
+				mButton.setText("connected to inReach");
 			}
 			break;
 			
@@ -84,4 +93,5 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		super.onResume();
 		
 	}
+		
 }
