@@ -450,7 +450,12 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     }
     
     public static final boolean isInreachAvailable(){
-    	return m_queuesynced and (m_queued_count = 0);
+    	if ((m_queuesynced == true) &&(m_queued_count == 0)){
+    		return true;
+    	} else {
+    		return false;
+    	}
+    	
     }
     
     
