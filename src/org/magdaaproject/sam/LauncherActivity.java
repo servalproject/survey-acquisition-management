@@ -239,15 +239,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		
 		// populate the UI
 		populateUserInterface();
-		
-		
-		//GG activate inReachService
-		//XXX startService();
-		
-		//GG activate bluetooth
-		//XXX BA = BluetoothAdapter.getDefaultAdapter();
-		
-		
+
 	}
 	
 	private void populateUserInterface() {
@@ -359,74 +351,16 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		// determine which button was touched
 		switch(view.getId()){
 		case R.id.launcher_ui_btn_manage_inreach: 
-			//mIntent = new Intent(this, com.delorme.inreachapp.InReachAppActivity.class);
-			//startActivity(mIntent);
+
 			//******* changes Guillaume *********************************************
 			
 			progressBar.setVisibility(View.VISIBLE);
-			/* XXX
-			if (BA == null) {
-				Toast.makeText(getApplicationContext(),"The device does not support Bluetooth.",Toast.LENGTH_LONG).show();
-			}
-			else if  (!BA.isEnabled()) {
-		        //Ask or not ask the user the permission that is the question 
-				//Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		         //startActivityForResult(enableBtIntent, 0);
-				BA.enable();
-		         Toast.makeText(getApplicationContext(),"Bluetooth turned on.\n" +
-		         		"Connecting to inReach.\nPlease wait.",Toast.LENGTH_LONG).show();
-			}
-			else {
-				Toast.makeText(getApplicationContext(),"Bluetooth is enabled.\n" +
-		         		"Connecting to inReach.\nPlease wait.",Toast.LENGTH_LONG).show();
-			}
 			
-			*/
-			
-			
-						
-			/* *****************  Test with LogEventHandler ** does not work fully
-			m_eventHandler = LogEventHandler.getInstance();
-			
-
-			List<String> event_list = m_eventHandler.getEvents();
-			if (event_list != null ){
-				Toast.makeText(getApplicationContext(), "nombre d'envents " + event_list.size(),
-			         		Toast.LENGTH_SHORT).show();
-
-				for (int i = 0; i < event_list.size(); ++i){
-				//Toast.makeText(getApplicationContext(), "Text event " + i + " : "	+ Html.fromHtml(event_list.get(i)), 
-					//Toast.LENGTH_SHORT).show();
-					if (event_list.get(i).matches("<font color=#ffffff>Message queue synchronized.</font><br />") == true){
-							progressBar.setVisibility(View.GONE);
-					}
-				}
-			}
-			*/
-			
-			/*  *****************  Test with InReachMessageHandler ** fully works
-			m_eventHandler = InReachMessageHandler.getInstance();
-			
-
-			List<String> event_list = m_eventHandler.getEvents();
-			if (event_list != null ){
-				Toast.makeText(getApplicationContext(), "nombre d'envents " + event_list.size(),
-			         		Toast.LENGTH_SHORT).show();
-
-				for (int i = 0; i < event_list.size(); ++i){
-					Toast.makeText(getApplicationContext(), "Text event " + i + " : "	+ event_list.get(i), 
-							Toast.LENGTH_SHORT).show();
-					if (event_list.get(i).matches("Message queue synchronized.") == true){
-							progressBar.setVisibility(View.GONE);
-					}
-				}
-			}
-			*/
-			if (InReachMessageHandler.getQueueynced() == true){
+			if (InReachMessageHandler.getQueueSynced() == true){
 				progressBar.setVisibility(View.GONE);
 				Button mButton = (Button) findViewById(R.id.launcher_ui_btn_manage_inreach);
 				mButton.setText("connected to inReach");
-				mButton.setEnabled(false);
+				
 			}
 			
 			//****************** changes ends *******************************************
@@ -498,15 +432,6 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 		startActivity(Intent.createChooser(mIntent, getString(R.string.system_contact_email_chooser)));
 	}
 	
-	// does not work, I wanted to keep alive the service started in this activity when it 
-	// then user presses the back button
-	public void onBackPressed () {
-		
-		Intent mIntent;
-		mIntent = new Intent(this, org.magdaaproject.sam.RCLauncherActivity.class);
-		startActivity(mIntent);
-		super.onBackPressed();
-	}
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
@@ -521,117 +446,7 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			cursor.close();
 		}
 		
-		//XXX stopService();
 	}
 	
-	//GG no need to add the ServiceConnection because this launcher is the ServiceConnection
-	//GG Service connection is used to connect the main thread to a service
 	
-	
-	/* XXX
-    /**
-     * Invoked when the service is binded
-     * 
-     * @author Eric Semle
-     * @since inReachApp (07 May 2012)
-     * @version 1.0
-     * @bug AND-1009
-     *
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service)
-    {
-        m_service = ((InReachService.InReachBinder)service).getService();
-        
-        InReachMessageHandler handler = InReachMessageHandler.getInstance();
-        m_messenger = new Messenger(handler);
-        m_service.registerMessenger(m_messenger);
-        
-        
-    }
-
-    /**
-     * Invoked when the service is disconnected
-     * 
-     * @author Eric Semle
-     * @since inReachApp (07 May 2012)
-     * @version 1.0
-     * @bug AND-1009
-     *
-    @Override
-    public void onServiceDisconnected(ComponentName name)
-    {
-        if (m_service != null)
-        {
-            m_service.unregisterMessenger(m_messenger);
-            m_service = null;
-        }
-    }
-   
-    /**
-     * Returns the binded InReach Service
-     * 
-     * @author Eric Semle
-     * @since inReachApp (07 May 2012)
-     * @version 1.0
-     * @bug AND-1009
-     *
-    public InReachService getService()
-    {
-        return m_service;
-    }
-    
-    /**
-     * Starts the InReachService and binds it to the application
-     * 
-     * @author Eric Semle
-     * @since inReachApp (07 May 2012)
-     * @version 1.0
-     * @bug AND-1009
-     *
-    public void startService()
-    {
-        if (m_serviceStarted)
-            return;
-        
-        Intent intent = new Intent(this, InReachService.class);  
-        
-        startService(intent);
-        bindService(intent, this, BIND_AUTO_CREATE); 
-        
-        m_serviceStarted = true;
-    }
-    
-    /**
-     * Unbinds the InReachService and stops the service.
-     * 
-     * @author Eric Semle
-     * @since inReachApp (07 May 2012)
-     * @version 1.0
-     * @bug AND-1009
-     *
-    public void stopService()
-    {
-        if (!m_serviceStarted)
-            return;
-        
-        Intent intent = new Intent(this, InReachService.class);  
-        
-        unbindService(this);
-        stopService(intent);
-        
-        m_serviceStarted = false;
-    }
-    
-    /** Boolean flag as to whether or not the service has been started *
-    public boolean m_serviceStarted = false;
-    
-    /** The bound inReach service *
-    public InReachService m_service = null;
-    
-    /** The messenger for the LogEventHandler *
-    public Messenger m_messenger = null;
-    
-    /** A handler for all inReach events that logs them *
-    public InReachMessageHandler m_eventHandler = null;
-    */
 }

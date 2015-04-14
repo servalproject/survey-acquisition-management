@@ -131,6 +131,10 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
             	if (msg.arg1 == InReachEvents.VALUE_FALSE) {
             		m_queuesynced = false;
             		m_queued_count = 0;
+            		m_connecting = false;
+            		m_number_inreach = 0;
+            	}else if (msg.arg1 == InReachEvents.VALUE_TRUE){
+            		m_connecting = true;
             	}
             	
                 final String text = (msg.arg1 == InReachEvents.VALUE_TRUE ?
@@ -167,9 +171,9 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                     "%s successfully sent with id: %d",
                     type, msg.arg2);
                 
-                
-                
                 addEvent(text);
+                
+                
                 break;
             }
             case InReachEvents.EVENT_MESSAGE_SEND_FAILED:
@@ -223,7 +227,6 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
             case InReachEvents.EVENT_MESSSAGE_QUEUE_SYNCED:
             {
                 final String text = "Message queue synchronized.";
-                
                 addEvent(text);
                 
                 m_queuesynced = true;	
@@ -444,9 +447,22 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     }
     
     
-   
-    public static final boolean getQueueynced(){
+    /**
+     * Tells if the inReach's queue is synchronized
+     * @return The status of the queue in the inReach 
+     */
+    public static final boolean getQueueSynced(){
     	return m_queuesynced;
+    }
+    
+    /**
+     * Tells if the inReach has a bluetooth socket with the phone.
+     * This does not mean the inReach is ready to receive messages.
+     * The inReach is ready when its queue is synchronized, so see getQueueSynced.
+     * @return The basic status of the bluetooth connection with the inReach
+     */
+    public static final boolean getConnecting(){
+    	return m_connecting;
     }
     
     public static final boolean isInreachAvailable(){
@@ -456,6 +472,14 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     		return false;
     	}
     	
+    }
+    
+    public static final int getInReachNumber(){
+    	return m_number_inreach;
+    }
+    
+    public static final void setInReachNumber(int number){
+    	m_number_inreach = number;
     }
     
     
@@ -599,6 +623,8 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     
     private static boolean m_queuesynced = false;
     private static int m_queued_count = 0; 
+    private static boolean m_connecting = false;
+    private static int m_number_inreach = 0;
     
     
     

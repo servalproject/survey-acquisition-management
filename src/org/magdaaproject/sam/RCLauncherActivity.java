@@ -43,14 +43,6 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		// setup the checkboxes
 		CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SD);
 		mcheckBox.setChecked(true);
-		mcheckBox.setEnabled(false);
-
-        /*
-        Intent mIntent;
-		mIntent = new Intent(this, org.magdaaproject.sam.SamInReachService.class);
-		
-		startService(mIntent);
-		*/
 	}
 	
 	/*
@@ -68,9 +60,27 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			break;
 			
 		case R.id.launcher_rc_connection_to_inreach:
-			if (InReachMessageHandler.getQueueynced() == true){
-				Button mButton = (Button) findViewById(R.id.launcher_rc_connection_to_inreach);
+			
+			if (InReachMessageHandler.getInReachNumber() <= 0){
+				Toast.makeText(this, "There is no paired inReach device" +
+						"\nPlease pair to a device and restart the application", Toast.LENGTH_LONG).show();
+			} else if (InReachMessageHandler.getInReachNumber() > 1){
+				Toast.makeText(this, "There are more than one inReach device" +
+						"\nPlease remove the unsed devices and restart the application", Toast.LENGTH_LONG).show();
+			}
+			
+			Button mButton = (Button) findViewById(R.id.launcher_rc_connection_to_inreach);
+			//if the UI shows this, then the phone is not totally connected to the inReach
+			if ((InReachMessageHandler.getConnecting() == true) 
+					//&& (InReachMessageHandler.getQueueSynced() == false)
+					){
+				mButton.setText("Bluetooth socket connected to inReach");
+			}
+			if (InReachMessageHandler.getQueueSynced() == true){
+				
 				mButton.setText("connected to inReach");
+				CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_inreach);
+				mcheckBox.setChecked(true);
 			}
 			break;
 			

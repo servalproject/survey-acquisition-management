@@ -46,42 +46,40 @@
     android:background="#ff111111"
     android:orientation="vertical" >
     
-    <!-- header
-    <TextView
-        android:id="@+id/launcher_rc_ui_lbl_header"
-        style="@style/ui_elem_header"
-        android:text="@string/launcher_ui_lbl_header" />
-        android:layout_below="@id/launcher_rc_ui_lbl_header"
-        style="@style/ui_elem_wrap"
-	-->
+
     <CheckBox
         android:id="@+id/launcher_rc_notify_ui_SD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SD is working" />
+        android:text="SD is working" 
+        android:clickable="false" />
 
     <CheckBox
         android:id="@+id/launcher_rc_notify_ui_SMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_SD"
-        android:text="SMS" />
+        android:text="SMS" 
+        android:clickable="false"/>
      <CheckBox
         android:id="@+id/launcher_rc_notify_ui_wifi_cellular_internet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_SMS"
-        android:text="WiFi/Cellular internet" />
+        android:text="WiFi/Cellular internet"
+        android:clickable="false" />
 
     <CheckBox
         android:id="@+id/launcher_rc_notify_ui_inreach"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_wifi_cellular_internet"
-        android:text="inReach" />
+        android:text="inReach"
+        android:clickable="false" />
 
     <Button
         android:id="@+id/launcher_rc_number_of_message_queued"
+        style="@style/ui_elem_btn_border_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_inreach"
@@ -89,6 +87,7 @@
 
     <Button
         android:id="@+id/launcher_rc_connection_to_inreach"
+        style="@style/ui_elem_btn_border_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_number_of_message_queued"
@@ -96,6 +95,7 @@
     
     <Button
         android:id="@+id/launcher_rc_go_to_regular_launcher"
+        style="@style/ui_elem_btn_border_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_connection_to_inreach"
