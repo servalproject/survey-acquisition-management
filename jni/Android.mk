@@ -39,6 +39,7 @@ LOCAL_SRC_FILES := \
         smac/nacl/src/crypto_stream_salsa20_ref/xor.c \
         smac/nacl/src/crypto_stream_salsa20_ref/stream.c \
 	smac/xml2recipe.c \
+	smac/xhtml2recipe.c \
 	smac/xmlparse.c \
 	smac/xmlrole.c \
 	smac/xmltok.c \
