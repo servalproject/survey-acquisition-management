@@ -1,6 +1,7 @@
 package org.magdaaproject.sam;
 
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.SuccinctDataQueueService;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -137,6 +138,16 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mButton = (Button) findViewById(R.id.launcher_rc_number_of_message_queued);
 		mButton.setText("" + messageQueueLength + " message(s) queued.");
 		
+		if (RCLauncherActivity.instance != null) {
+			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
+			mcheckBox.setChecked(SuccinctDataQueueService.isSMSAvailable(RCLauncherActivity.instance));
+		}
+
+		if (SuccinctDataQueueService.instance != null) {
+			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_wifi_cellular_internet);
+			mcheckBox.setChecked(SuccinctDataQueueService.instance.isInternetAvailable());
+		}
+
 		return;
 	}
 	
