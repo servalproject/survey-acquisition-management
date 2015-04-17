@@ -27,7 +27,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "RCLauncherActivity";
-	private static long message_queue_length = 0;
+	private static long messageQueueLength = 0;
 	private static RCLauncherActivity instance = null;
 	private static boolean inReachBluetoothInPotentialBlackhole = false;
 	private static long bluetoothResetTime = 0;	
@@ -108,13 +108,17 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		
 		Button mButton = (Button) findViewById(R.id.launcher_rc_connection_to_inreach);
 		if (InReachMessageHandler.getInReachNumber() < 1){
-			mButton.setText("There is no paired inReach device" +
-					"\nPlease pair to a device and restart the application");
+			mButton.setText("There is no paired inReach device." +
+					"\nIf this message persists, please pair to an inReach device and restart the application");
 		} else if (InReachMessageHandler.getInReachNumber() > 1){
 			mButton.setText("This phone has paired with more than one inReach device." +
 					"\nYou must exit this application, unpair from all inReach devices,\n and then re-pair with the one you want to use, and then start this application again.");
 		} else {
-			mButton.setText("This phone is paired with an inReach device, but it isn't connected right now.\n  Try turning it off and on, or re-pairing it with this phone."); 
+			if (inReachBluetoothInPotentialBlackhole)
+				mButton.setText("Attempting to connect to paired inReach device. This can take a minute or two.\n");						
+			else
+				mButton.setText("This phone is paired with an inReach device, but it isn't connected right now.\n"
+						+"  Try turning it off and on, or re-pairing it with this phone.");		
 		}
 		
 		//if the UI shows this, then the phone is not totally connected to the inReach
@@ -129,6 +133,10 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			inReachConnected = true;
 		}
 		mcheckBox.setChecked(inReachConnected);
+		
+		mButton = (Button) findViewById(R.id.launcher_rc_number_of_message_queued);
+		mButton.setText("" + messageQueueLength + " message(s) queued.");
+		
 		return;
 	}
 	
@@ -163,7 +171,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	}
 
 	public static void set_message_queue_length(long count) {
-		message_queue_length = count;
+		messageQueueLength = count;
 		RCLauncherActivity.requestUpdateUI();		
 	}
 
