@@ -10,6 +10,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.magdaaproject.sam.RCLauncherActivity;
 import org.servalproject.sam.R;
 
 import android.app.Activity;
@@ -87,7 +88,7 @@ public class SuccinctDataQueueService extends Service {
 			Log.d("SuccinctData","Opening queue database");
 			if (db == null) {
 				db = new SuccinctDataQueueDbAdapter(this);
-				db.open();				
+				db.open();		
 			}
 			Log.d("SuccinctData","Opened queue database");
 			if (succinctData != null) {
@@ -222,7 +223,8 @@ public class SuccinctDataQueueService extends Service {
 				next_timeout = 5000;
 				continue;
 			} 
-
+			RCLauncherActivity.set_message_queue_length(c.getCount());
+			
 			c.moveToFirst();
 			while (c.isAfterLast() == false) {
 				String prefix = c.getString(1);

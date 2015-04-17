@@ -2,13 +2,16 @@ package org.magdaaproject.sam;
 
 import org.servalproject.sam.R;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,11 +27,54 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "RCLauncherActivity";
+	private static long message_queue_length = 0;
+	private static RCLauncherActivity instance = null;
+	private static boolean inReachBluetoothInPotentialBlackhole = false;
+	private static long bluetoothResetTime = 0;	
+	public static boolean bluetoothReenable = false;
 	
+	private Handler mHandler = null;
+	Runnable mStatusChecker = null;
+	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rc_launcher);
+		
+		instance = this;
+		mHandler = new Handler();
+		
+		mStatusChecker = new Runnable() {
+		    private Object RCLaunchActivity;
+
+			@Override 
+		    public void run() {
+		      requestUpdateUI();
+		      if (RCLauncherActivity.bluetoothResetTime != 0) {
+		    	  if (RCLauncherActivity.bluetoothResetTime < System.currentTimeMillis()) {
+		    		  // We need to turn the bluetooth off and on again
+		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
+		    		  if (mBluetoothAdapter.isEnabled()) {
+		    			  // It was on, so turn it off.  This is async, so we need to 
+		    			  // listen later to turn it on.
+		    		      mBluetoothAdapter.disable(); 
+		    		      RCLauncherActivity.bluetoothReenable = true;		    		      
+		    		  }		    	  
+		    	  }
+		    	  if (RCLauncherActivity.bluetoothReenable) {
+		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
+		    		  if (!mBluetoothAdapter.isEnabled()) {
+		    			  mBluetoothAdapter.enable(); 
+		    		      RCLauncherActivity.bluetoothReenable = false;
+		    		  }
+		    	  }
+		      }
+		      mHandler.postDelayed(mStatusChecker, 5000);
+		    }
+		  };
+		
+		startRepeatingTask();
 		
 		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_rc_number_of_message_queued);
@@ -43,6 +89,8 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		// setup the checkboxes
 		CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SD);
 		mcheckBox.setChecked(true);
+		
+		updateUI();
 	}
 	
 	private void updateUI()
@@ -112,7 +160,12 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			Log.w(sLogTag, "an unknown view fired an onClick event");
 		}
 	}
-	
+
+	public static void set_message_queue_length(long count) {
+		message_queue_length = count;
+		RCLauncherActivity.requestUpdateUI();		
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onResume()
@@ -120,7 +173,44 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+		updateUI();
+		startRepeatingTask();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		stopRepeatingTask();
+	}
+	
+	public static void notifyBluetoothInSocketConnect(boolean state) {
+		RCLauncherActivity.inReachBluetoothInPotentialBlackhole  = state;
+		if (state) {
+			// Schedule bluetooth turn off in 20 seconds
+			RCLauncherActivity.bluetoothResetTime = System.currentTimeMillis() + 20000;			
+			
+		} else {
+			// Cancel bluetooth turn off request
+			RCLauncherActivity.bluetoothResetTime = 0;
+		}
+	}
+	
+	public static void requestUpdateUI() {
+		if (RCLauncherActivity.instance != null) {
+			RCLauncherActivity.instance.runOnUiThread(new Runnable() {
+				public void run() {
+					RCLauncherActivity.instance.updateUI();
+				}
+			});
+		}
 	}
 		
+	private void startRepeatingTask() {
+	    mStatusChecker.run(); 
+	  }
+
+	private void stopRepeatingTask() {
+	    mHandler.removeCallbacks(mStatusChecker);
+	}
+	
 }

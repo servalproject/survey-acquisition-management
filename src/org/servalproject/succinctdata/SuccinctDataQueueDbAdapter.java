@@ -3,12 +3,16 @@ package org.servalproject.succinctdata;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.magdaaproject.sam.RCLauncherActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
  
 public class SuccinctDataQueueDbAdapter {
@@ -127,6 +131,13 @@ public class SuccinctDataQueueDbAdapter {
  
  }
  
+ public long getMessageQueueLength() {
+	 String query = "Select count(*) from "+ SQLITE_TABLE;
+	 SQLiteStatement statement = mDb.compileStatement(query);
+	 long count = statement.simpleQueryForLong();
+	 return count;
+ }
+ 
  public Cursor fetchAllMessages() {
  
   Cursor mCursor = mDb.query(SQLITE_TABLE, new String[] {KEY_ROWID,
@@ -142,7 +153,7 @@ public class SuccinctDataQueueDbAdapter {
 public void delete(String piece) {
 	// Delete message using piece text as key
 	mDb.delete(SQLITE_TABLE, "SUCCINCTDATA=?", new String[] {piece});
-	
+	RCLauncherActivity.set_message_queue_length(this.getMessageQueueLength());
 }
  
 
