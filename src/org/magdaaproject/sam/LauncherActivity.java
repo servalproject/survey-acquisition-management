@@ -370,8 +370,6 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			startActivity(mIntent);
 			break;
 		case R.id.launcher_ui_btn_view_queue:
-			// show the contact information stuff
-			// XXX fix
 			mIntent = new Intent(this, org.servalproject.succinctdata.SuccinctDataQueueListViewActivity.class);
 			startActivity(mIntent);			
 			break;

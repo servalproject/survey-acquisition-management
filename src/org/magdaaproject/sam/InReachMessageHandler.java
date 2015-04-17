@@ -626,10 +626,4 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     private static boolean m_connecting = false;
     private static int m_number_inreach = 0;
     
-    
-    
-    
-    
-    
-    
 }
