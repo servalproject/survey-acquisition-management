@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Handler;
@@ -119,7 +121,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 				mButton.setText("Attempting to connect to paired inReach device. This can take a minute or two.\n");						
 			else
 				mButton.setText("This phone is paired with an inReach device, but it isn't connected right now.\n"
-						+"  Try turning it off and on, or re-pairing it with this phone.");		
+						+"  If it doesn't connect within a couple of minutes, try turning it off and on, or re-pairing it with this phone.");		
 		}
 		
 		//if the UI shows this, then the phone is not totally connected to the inReach
@@ -143,13 +145,23 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			mcheckBox.setChecked(SuccinctDataQueueService.isSMSAvailable(RCLauncherActivity.instance));
 		}
 
-		if (SuccinctDataQueueService.instance != null) {
+		{
 			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_wifi_cellular_internet);
-			mcheckBox.setChecked(SuccinctDataQueueService.instance.isInternetAvailable());
+			mcheckBox.setChecked(isInternetAvailable());
 		}
 
 		return;
 	}
+	
+	// Detecting internet access by Alexandre Jasmin from:
+	// http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+	public boolean isInternetAvailable() {
+		ConnectivityManager connectivityManager 
+		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+
 	
 	/*
 	 * (non-Javadoc)

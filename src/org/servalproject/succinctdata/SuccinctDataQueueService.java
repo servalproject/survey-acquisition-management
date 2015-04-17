@@ -119,6 +119,7 @@ public class SuccinctDataQueueService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
+		instance = this;
 		return null;
 	}
 
@@ -205,6 +206,8 @@ public class SuccinctDataQueueService extends Service {
 	{
 		// XXX - This really is ugly. We should edge detect everything instead of
 		// polling.
+		instance = this;
+
 		Looper.prepare();
 		SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(this);
 		db.open();
