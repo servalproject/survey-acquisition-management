@@ -52,6 +52,13 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		    public void run() {
 		      requestUpdateUI();
 		      if (RCLauncherActivity.bluetoothResetTime != 0) {
+		    	  if (RCLauncherActivity.bluetoothReenable) {
+		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
+		    		  if (!mBluetoothAdapter.isEnabled()) {
+		    			  if (mBluetoothAdapter.enable()) 
+		    				  RCLauncherActivity.bluetoothReenable = false;
+		    		  }
+		    	  }
 		    	  if (RCLauncherActivity.bluetoothResetTime < System.currentTimeMillis()) {
 		    		  // We need to turn the bluetooth off and on again
 		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
@@ -62,13 +69,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		    		      RCLauncherActivity.bluetoothReenable = true;		    		      
 		    		  }		    	  
 		    	  }
-		    	  if (RCLauncherActivity.bluetoothReenable) {
-		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
-		    		  if (!mBluetoothAdapter.isEnabled()) {
-		    			  mBluetoothAdapter.enable(); 
-		    		      RCLauncherActivity.bluetoothReenable = false;
-		    		  }
-		    	  }
+		    	  
 		      }
 		      mHandler.postDelayed(mStatusChecker, 5000);
 		    }
