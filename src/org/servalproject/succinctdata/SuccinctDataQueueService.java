@@ -280,6 +280,13 @@ public class SuccinctDataQueueService extends Service {
 				String piece = c.getString(4);
 				String xml = c.getString(5);
 
+				// Update inReach status
+				if (InReachMessageHandler.isInreachAvailable() == true) {
+					// inReach is available.
+					// but is there a queued message?
+					inReachReadyAndAvailable = true;
+				}					
+				
 				// If data service is available, try to send messages that way
 				boolean messageSent = false;
 				if ((messageSent==false)&&isInternetAvailable()) {					

@@ -173,7 +173,8 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                     "%s successfully sent with id: %d",
                     type, msg.arg2);
                 addEvent(text);
-                                
+                m_queued_count--;                
+                
                 // Tell SuccinctDataQueueService
                 SuccinctDataQueueService.sawInReachMessageConfirmation((long)msg.arg2);                
                 
