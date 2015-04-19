@@ -46,19 +46,18 @@
     android:background="#ff111111"
     android:orientation="vertical" >
     
-
-    <CheckBox
-        android:id="@+id/launcher_rc_notify_ui_SD"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/launcher_rc_channel_availability_heading"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="SD is working" 
-        android:clickable="false" />
-
+        android:text="Status of transport channels" />
+    
     <CheckBox
         android:id="@+id/launcher_rc_notify_ui_SMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_rc_notify_ui_SD"
+        android:layout_below="@id/launcher_rc_channel_availability_heading"
         android:text="SMS" 
         android:clickable="false"/>
      <CheckBox
@@ -78,19 +77,33 @@
         android:clickable="false" />
 
     <Button
-        android:id="@+id/launcher_rc_number_of_message_queued"
+        android:id="@+id/launcher_rc_message_queue_heading"
         style="@style/ui_elem_btn_border_red"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_inreach"
-        android:text="Messages queued" />
-
-    <Button
-        android:id="@+id/launcher_rc_connection_to_inreach"
-        style="@style/ui_elem_btn_border_red"
+        android:text="Succinct Data Transmission Queue" />
+    
+    <TextView
+        android:id="@+id/launcher_rc_number_of_message_queued"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_message_queue_heading"
+        android:text="Scanning queue..." />
+
+    <Button
+        android:id="@+id/launcher_rc_inReach_status_heading"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_number_of_message_queued"
+        android:text="Status of Connection to inReach" />
+    
+    <TextView
+        android:id="@+id/launcher_rc_connection_to_inreach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_inReach_status_heading"
         android:text="Connection state to inReach" />
     
     <Button
@@ -99,6 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_connection_to_inreach"
+        android:visibility="invisible"
         android:text="Use with ODK collector" />
 
    

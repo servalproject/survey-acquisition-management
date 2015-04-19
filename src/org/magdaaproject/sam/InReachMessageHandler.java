@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.servalproject.succinctdata.SuccinctDataQueueService;
+
 import com.delorme.inreachapp.service.InReachEvents;
 import com.delorme.inreachapp.service.InReachService;
 import com.delorme.inreachcore.BatteryStatus;
@@ -170,9 +172,10 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = String.format(
                     "%s successfully sent with id: %d",
                     type, msg.arg2);
-                
                 addEvent(text);
-                
+                                
+                // Tell SuccinctDataQueueService
+                SuccinctDataQueueService.sawInReachMessageConfirmation((long)msg.arg2);                
                 
                 break;
             }

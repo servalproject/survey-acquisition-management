@@ -3,6 +3,8 @@ package org.magdaaproject.sam;
 import org.servalproject.sam.R;
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 
+import com.delorme.inreachcore.InReachManager;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class RCLauncherActivity extends FragmentActivity implements OnClickListener {
@@ -31,14 +34,15 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "RCLauncherActivity";
 	private static long messageQueueLength = 0;
-	private static RCLauncherActivity instance = null;
+	public static RCLauncherActivity instance = null;
 	private static boolean inReachBluetoothInPotentialBlackhole = false;
 	private static long bluetoothResetTime = 0;	
 	public static boolean bluetoothReenable = false;
 	
 	private Handler mHandler = null;
 	Runnable mStatusChecker = null;
-	
+	private int knocks =0;
+	long last_knock = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,19 +85,14 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		startRepeatingTask();
 		
 		// setup the buttons
-		Button mButton = (Button) findViewById(R.id.launcher_rc_number_of_message_queued);
+		Button mButton = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
 		mButton.setOnClickListener(this);
-		
-		mButton = (Button) findViewById(R.id.launcher_rc_connection_to_inreach);
+		mButton = (Button) findViewById(R.id.launcher_rc_message_queue_heading);
 		mButton.setOnClickListener(this);
-		
-		mButton = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
+		mButton = (Button) findViewById(R.id.launcher_rc_inReach_status_heading);
 		mButton.setOnClickListener(this);
-		
-		// setup the checkboxes
-		CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SD);
-		mcheckBox.setChecked(true);
-		
+		mButton = (Button) findViewById(R.id.launcher_rc_channel_availability_heading);
+		mButton.setOnClickListener(this);
 		updateUI();
 	}
 	
@@ -109,18 +108,18 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_inreach);
 		boolean inReachConnected = false;
 		
-		Button mButton = (Button) findViewById(R.id.launcher_rc_connection_to_inreach);
+		TextView mTextView = (TextView) findViewById(R.id.launcher_rc_connection_to_inreach);
 		if (InReachMessageHandler.getInReachNumber() < 1){
-			mButton.setText("There is no paired inReach device." +
+			mTextView.setText("There is no paired inReach device." +
 					"\nIf this message persists, please pair to an inReach device and restart the application");
 		} else if (InReachMessageHandler.getInReachNumber() > 1){
-			mButton.setText("This phone has paired with more than one inReach device." +
+			mTextView.setText("This phone has paired with more than one inReach device." +
 					"\nYou must exit this application, unpair from all inReach devices,\n and then re-pair with the one you want to use, and then start this application again.");
 		} else {
 			if (inReachBluetoothInPotentialBlackhole)
-				mButton.setText("Attempting to connect to paired inReach device. This can take a minute or two.\n");						
+				mTextView.setText("Attempting to connect to paired inReach device. This can take a minute or two.\n");						
 			else
-				mButton.setText("This phone is paired with an inReach device, but it isn't connected right now.\n"
+				mTextView.setText("This phone is paired with an inReach device, but it isn't connected right now.\n"
 						+"  If it doesn't connect within a couple of minutes, try turning it off and on, or re-pairing it with this phone.");		
 		}
 		
@@ -128,17 +127,17 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		if ((InReachMessageHandler.getConnecting() == true) 
 				//&& (InReachMessageHandler.getQueueSynced() == false)
 				){
-			mButton.setText("I am trying to connect to the inReach device right now...\nUnpair it, and then re-pair it if it doesn't connect within 30 seconds.");
+			mTextView.setText("I am trying to connect to the inReach device right now...\nUnpair it, and then re-pair it if it doesn't connect within 30 seconds.");
 		}
 		if (InReachMessageHandler.getQueueSynced() == true){
 			
-			mButton.setText("Connected to inReach.");
+			mTextView.setText("Connected to inReach.");
 			inReachConnected = true;
 		}
 		mcheckBox.setChecked(inReachConnected);
 		
-		mButton = (Button) findViewById(R.id.launcher_rc_number_of_message_queued);
-		mButton.setText("" + messageQueueLength + " message(s) queued.");
+		mTextView = (TextView) findViewById(R.id.launcher_rc_number_of_message_queued);
+		mTextView.setText("" + messageQueueLength + " message(s) waiting to be transmitted.");
 		
 		if (RCLauncherActivity.instance != null) {
 			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
@@ -174,7 +173,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 		// determine which button was touched
 		switch(view.getId()){
-		case R.id.launcher_rc_number_of_message_queued:
+		case R.id.launcher_rc_message_queue_heading:
 			// Show message queue
 			mIntent = new Intent(this, org.servalproject.succinctdata.SuccinctDataQueueListViewActivity.class);
 			startActivity(mIntent);			
@@ -183,6 +182,21 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		case R.id.launcher_rc_connection_to_inreach:
 			updateUI();
 			break;			
+		case R.id.launcher_rc_channel_availability_heading:
+			if ((System.currentTimeMillis()-last_knock)<2000) 
+				knocks++; 
+			else 
+				knocks=0;
+			last_knock = System.currentTimeMillis();
+			if (knocks==7) {
+				Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
+				b.setVisibility(b.VISIBLE);
+				knocks=0;
+			} else {
+				Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
+				b.setVisibility(b.INVISIBLE);
+			}
+			break;
 		case R.id.launcher_rc_go_to_regular_launcher:
 			mIntent = new Intent(this, org.magdaaproject.sam.LauncherActivity.class);
 			startActivity(mIntent);

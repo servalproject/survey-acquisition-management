@@ -3,6 +3,8 @@ package org.servalproject.succinctdata;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
@@ -10,8 +12,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.magdaaproject.sam.InReachMessageHandler;
 import org.magdaaproject.sam.RCLauncherActivity;
 import org.servalproject.sam.R;
+
+import com.delorme.inreachcore.InReachManager;
+import com.delorme.inreachcore.OutboundMessage;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -202,6 +208,42 @@ public class SuccinctDataQueueService extends Service {
 		return -1;
 	}
 
+	private int sendInReach(String phonenumber, String [] succinctData, PendingIntent p)
+	{
+		int ms_messageIdentifier = 0;
+		InReachManager manager = InReachMessageHandler.getInstance().getService().getManager();
+		for(int i=0;i<succinctData.length;i++) {
+			final OutboundMessage message = new OutboundMessage();
+			message.setAddressCode(OutboundMessage.AC_FreeForm);
+			message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
+			// Set message identifier to first few bytes of hash of data
+			try {
+				MessageDigest md;
+				md = MessageDigest.getInstance("SHA-1");
+				md.update(succinctData[0].getBytes("iso-8859-1"), 0, succinctData[0].length());
+				byte[] sha1hash = md.digest();
+				ms_messageIdentifier = sha1hash[0] + (sha1hash[1]<<8) + (sha1hash[2]<<16)+ (sha1hash[3]<<24);
+			} catch (Exception e) {
+				Random r = new Random();
+				int i1 = r.nextInt(1000000000);
+				ms_messageIdentifier = i1;
+			}
+			message.setIdentifier(ms_messageIdentifier);
+			message.addAddress(phonenumber);
+			message.setText(succinctData[i]);
+
+				
+			// queue the message for sending
+			if (!manager.sendMessage(message))
+			{
+				// Failed
+				return -1;
+			}
+			
+		}        
+		return ms_messageIdentifier;
+	}
+	
 	public void messageSenderLoop(Service s)
 	{
 		// XXX - This really is ugly. We should edge detect everything instead of
@@ -287,7 +329,15 @@ public class SuccinctDataQueueService extends Service {
 		// indicates that it has been delivered, we can remove the relevant 
 		// piece from the database, even if it has taken hours for the inReach
 		// to deliver it.
-		Long inReachMessageId = 99L;  // XXX - Get real message ID
+		
+		Intent sentIntent = new Intent("SUCCINCT_DATA_INREACH_SEND_STATUS");
+		/*Create Pending Intents*/
+		PendingIntent sentPI = PendingIntent.getBroadcast(
+				getApplicationContext(), 0, sentIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		long inReachMessageId = (long)sendInReach(smsnumber, new String[] {piece}, sentPI);
+		
 		rememberPendingInReachMessage(inReachMessageId,piece);
 							
 		return -1;
@@ -299,13 +349,13 @@ public class SuccinctDataQueueService extends Service {
 		pendingInReachMessagePiece = piece;		
 	}
 	
-	private void sawInReachMessageConfirmation(Service s, Long inReachMessageId) {
+	public static void sawInReachMessageConfirmation(Long inReachMessageId) {
 		if (inReachMessageId == pendingInReachMessageId) {
 			// We know about this one, delete the corresponding piece from the
 			// database.
-			db.delete(pendingInReachMessagePiece);
+			SuccinctDataQueueService.instance.db.delete(pendingInReachMessagePiece);
 			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-			LocalBroadcastManager lb = LocalBroadcastManager.getInstance(s);
+			LocalBroadcastManager lb = LocalBroadcastManager.getInstance(SuccinctDataQueueService.instance);
 			lb.sendBroadcastSync(i);
 		}
 	}
