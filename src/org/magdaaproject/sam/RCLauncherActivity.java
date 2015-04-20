@@ -25,7 +25,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RCLauncherActivity extends FragmentActivity implements OnClickListener {
+public class RCLauncherActivity extends FragmentActivity implements OnClickListener, InReachMessageHandler.Listener {
 
 	/*
 	 * private class level constants
@@ -35,13 +35,17 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	private static final String sLogTag = "RCLauncherActivity";
 	private static long messageQueueLength = 0;
 	public static RCLauncherActivity instance = null;
-	private static boolean inReachBluetoothInPotentialBlackhole = false;
-	private static long bluetoothResetTime = 0;	
-	public static boolean bluetoothReenable = false;
 	public static boolean upload_form_specifications = false;
-	
+
 	private Handler mHandler = null;
-	Runnable mStatusChecker = null;
+	final Runnable mStatusChecker = new Runnable() {
+		@Override
+		public void run() {
+			updateUI();
+			mHandler.postDelayed(mStatusChecker, 5000);
+		}
+	};
+
 	private int knocks =0;
 	long last_knock = 0;
 
@@ -54,40 +58,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rc_launcher);
 		
-		instance = this;
 		mHandler = new Handler();
-		
-		mStatusChecker = new Runnable() {
-		    private Object RCLaunchActivity;
-
-			@Override 
-		    public void run() {
-		      requestUpdateUI();
-		      if (RCLauncherActivity.bluetoothResetTime != 0) {
-		    	  if (RCLauncherActivity.bluetoothReenable) {
-		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
-		    		  if (!mBluetoothAdapter.isEnabled()) {
-		    			  if (mBluetoothAdapter.enable()) 
-		    				  RCLauncherActivity.bluetoothReenable = false;
-		    		  }
-		    	  }
-		    	  if (RCLauncherActivity.bluetoothResetTime < System.currentTimeMillis()) {
-		    		  // We need to turn the bluetooth off and on again
-		    		  BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
-		    		  if (mBluetoothAdapter.isEnabled()) {
-		    			  // It was on, so turn it off.  This is async, so we need to 
-		    			  // listen later to turn it on.
-		    		      mBluetoothAdapter.disable(); 
-		    		      RCLauncherActivity.bluetoothReenable = true;		    		      
-		    		  }		    	  
-		    	  }
-		    	  
-		      }
-		      mHandler.postDelayed(mStatusChecker, 5000);
-		    }
-		  };
-		
-		startRepeatingTask();
 		
 		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
@@ -98,7 +69,6 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mButton.setOnClickListener(this);
 		mButton = (Button) findViewById(R.id.launcher_rc_channel_availability_heading);
 		mButton.setOnClickListener(this);
-		updateUI();
 	}
 	
 	private void updateUI()
@@ -114,27 +84,35 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		boolean inReachConnected = false;
 		
 		TextView mTextView = (TextView) findViewById(R.id.launcher_rc_connection_to_inreach);
-		if (InReachMessageHandler.getInReachNumber() < 1){
+		int inreachDevices = InReachMessageHandler.getInReachNumber();
+
+		if (inreachDevices < 1){
 			mTextView.setText("There is no paired inReach device." +
 					"\nIf this message persists, please pair to an inReach device and restart the application");
-		} else if (InReachMessageHandler.getInReachNumber() > 1){
+		} else if (inreachDevices > 1){
 			mTextView.setText("This phone has paired with more than one inReach device." +
 					"\nYou must exit this application, unpair from all inReach devices,\n and then re-pair with the one you want to use, and then start this application again.");
 		} else {
-			if (inReachBluetoothInPotentialBlackhole)
-				mTextView.setText("Attempting to connect to paired inReach device. This can take a minute or two.\n");						
-			else
-				mTextView.setText("This phone is paired with an inReach device, but it isn't connected right now.\n"
-						+"  If it doesn't connect within a couple of minutes, try turning it off and on, or re-pairing it with this phone.");		
+			switch(InReachMessageHandler.getBluetoothstate()) {
+				case 1:
+					mTextView.setText("Attempting to connect to paired inReach device. This can take a minute or two.\n");
+					break;
+				case 2:
+					mTextView.setText("Restarting bluetooth.\n");
+					break;
+				default:
+					mTextView.setText("This phone is paired with an inReach device, but it isn't connected right now.\n"
+							+ "  If it doesn't connect within a couple of minutes, try turning it off and on, or re-pairing it with this phone.");
+			}
 		}
 		
 		//if the UI shows this, then the phone is not totally connected to the inReach
-		if ((InReachMessageHandler.getConnecting() == true) 
+		if ((InReachMessageHandler.getConnecting())
 				//&& (InReachMessageHandler.getQueueSynced() == false)
 				){
 			mTextView.setText("I am trying to connect to the inReach device right now...\nUnpair it, and then re-pair it if it doesn't connect within 30 seconds.");
 		}
-		if (InReachMessageHandler.getQueueSynced() == true){
+		if (InReachMessageHandler.getQueueSynced()){
 			
 			mTextView.setText("Connected to inReach.");
 			inReachConnected = true;
@@ -144,17 +122,11 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mTextView = (TextView) findViewById(R.id.launcher_rc_number_of_message_queued);
 		mTextView.setText("" + messageQueueLength + " message(s) waiting to be transmitted.");
 		
-		if (RCLauncherActivity.instance != null) {
-			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
-			mcheckBox.setChecked(SuccinctDataQueueService.isSMSAvailable(RCLauncherActivity.instance));
-		}
+		mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
+		mcheckBox.setChecked(SuccinctDataQueueService.isSMSAvailable(this));
+		mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_wifi_cellular_internet);
+		mcheckBox.setChecked(isInternetAvailable());
 
-		{
-			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_wifi_cellular_internet);
-			mcheckBox.setChecked(isInternetAvailable());
-		}
-
-		return;
 	}
 	
 	// Detecting internet access by Alexandre Jasmin from:
@@ -186,36 +158,38 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			
 		case R.id.launcher_rc_inReach_status_heading:
 			updateUI();
-			if ((System.currentTimeMillis()-last_upload_knock)<2000) 
-				upload_knocks++; 
-			else 
-				upload_knocks=0;
+			if ((System.currentTimeMillis()-last_upload_knock)<2000) {
+				upload_knocks++;
+				if (upload_knocks>=7) {
+					TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
+					t.setVisibility(t.VISIBLE);
+					RCLauncherActivity.upload_form_specifications  = true;
+				}
+			} else {
+				if (upload_knocks>=7) {
+					TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
+					t.setVisibility(t.INVISIBLE);
+					RCLauncherActivity.upload_form_specifications = false;
+				}
+				upload_knocks = 0;
+			}
 			last_upload_knock = System.currentTimeMillis();
-			if (upload_knocks==7) {
-				TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
-				t.setVisibility(t.VISIBLE);
-				RCLauncherActivity.upload_form_specifications  = true;
-				upload_knocks=0;
-			} else {
-				TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
-				t.setVisibility(t.INVISIBLE);
-				RCLauncherActivity.upload_form_specifications = false;
-			}
-			break;			
+			break;
 		case R.id.launcher_rc_channel_availability_heading:
-			if ((System.currentTimeMillis()-last_knock)<2000) 
-				knocks++; 
-			else 
-				knocks=0;
-			last_knock = System.currentTimeMillis();
-			if (knocks==7) {
-				Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
-				b.setVisibility(b.VISIBLE);
-				knocks=0;
-			} else {
-				Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
-				b.setVisibility(b.INVISIBLE);
+			if ((System.currentTimeMillis()-last_knock)<2000) {
+				knocks++;
+				if (knocks>=7) {
+					Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
+					b.setVisibility(b.VISIBLE);
+				}
+			}else {
+				if (knocks>=7) {
+					Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
+					b.setVisibility(b.INVISIBLE);
+				}
+				knocks = 0;
 			}
+			last_knock = System.currentTimeMillis();
 			break;
 		case R.id.launcher_rc_go_to_regular_launcher:
 			mIntent = new Intent(this, org.magdaaproject.sam.LauncherActivity.class);
@@ -229,7 +203,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	public static void set_message_queue_length(long count) {
 		messageQueueLength = count;
-		RCLauncherActivity.requestUpdateUI();		
+		requestUpdateUI();
 	}
 
 	/*
@@ -239,26 +213,18 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	@Override
 	public void onResume() {
 		super.onResume();
+		instance = this;
 		updateUI();
 		startRepeatingTask();
+		InReachMessageHandler.getInstance().setListener(this);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
+		InReachMessageHandler.getInstance().setListener(null);
 		stopRepeatingTask();
-	}
-	
-	public static void notifyBluetoothInSocketConnect(boolean state) {
-		RCLauncherActivity.inReachBluetoothInPotentialBlackhole  = state;
-		if (state) {
-			// Schedule bluetooth turn off in 20 seconds
-			RCLauncherActivity.bluetoothResetTime = System.currentTimeMillis() + 20000;			
-			
-		} else {
-			// Cancel bluetooth turn off request
-			RCLauncherActivity.bluetoothResetTime = 0;
-		}
+		instance = null;
 	}
 	
 	public static void requestUpdateUI() {
@@ -278,5 +244,9 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	private void stopRepeatingTask() {
 	    mHandler.removeCallbacks(mStatusChecker);
 	}
-	
+
+	@Override
+	public void onNewEvent(String event) {
+
+	}
 }

@@ -9,8 +9,7 @@ public class SamApplication extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		
-		InReachMessageHandler.createInstance(this);
-		InReachMessageHandler.getInstance().startService();
+		InReachMessageHandler.createInstance(this).startService();
 	}
 
 }

@@ -4,11 +4,10 @@
 ~/android-ndk-r10d/ndk-build
 
 #extract the libraries from delorme
-cd ~/survey-acquisition-management
 tar zxvf delorme.tgz
 
 #erase all the documents starting with '._' and the armeabi-v7a
-cd ~/survey-acquisition-management/libs 
+cd libs
 rm ._inreachcore.jar
 rm -r armeabi-v7a
 cd armeabi

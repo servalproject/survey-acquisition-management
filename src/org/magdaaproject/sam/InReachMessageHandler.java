@@ -3,17 +3,20 @@ package org.magdaaproject.sam;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 
 import com.delorme.inreachapp.service.InReachEvents;
 import com.delorme.inreachapp.service.InReachService;
+import com.delorme.inreachapp.service.bluetooth.BluetoothUtils;
 import com.delorme.inreachcore.BatteryStatus;
 import com.delorme.inreachcore.InReachDeviceSpecs;
 import com.delorme.inreachcore.InboundMessage;
 import com.delorme.inreachcore.MessageTypes;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import 	android.content.Context;
 import android.content.Intent;
@@ -24,6 +27,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.SystemClock;
 
 
 /**
@@ -38,7 +42,7 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
 
 	private final Context context;
 	private static final BluetoothAdapter BA = BluetoothAdapter.getDefaultAdapter();
-	
+	private static int bluetoothstate = 0;
 	
     
     private InReachMessageHandler(Context c) {
@@ -94,21 +98,9 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
      */
     public synchronized void setListener(Listener listener)
     {
+		if (m_lastevent!=null)
+			listener.onNewEvent(m_lastevent);
         m_listener = listener;
-    }
-    
-    /**
-     * Returns a list of events as strings that contain
-     * HTML.
-     * 
-     * @author Eric Semle
-     * @since inReachApp (07 May 2012)
-     * @version 1.0
-     * @bug AND-1009
-     */
-    public synchronized List<String> getEvents()
-    {
-        return m_events;
     }
     
     /**
@@ -134,7 +126,6 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
             		m_queuesynced = false;
             		m_queued_count = 0;
             		m_connecting = false;
-            		m_number_inreach = 0;
             	}else if (msg.arg1 == InReachEvents.VALUE_TRUE){
             		m_connecting = true;
             	}
@@ -368,6 +359,9 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = "Bluetooth Connected!";
                 
                 addEvent(text);
+				// bluetooth socket connect successful.
+				bluetoothstate = 0;
+				this.removeCallbacks(m_bluetooth_timedout);
                 break;
             }
             case InReachEvents.EVENT_BLUETOOTH_CONNECTING:
@@ -375,6 +369,12 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = "Bluetooth Connecting..";
                 
                 addEvent(text);
+
+				// start timer, connect might disappear into a blackhole
+				if (bluetoothstate == 0){
+					bluetoothstate = 1;
+					this.postDelayed(m_bluetooth_timedout, 20000);
+				}
                 break;
             }
             case InReachEvents.EVENT_BLUETOOTH_CANCELLED:
@@ -382,6 +382,8 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = "Bluetooth Cancelled";
                 
                 addEvent(text);
+
+				// bluetooth failed, perhaps because we turned off the adapter
                 break;
             }
             default: 
@@ -393,8 +395,26 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
             }
         };
     }
-    
-    /**
+
+	private Runnable m_bluetooth_timedout = new Runnable() {
+		@Override
+		public void run() {
+			if (bluetoothstate==1){
+				if (BA.getState() == BluetoothAdapter.STATE_ON && BA.disable())
+					bluetoothstate++;
+				else
+					postDelayed(m_bluetooth_timedout, 1000);
+			}
+		}
+	};
+
+	public void onBluetoothStateChanged() {
+		if (BA.getState() == BluetoothAdapter.STATE_OFF && bluetoothstate==2) {
+			BA.enable();
+		}
+	}
+
+	/**
      * A helper method to convert messages types to a human
      * readable string.
      * 
@@ -427,8 +447,7 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
      * Adds an event to the array and invokes the listener callback
      * 
      * @param text description of the event
-     * @param color the ARGB color for the event
-     * 
+     *
      * @author Eric Semle
      * @since inReachApp (07 May 2012)
      * @version 1.0
@@ -440,9 +459,9 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
         
         // store event as html string
         final String event = text;
-        
-        m_events.add(event);
-        
+
+		m_lastevent = event;
+
         // update listener
         if (m_listener != null)
         {
@@ -465,28 +484,30 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
      * The inReach is ready when its queue is synchronized, so see getQueueSynced.
      * @return The basic status of the bluetooth connection with the inReach
      */
-    public static final boolean getConnecting(){
+    public static boolean getConnecting(){
     	return m_connecting;
     }
     
-    public static final boolean isInreachAvailable(){
-    	if ((m_queuesynced == true) &&(m_queued_count == 0)){
-    		return true;
-    	} else {
-    		return false;
-    	}
-    	
+    public static boolean isInreachAvailable(){
+    	return m_queuesynced &&(m_queued_count == 0);
+    }
+
+	public static int getBluetoothstate(){
+		return bluetoothstate;
+	}
+    
+    public static int getInReachNumber(){
+		int count = 0;
+		if (BA.isEnabled()) {
+			for (BluetoothDevice device : BA.getBondedDevices()) {
+				if (BluetoothUtils.isInReachDevice(device))
+					count++;
+			}
+		}
+    	return count;
     }
     
-    public static final int getInReachNumber(){
-    	return m_number_inreach;
-    }
-    
-    public static final void setInReachNumber(int number){
-    	m_number_inreach = number;
-    }
-    
-    
+
     /**
      * Invoked when the service is binded
      * 
@@ -591,9 +612,9 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     
     /** A handler for all inReach events that logs them */
     public InReachMessageHandler m_eventHandler = null;
-    
-    
-    /**
+
+
+	/**
      * A listener for events.
      * 
      * @author Eric Semle
@@ -620,14 +641,10 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
     
     /** A listener for new events */
     private Listener m_listener = null;
+	private String m_lastevent = null;
 
-    /** An array of events that contains strings with HTML*/
-    private List<String> m_events = new ArrayList<String>();
-    
-    
     private static boolean m_queuesynced = false;
     private static int m_queued_count = 0; 
     private static boolean m_connecting = false;
-    private static int m_number_inreach = 0;
-    
+
 }

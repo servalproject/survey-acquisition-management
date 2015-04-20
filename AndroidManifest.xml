@@ -146,6 +146,11 @@
                 <action android:name="org.servalproject.succinctdata.ReceiveNewMagpiRecord" />
             </intent-filter>
         </receiver>
+        <receiver android:name="org.magdaaproject.sam.SamReceiver">
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
         <!-- inReach related activities and intents -->
         <activity

@@ -348,13 +348,13 @@ public class SuccinctDataQueueService extends Service {
 
 			// Get number of messages in database
 			Cursor c = db.fetchAllMessages();
+			RCLauncherActivity.set_message_queue_length(c.getCount());
 			if (c.getCount()==0) {
 				// If no queued messages, wait only a few seconds
 				next_timeout = 5000;
 				continue;
 			} 
-			RCLauncherActivity.set_message_queue_length(c.getCount());
-			
+
 			c.moveToFirst();
 			while (c.isAfterLast() == false) {
 				String prefix = c.getString(1);
@@ -400,6 +400,7 @@ public class SuccinctDataQueueService extends Service {
 			// Check if we still have messages queued. If so, there is some problem
 			// with sending them, so hold off for a couple of minutes before trying again.
 			c = db.fetchAllMessages();
+			RCLauncherActivity.set_message_queue_length(c.getCount());
 			if (c.getCount()==0) {
 				// If no queued messages, wait only a few seconds
 				next_timeout = 5000;
