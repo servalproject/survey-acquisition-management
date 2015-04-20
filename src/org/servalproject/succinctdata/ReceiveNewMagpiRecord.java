@@ -1,4 +1,4 @@
-package org.servalproject.sd_magpi_interface.sd_side;
+package org.servalproject.succinctdata;
 
 import java.io.File;
 
