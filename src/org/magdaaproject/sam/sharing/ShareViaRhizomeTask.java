@@ -40,6 +40,7 @@
  */
 package org.magdaaproject.sam.sharing;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -61,6 +62,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.servalproject.sam.R;
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 import org.servalproject.succinctdata.TransportSelectActivity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.magdaaproject.sam.RCLauncherActivity;
 import org.magdaaproject.utils.FileUtils;
 import org.magdaaproject.utils.serval.RhizomeUtils;
 import org.odk.collect.InstanceProviderAPI;
@@ -316,6 +323,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 						SuccinctDataQueueService.class);
 				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
 				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
+				intent.putExtra("org.servalproject.succinctdata.XMLFORM", xmlformspec);
 				intent.putExtra("org.servalproject.succinctdata.FORMNAME",
 						formname);
 				intent.putExtra("org.servalproject.succinctdata.FORMVERSION",

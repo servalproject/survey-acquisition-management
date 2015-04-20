@@ -91,9 +91,42 @@ public class SuccinctDataQueueService extends Service {
 		try {
 			String succinctData[] = intent.getStringArrayExtra("org.servalproject.succinctdata.SUCCINCT");
 			String xmlData = intent.getStringExtra("org.servalproject.succinctdata.XML");
+			String xmlForm = intent.getStringExtra("org.servalproject.succinctdata.XMLFORM");
 			String formname = intent.getStringExtra("org.servalproject.succinctdata.FORMNAME");
 			String formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
 
+			if (RCLauncherActivity.upload_form_specifications) {
+				// Upload form specification to Succinct Data server
+				String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload-form.php";
+
+				HttpClient httpclient = new DefaultHttpClient();
+				
+				HttpPost httppost = new HttpPost(url);
+
+				InputStream stream = new ByteArrayInputStream(xmlForm.getBytes());
+				InputStreamEntity reqEntity = new InputStreamEntity(stream, -1);
+				reqEntity.setContentType("text/xml");
+				reqEntity.setChunked(true); // Send in multiple parts if needed						
+				httppost.setEntity(reqEntity);
+				int httpStatus = -1;
+				try {
+					HttpResponse response = httpclient.execute(httppost);
+					httpStatus = response.getStatusLine().getStatusCode();
+				} catch (Exception e) {
+					Log.d("succinctdata","Failed to upload Magpi form to "
+							+"Succinct Data server due to exceptio: " + e.toString());
+				}
+				// Do something with response...
+				if (httpStatus != 200 ) {
+					Log.d("succinctdata","Failed to upload Magpi form to Succinct Data server: http result = " + httpStatus);
+				}
+				else {
+					Log.d("succinctdata","Successfully uploaded Magpi form to Succinct Data server: http result = " + httpStatus);
+				}
+
+			}
+			
+			
 			// For each piece, create a message in the queue
 			Log.d("SuccinctData","Opening queue database");
 			if (db == null) {

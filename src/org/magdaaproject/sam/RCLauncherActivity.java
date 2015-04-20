@@ -38,7 +38,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	private static boolean inReachBluetoothInPotentialBlackhole = false;
 	private static long bluetoothResetTime = 0;	
 	public static boolean bluetoothReenable = false;
-	private static boolean upload_form_specifications = false;
+	public static boolean upload_form_specifications = false;
 	
 	private Handler mHandler = null;
 	Runnable mStatusChecker = null;
