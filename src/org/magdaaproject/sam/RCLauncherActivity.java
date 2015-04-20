@@ -38,12 +38,17 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	private static boolean inReachBluetoothInPotentialBlackhole = false;
 	private static long bluetoothResetTime = 0;	
 	public static boolean bluetoothReenable = false;
+	private static boolean upload_form_specifications = false;
 	
 	private Handler mHandler = null;
 	Runnable mStatusChecker = null;
 	private int knocks =0;
 	long last_knock = 0;
 
+	private int upload_knocks =0;
+	long last_upload_knock = 0;
+
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -179,8 +184,23 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			startActivity(mIntent);			
 			break;
 			
-		case R.id.launcher_rc_connection_to_inreach:
+		case R.id.launcher_rc_inReach_status_heading:
 			updateUI();
+			if ((System.currentTimeMillis()-last_upload_knock)<2000) 
+				upload_knocks++; 
+			else 
+				upload_knocks=0;
+			last_upload_knock = System.currentTimeMillis();
+			if (upload_knocks==7) {
+				TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
+				t.setVisibility(t.VISIBLE);
+				RCLauncherActivity.upload_form_specifications  = true;
+				upload_knocks=0;
+			} else {
+				TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
+				t.setVisibility(t.INVISIBLE);
+				RCLauncherActivity.upload_form_specifications = false;
+			}
 			break;			
 		case R.id.launcher_rc_channel_availability_heading:
 			if ((System.currentTimeMillis()-last_knock)<2000) 

@@ -115,6 +115,13 @@
         android:visibility="invisible"
         android:text="Use with ODK collector" />
 
-   
+    <TextView
+        android:id="@+id/launcher_rc_upload_form_specifications"
+        style="@style/ui_elem_btn_border_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_connection_to_inreach"
+        android:visibility="invisible"
+        android:text="Will upload Magpi Forms to SD Server" />    
     
 </RelativeLayout>
