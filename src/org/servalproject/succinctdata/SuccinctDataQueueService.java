@@ -294,7 +294,7 @@ public class SuccinctDataQueueService extends Service {
 				} 
 				// Else, if SMS is available, try to send messages that way
 				if ((messageSent==false)&&isSMSAvailable(s)) {
-					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
+//					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
 				}
 				if ((messageSent==false)&&(inReachReadyAndAvailable==true)) {    		    
 					// Else, if inReach is available, try to send messages that way

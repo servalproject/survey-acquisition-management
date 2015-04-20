@@ -161,7 +161,7 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = String.format("%s queued with id: %d",
                     type, msg.arg2);
                 
-                m_queued_count++;
+                 m_queued_count++;
                 
                 addEvent(text);
                 break;

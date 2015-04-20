@@ -24,7 +24,8 @@ public class jni {
 	// from a form specification, without a recipe file
     public static native String[] 
     		xml2succinctfragments(String xmlforminstance, String xmlformspecification, 
-    		String formname, String formversion, String succinctpath, int mtu);
+    		String formname, String formversion, String succinctpath, String smacdata,
+    		int mtu);
     // We no longer generate CSV locally
     // public static native int updatecsv(String succinctpath,String rxspooldir,String outputdir);	
 	
