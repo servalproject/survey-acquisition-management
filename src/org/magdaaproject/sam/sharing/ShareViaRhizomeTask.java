@@ -110,6 +110,9 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 	private static final int sMaxLoops = 5;
 	private static final int sSleepTime = 500;
 
+	// Disable sharing via rhizome for now
+	private static boolean rhizome_enabled = false;
+
 	/*
 	 * private class level variables
 	 */
@@ -301,7 +304,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		String errorstring = null;
 		String okstring = null;
 
-		// smac.dat is called smac.png in assets so that it doesn't get compressed,
+		// smac.dat is called smac.png in assets so that it doesn't get
+		// compressed,
 		// and thus fall victim to the 1MB asset size limit bug.
 		String smacdatfilename = assetToFilename(context, "smac.dat");
 
@@ -323,7 +327,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 						SuccinctDataQueueService.class);
 				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
 				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
-				intent.putExtra("org.servalproject.succinctdata.XMLFORM", xmlformspec);
+				intent.putExtra("org.servalproject.succinctdata.XMLFORM",
+						xmlformspec);
 				intent.putExtra("org.servalproject.succinctdata.FORMNAME",
 						formname);
 				intent.putExtra("org.servalproject.succinctdata.FORMVERSION",
@@ -384,17 +389,19 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			}
 
 			// share the file via Rhizome
-			try {
-				if (RhizomeUtils.shareFile(context, mTempPath)) {
-					Log.i(sLogTag, "new instance file shared via Rhizome '"
-							+ mTempPath + "'");
-					return 0;
-				} else {
-					return -4;
+			if (rhizome_enabled ) {
+				try {
+					if (RhizomeUtils.shareFile(context, mTempPath)) {
+						Log.i(sLogTag, "new instance file shared via Rhizome '"
+								+ mTempPath + "'");
+						return 0;
+					} else {
+						return -4;
+					}
+				} catch (IOException e) {
+					Log.e(sLogTag, "unable to share the zip file", e);
+					return -5;
 				}
-			} catch (IOException e) {
-				Log.e(sLogTag, "unable to share the zip file", e);
-				return -5;
 			}
 		}
 
@@ -402,8 +409,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 	}
 
 	private static String assetToFilename(Context context, String assetName) {
-		// XXX - Should check if file exists, and if so, not extract again.		
-		
+		// XXX - Should check if file exists, and if so, not extract again.
+
 		AssetManager am = context.getAssets();
 		InputStream in = null;
 		try {
@@ -415,18 +422,18 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			file.createNewFile();
 
 			ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-		    int bufferSize = 1024;
-		    byte[] buffer = new byte[bufferSize];
-		    int len = 0;
-		    while ((len = in.read(buffer)) != -1) {
-		        byteBuffer.write(buffer, 0, len);
-		    }
-		    FileOutputStream stream = new FileOutputStream(file); 
-		    stream.write(byteBuffer.toByteArray());
-		    stream.close();
-		    
+			int bufferSize = 1024;
+			byte[] buffer = new byte[bufferSize];
+			int len = 0;
+			while ((len = in.read(buffer)) != -1) {
+				byteBuffer.write(buffer, 0, len);
+			}
+			FileOutputStream stream = new FileOutputStream(file);
+			stream.write(byteBuffer.toByteArray());
+			stream.close();
+
 			return file.getAbsolutePath();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
