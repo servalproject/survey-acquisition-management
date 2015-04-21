@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
@@ -37,6 +38,7 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class SuccinctDataQueueService extends Service {
 
@@ -55,6 +57,8 @@ public class SuccinctDataQueueService extends Service {
 	
 	public static SuccinctDataQueueService instance = null;
 
+	private Handler handler = null;
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -93,9 +97,12 @@ public class SuccinctDataQueueService extends Service {
 			String xmlData = intent.getStringExtra("org.servalproject.succinctdata.XML");
 			String xmlForm = intent.getStringExtra("org.servalproject.succinctdata.XMLFORM");
 			String formname = intent.getStringExtra("org.servalproject.succinctdata.FORMNAME");
-			String formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
-
-			if (RCLauncherActivity.upload_form_specifications) {
+			String formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");			
+			
+			if (RCLauncherActivity.upload_form_specifications && xmlForm != null) {
+				
+				String resultMessage = "Unknown error while uploading Magpi form to Succinct Data server";
+				
 				// Upload form specification to Succinct Data server
 				String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload-form.php";
 
@@ -112,17 +119,29 @@ public class SuccinctDataQueueService extends Service {
 				try {
 					HttpResponse response = httpclient.execute(httppost);
 					httpStatus = response.getStatusLine().getStatusCode();
+					if (httpStatus != 200 ) {
+						resultMessage = "Failed to upload Magpi form to Succinct Data server: http result = " + httpStatus;
+					}
+					else {
+						resultMessage = "Successfully uploaded Magpi form to Succinct Data server: http result = " + httpStatus;
+					}
 				} catch (Exception e) {
-					Log.d("succinctdata","Failed to upload Magpi form to "
-							+"Succinct Data server due to exceptio: " + e.toString());
+					resultMessage = "Failed to upload Magpi form to "
+								+"Succinct Data server due to exception: " + e.toString();
+					
 				}
 				// Do something with response...
-				if (httpStatus != 200 ) {
-					Log.d("succinctdata","Failed to upload Magpi form to Succinct Data server: http result = " + httpStatus);
-				}
-				else {
-					Log.d("succinctdata","Successfully uploaded Magpi form to Succinct Data server: http result = " + httpStatus);
-				}
+				Log.d("succinctdata",resultMessage);
+				
+				final String finalResultMessage = resultMessage;
+				if (handler == null) handler = new Handler();
+				handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+							Toast.makeText(getBaseContext(), finalResultMessage, Toast.LENGTH_LONG).show();
+					}
+				});
 
 			}
 			
