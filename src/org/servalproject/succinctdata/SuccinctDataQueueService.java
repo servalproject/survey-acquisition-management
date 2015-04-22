@@ -198,7 +198,7 @@ public class SuccinctDataQueueService extends Service {
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
-	private int sendViaCellular(String xmlData)
+	private int sendViaCellular(String succinctData)
 	{
 		// XXX make configurable!
 		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
@@ -207,9 +207,9 @@ public class SuccinctDataQueueService extends Service {
 		
 		HttpPost httppost = new HttpPost(url);
 
-		InputStream stream = new ByteArrayInputStream(xmlData.getBytes());
+		InputStream stream = new ByteArrayInputStream(succinctData.getBytes());
 		InputStreamEntity reqEntity = new InputStreamEntity(stream, -1);
-		reqEntity.setContentType("text/xml");
+		reqEntity.setContentType("text/succinctdata");
 		reqEntity.setChunked(true); // Send in multiple parts if needed						
 		httppost.setEntity(reqEntity);
 		int httpStatus = -1;
@@ -342,11 +342,11 @@ public class SuccinctDataQueueService extends Service {
 				// If data service is available, try to send messages that way
 				boolean messageSent = false;
 				if ((messageSent==false)&&isInternetAvailable()) {					
-					if (sendViaCellular(xml) == 0) messageSent=true;					
+					if (sendViaCellular(piece) == 0) messageSent=true;					
 				} 
 				// Else, if SMS is available, try to send messages that way
 				if ((messageSent==false)&&isSMSAvailable(s)) {
-//					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
+					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
 				}
 				if ((messageSent==false)&&(inReachReadyAndAvailable==true)) {    		    
 					// Else, if inReach is available, try to send messages that way
