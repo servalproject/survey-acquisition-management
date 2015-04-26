@@ -25,7 +25,7 @@ public class jni {
     public static native String[] 
     		xml2succinctfragments(String xmlforminstance, String xmlformspecification, 
     		String formname, String formversion, String succinctpath, String smacdata,
-    		int mtu);
+    		int mtu, int debug);
     // We no longer generate CSV locally
     // public static native int updatecsv(String succinctpath,String rxspooldir,String outputdir);	
 	

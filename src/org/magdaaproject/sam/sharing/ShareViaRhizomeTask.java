@@ -310,10 +310,13 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		String smacdatfilename = assetToFilename(context, "smac.dat");
 
 		try {
-
+			// Always use same encryption key if debug=1, so that we get deterministic output.
+			// This is helpful for debugging SD compression and encryption.
+			int debug = 0;
+			
 			String[] res = org.servalproject.succinctdata.jni
 					.xml2succinctfragments(xmldata, xmlformspec, formname,
-							formversion, recipeDir, smacdatfilename, mtu);
+							formversion, recipeDir, smacdatfilename, mtu, debug);
 
 			if (res.length < 1) {
 
