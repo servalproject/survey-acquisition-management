@@ -41,7 +41,7 @@
  */
 -->
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 <RelativeLayout
@@ -49,20 +49,21 @@
     android:layout_height="fill_parent"
     android:background="#ff111111"
     android:orientation="vertical" >
-    
+
     <Button
         android:id="@+id/launcher_rc_channel_availability_heading"
         style="@style/ui_elem_btn_border_red"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Status of transport channels" />
-    
+
     <CheckBox
         android:id="@+id/launcher_rc_notify_ui_SMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_channel_availability_heading"
-        android:text="SMS" 
+        android:text="SMS"
+        android:enabled="false"
         android:clickable="false"/>
      <CheckBox
         android:id="@+id/launcher_rc_notify_ui_wifi_cellular_internet"
@@ -70,6 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_SMS"
         android:text="WiFi/Cellular internet"
+        android:enabled="false"
         android:clickable="false" />
 
     <CheckBox
@@ -78,6 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_wifi_cellular_internet"
         android:text="inReach"
+        android:enabled="false"
         android:clickable="false" />
 
     <Button
@@ -87,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_notify_ui_inreach"
         android:text="Succinct Data Transmission Queue" />
-    
+
     <TextView
         android:id="@+id/launcher_rc_number_of_message_queued"
         android:layout_width="wrap_content"
@@ -102,21 +105,21 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_number_of_message_queued"
         android:text="Status of Connection to inReach" />
-    
+
     <TextView
         android:id="@+id/launcher_rc_connection_to_inreach"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_inReach_status_heading"
         android:text="Connection state to inReach" />
-    
+
     <Button
         android:id="@+id/launcher_rc_go_to_regular_launcher"
         style="@style/ui_elem_btn_border_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/launcher_rc_connection_to_inreach"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:text="Use with ODK collector" />
 
     <TextView
@@ -124,9 +127,9 @@
         style="@style/ui_elem_btn_border_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_rc_connection_to_inreach"
-        android:visibility="invisible"
-        android:text="Will upload Magpi Forms to SD Server" />    
-    
+        android:layout_below="@id/launcher_rc_go_to_regular_launcher"
+        android:visibility="gone"
+        android:text="Will upload Magpi Forms to SD Server" />
+
 </RelativeLayout>
 </ScrollView>

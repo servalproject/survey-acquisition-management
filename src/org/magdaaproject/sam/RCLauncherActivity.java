@@ -205,7 +205,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			} else {
 				if (upload_knocks>=7) {
 					TextView t = (TextView) findViewById(R.id.launcher_rc_upload_form_specifications);
-					t.setVisibility(t.INVISIBLE);
+					t.setVisibility(t.GONE);
 					RCLauncherActivity.upload_form_specifications = false;
 				}
 				upload_knocks = 0;
@@ -222,7 +222,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			}else {
 				if (knocks>=7) {
 					Button b = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
-					b.setVisibility(b.INVISIBLE);
+					b.setVisibility(b.GONE);
 				}
 				knocks = 0;
 			}
