@@ -274,6 +274,6 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	@Override
 	public void onNewEvent(String event) {
-
+		updateUI();
 	}
 }

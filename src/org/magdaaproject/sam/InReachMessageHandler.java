@@ -103,7 +103,7 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
      */
     public synchronized void setListener(Listener listener)
     {
-		if (m_lastevent!=null)
+		if (m_lastevent!=null && listener !=null)
 			listener.onNewEvent(m_lastevent);
         m_listener = listener;
     }
