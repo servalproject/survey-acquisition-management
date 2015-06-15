@@ -7,6 +7,7 @@ import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ public class ReceiveNewMagpiRecord extends BroadcastReceiver {
 		String completedRecord = intent.getStringExtra("recordData");
 		String recordBundle = intent.getStringExtra("recordBundle");
 		String formSpecification =  intent.getStringExtra("formSpecification");
+		
+		Bundle b = intent.getExtras();
 		
 		int result = ShareViaRhizomeTask.enqueueSuccinctData(context, 
 					completedRecord, formSpecification,
