@@ -54,6 +54,7 @@ class UploadFormSpecificationTask extends AsyncTask<String, Integer, Long>
     		String xmlForm = forms[i];
     		String resultMessage = "Unknown error while uploading Magpi form to Succinct Data server";
 			
+    		{    		
 			// Upload form specification to Succinct Data server
 			String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload-form.php";
 
@@ -93,7 +94,7 @@ class UploadFormSpecificationTask extends AsyncTask<String, Integer, Long>
 						Toast.makeText(context, finalResultMessage, Toast.LENGTH_LONG).show();
 				}
 			});
-
+    		}
     	}
         Long status = -1L;
         return status;
@@ -160,7 +161,12 @@ public class SuccinctDataQueueService extends Service {
 			String formname = intent.getStringExtra("org.servalproject.succinctdata.FORMNAME");
 			String formversion = intent.getStringExtra("org.servalproject.succinctdata.FORMVERSION");			
 			
-			if (RCLauncherActivity.upload_form_specifications && xmlForm != null) {
+			if (db == null) {
+				db = new SuccinctDataQueueDbAdapter(this);
+				db.open();		
+			}
+
+			if (xmlForm != null && db.isThingNew(xmlForm) ) {
 				UploadFormSpecificationTask.handler = handler;
 				UploadFormSpecificationTask.context = getBaseContext();
 				new UploadFormSpecificationTask().execute(xmlForm);								
@@ -169,10 +175,6 @@ public class SuccinctDataQueueService extends Service {
 			
 			// For each piece, create a message in the queue
 			Log.d("SuccinctData","Opening queue database");
-			if (db == null) {
-				db = new SuccinctDataQueueDbAdapter(this);
-				db.open();		
-			}
 			Log.d("SuccinctData","Opened queue database");
 			if (succinctData != null) {
 				for(int i = 0; i< succinctData.length;i ++) {

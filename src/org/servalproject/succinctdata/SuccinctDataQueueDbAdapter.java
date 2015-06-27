@@ -1,7 +1,9 @@
 package org.servalproject.succinctdata;
 
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.magdaaproject.sam.RCLauncherActivity;
 
@@ -23,6 +25,7 @@ public class SuccinctDataQueueDbAdapter {
  public static final String KEY_TIMESTAMP = "timestamp";
  public static final String KEY_SUCCINCTDATA = "succinctdata";
  public static final String KEY_XMLDATA = "xmldata";
+ public static final String KEY_HASH = "thinghash";
  
  private static final String TAG = "SuccinctDataQueueDbAdapter";
  private DatabaseHelper mDbHelper;
@@ -30,7 +33,8 @@ public class SuccinctDataQueueDbAdapter {
  
  private static final String DATABASE_NAME = "SuccinctDataQueue";
  private static final String SQLITE_TABLE = "QueuedMessages";
- private static final int DATABASE_VERSION = 3;
+ private static final String SQLITE_DEDUP_TABLE = "SentThings";
+ private static final int DATABASE_VERSION = 4;
  
  private final Context mCtx;
  
@@ -44,6 +48,13 @@ public class SuccinctDataQueueDbAdapter {
   KEY_XMLDATA + "," +
   " UNIQUE (" + KEY_PREFIX +"));";
  
+ private static final String DATABASE_DEDUP_CREATE =
+		  "CREATE TABLE if not exists " + SQLITE_DEDUP_TABLE + " (" +
+		  KEY_ROWID + " integer PRIMARY KEY autoincrement," +
+		  KEY_HASH + "," +
+		  " UNIQUE (" + KEY_HASH +"));";
+		 
+ 
  private static class DatabaseHelper extends SQLiteOpenHelper {
  
   DatabaseHelper(Context context) {
@@ -55,6 +66,7 @@ public class SuccinctDataQueueDbAdapter {
   public void onCreate(SQLiteDatabase db) {
    Log.w(TAG, DATABASE_CREATE);
    db.execSQL(DATABASE_CREATE);
+   db.execSQL(DATABASE_DEDUP_CREATE);
   }
  
   @Override
@@ -62,6 +74,7 @@ public class SuccinctDataQueueDbAdapter {
    Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
      + newVersion + ", which will destroy all old data");
    db.execSQL("DROP TABLE IF EXISTS " + SQLITE_TABLE);
+   db.execSQL("DROP TABLE IF EXISTS " + SQLITE_DEDUP_TABLE);
    onCreate(db);
   }
  }
@@ -96,9 +109,60 @@ public class SuccinctDataQueueDbAdapter {
 	    }
 	}
  
+ // The following function is from: http://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
+ final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+ public static String bytesToHex(byte[] bytes) {
+     char[] hexChars = new char[bytes.length * 2];
+     for ( int j = 0; j < bytes.length; j++ ) {
+         int v = bytes[j] & 0xFF;
+         hexChars[j * 2] = hexArray[v >>> 4];
+         hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+     }
+     return new String(hexChars);
+ }
+ 
+ public static String stringHash(String s)
+ {
+	 try {
+		    byte[] b = s.getBytes("iso-8859-1");
+			MessageDigest md;
+			md = MessageDigest.getInstance("SHA-1");
+			md.update(b, 0, b.length);
+			byte[] sha1hash = md.digest();
+			return bytesToHex(sha1hash);
+		} catch (Exception e) {
+			return null;
+		}	 
+ }
+ 
+ public long rememberThing(String thing)
+ {
+	 String md5sum = stringHash(thing);
+	  
+	  // Mark this record as having been queued so that we don't queue it again
+	  ContentValues dedup = new ContentValues();
+	  if (md5sum != null) {
+		  dedup.put(KEY_HASH, md5sum);
+		  return mDb.insert(SQLITE_DEDUP_TABLE, null, dedup);
+	  } else return -1L;
+
+ }
+ 
+ public boolean isThingNew(String thing)
+ {
+	 String md5sum = stringHash(thing);
+	  
+	 Cursor cursor = mDb.rawQuery("SELECT count(*) FROM " + SQLITE_DEDUP_TABLE + " WHERE hash = '" + md5sum + "'", null);
+	 if (cursor.getInt(0) > 0) return false; else return true;
+ }
+ 
  public long createQueuedMessage(String prefix, String succinctData, String formNameAndVersion,
 		 String xmlData) {
  
+  // Do not queue if we have previously queued this records
+	 if (!isThingNew(xmlData)) 
+		 return 0;
+	 
   ContentValues initialValues = new ContentValues();
   initialValues.put(KEY_PREFIX, prefix);
   initialValues.put(KEY_FORM, prefix);
@@ -106,7 +170,11 @@ public class SuccinctDataQueueDbAdapter {
   initialValues.put(KEY_SUCCINCTDATA, succinctData);
   initialValues.put(KEY_XMLDATA, xmlData);
   
-  return mDb.insert(SQLITE_TABLE, null, initialValues);
+  if (mDb.insert(SQLITE_TABLE, null, initialValues) == 0)
+  {
+	  // Mark this record as having been queued so that we don't queue it again
+	  return rememberThing(xmlData);	  
+  } else return -1L;
  }
  
  public Cursor fetchSuccinctDataByName(String inputText) throws SQLException {
