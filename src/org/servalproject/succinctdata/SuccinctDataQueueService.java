@@ -76,6 +76,12 @@ class UploadFormSpecificationTask extends AsyncTask<String, Integer, Long>
 				}
 				else {
 					resultMessage = "Successfully uploaded Magpi form to Succinct Data server: http result = " + httpStatus;
+					// Remember uploaded form so that we don't try to send it again after we have
+					// done so once.
+					SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(UploadFormSpecificationTask.context);
+					db.open();
+					db.rememberThing(xmlForm);
+					db.close();
 				}
 			} catch (Exception e) {
 				resultMessage = "Failed to upload Magpi form to "
