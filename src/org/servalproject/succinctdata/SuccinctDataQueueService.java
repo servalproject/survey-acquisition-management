@@ -129,7 +129,7 @@ public class SuccinctDataQueueService extends Service {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		
 		instance = this;
 		
 		// Create background thread that continuously checks for messages, and sends them if it can

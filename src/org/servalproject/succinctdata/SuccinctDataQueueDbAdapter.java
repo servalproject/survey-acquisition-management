@@ -153,7 +153,10 @@ public class SuccinctDataQueueDbAdapter {
 	 String md5sum = stringHash(thing);
 	  
 	 Cursor cursor = mDb.rawQuery("SELECT "+ KEY_HASH +" FROM " + SQLITE_DEDUP_TABLE + " WHERE "+ KEY_HASH +" = '" + md5sum + "'", null);	 
-	 if (cursor.getCount() > 0) return false; else return true;
+	 if (cursor.getCount() > 0) 
+		 return false; 
+	 else 
+		 return true;
  }
  
  public long createQueuedMessage(String prefix, String succinctData, String formNameAndVersion,
@@ -219,7 +222,14 @@ public class SuccinctDataQueueDbAdapter {
  }
 
 public void delete(String piece) {
-	// Delete message using piece text as key
+	// Delete message using piece text as key	
+	
+	// First, get the xmlData that the piece is part of, and see how many other pieces refer to the same
+	// record. When none are left, then we can record this record as having been sent, and ignore it in
+	// future by storing its hash in the SentThings database table.
+	// (the query to find out if this is the last piece of this record should be possible as a nested query)
+	// XXX - This is not yet implemented. 
+	
 	mDb.delete(SQLITE_TABLE, "SUCCINCTDATA=?", new String[] {piece});
 	RCLauncherActivity.set_message_queue_length(this.getMessageQueueLength());
 }
