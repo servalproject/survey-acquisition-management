@@ -152,8 +152,8 @@ public class SuccinctDataQueueDbAdapter {
  {
 	 String md5sum = stringHash(thing);
 	  
-	 Cursor cursor = mDb.rawQuery("SELECT count(*) FROM " + SQLITE_DEDUP_TABLE + " WHERE hash = '" + md5sum + "'", null);
-	 if (cursor.getInt(0) > 0) return false; else return true;
+	 Cursor cursor = mDb.rawQuery("SELECT "+ KEY_HASH +" FROM " + SQLITE_DEDUP_TABLE + " WHERE "+ KEY_HASH +" = '" + md5sum + "'", null);	 
+	 if (cursor.getCount() > 0) return false; else return true;
  }
  
  public long createQueuedMessage(String prefix, String succinctData, String formNameAndVersion,
