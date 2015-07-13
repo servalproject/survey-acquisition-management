@@ -115,8 +115,8 @@ public class SuccinctDataQueueService extends Service {
 	private static final String EXTRA_ROW = "ROWID";
 	private static final String TAG = "SuccinctQueueService";
 	private Thread messageSenderThread = null;
-	private static final long maxSMSQueued=4;
-	private static final long maxInreachQueued=4;
+	private static final long maxSMSQueued=1;
+	private static final long maxInreachQueued=1;
 	public static final String ACTION_QUEUE_UPDATED = "SD_MESSAGE_QUEUE_UPDATED";
 	public static SuccinctDataQueueService instance = null;
 
@@ -126,11 +126,15 @@ public class SuccinctDataQueueService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (action.equals(SENT) && getResultCode() == Activity.RESULT_OK) {
+			if (action.equals(SENT) ) {
 				long rowId = intent.getLongExtra(EXTRA_ROW, -1);
 				if (rowId !=-1) {
 					ContentValues values = new ContentValues();
-					values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_SMS_SENT);
+					if (getResultCode() == Activity.RESULT_OK) {
+						values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_SMS_SENT);
+					}else{
+						values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_SMS_FAILED);
+					}
 					db.update(rowId, values);
 					// TODO schedule service again!
 				}
@@ -356,12 +360,8 @@ public class SuccinctDataQueueService extends Service {
 					continue;
 				}
 
-				// don't send messages twice via other transports
-				if (status != null)
-					continue;
-
 				// Else, if SMS is available, try to send messages that way
-				if (isSMSAvailable(context)) {
+				if (status == null && isSMSAvailable(context)) {
 					if (smsQueued >= maxSMSQueued)
 						break;
 					if (!sendSMS(rowId, smsnumber, piece))
@@ -375,7 +375,7 @@ public class SuccinctDataQueueService extends Service {
 				}
 
 				// Else, if inReach is available, try to send messages that way
-				if (InReachMessageHandler.isInreachAvailable()) {
+				if ((status == null || SuccinctDataQueueDbAdapter.STATUS_SMS_FAILED.equals(status)) && InReachMessageHandler.isInreachAvailable()) {
 					if (inreachQueued >= maxInreachQueued)
 						break;
 					int id = sendInReach(smsnumber, piece);

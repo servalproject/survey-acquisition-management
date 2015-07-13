@@ -234,7 +234,11 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = "Message queue synchronized.";
                 addEvent(text);
                 
-                m_queuesynced = true;	
+                m_queuesynced = true;
+				m_queued_count = 0;
+
+
+				// TODO run service now
                 break;
             }
             case InReachEvents.EVENT_EMERGENCY_MODE_UPDATE:
@@ -379,6 +383,7 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                 final String text = "Bluetooth Connecting..";
                 
                 addEvent(text);
+                m_queuesynced = false;
 
 				// start timer, connect might disappear into a blackhole
 				if (bluetoothstate == 0){

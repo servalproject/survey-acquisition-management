@@ -29,6 +29,8 @@ public class SuccinctDataQueueDbAdapter {
 
 	public static final String STATUS_SMS_QUEUED = "SMS_QUEUED";
 	public static final String STATUS_SMS_SENT = "SMS_SENT";
+	public static final String STATUS_SMS_FAILED = "SMS_FAILED";
+
 	public static final String STATUS_INREACH_QUEUED = "INREACH_QUEUED";
 	public static final String STATUS_INREACH_SENT = "INREACH_SENT";
 
@@ -81,8 +83,9 @@ public class SuccinctDataQueueDbAdapter {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
 					+ newVersion );
 			switch (oldVersion) {
-				case 4:
+				case 2:
 					db.execSQL("Alter table " + SQLITE_TABLE + " add column " + KEY_XMLDATA);
+				case 4:
 					db.execSQL("Alter table " + SQLITE_TABLE + " add column " + COL_STATUS);
 					db.execSQL("Alter table " + SQLITE_TABLE + " add column " + COL_INREACH_ID);
 			}
