@@ -42,7 +42,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
-class UploadFormSpecificationTask extends AsyncTask<String, Integer, Long>
+class UploadFormSpecificationTask extends AsyncTask<String, String, Long>
 {
 	public static Handler handler = null;
 	public static Context context = null;
@@ -90,21 +90,19 @@ class UploadFormSpecificationTask extends AsyncTask<String, Integer, Long>
 			}
 			// Do something with response...
 			Log.d("succinctdata",resultMessage);
-			
-			final String finalResultMessage = resultMessage;
-			if (handler == null) handler = new Handler();
-			handler.post(new Runnable() {
-
-				@Override
-				public void run() {
-						Toast.makeText(context, finalResultMessage, Toast.LENGTH_LONG).show();
-				}
-			});
+			this.publishProgress(resultMessage);
     		}
     	}
         Long status = -1L;
         return status;
     }
+
+	@Override
+	protected void onProgressUpdate(String... values) {
+		Toast.makeText(context, values[0], Toast.LENGTH_LONG).show();
+	}
+    
+    
 }
 
 
