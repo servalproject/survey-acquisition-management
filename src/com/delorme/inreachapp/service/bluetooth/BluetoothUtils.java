@@ -5,9 +5,6 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 
-import org.magdaaproject.sam.InReachMessageHandler;
-import org.magdaaproject.sam.RCLauncherActivity;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -52,19 +49,15 @@ public class BluetoothUtils
         }
       
         final Set<BluetoothDevice> bondedDevices = btAdapter.getBondedDevices();
-        // changes do to be able to know how many inReach are paired to the phone
-        BluetoothDevice theDevice = null;
-        InReachMessageHandler.setInReachNumber(0);
         for (BluetoothDevice device : bondedDevices)
         {
             if (BluetoothUtils.isInReachDevice(device))
             {   
-           		InReachMessageHandler.setInReachNumber(InReachMessageHandler.getInReachNumber() + 1);
-            	theDevice = device;      	                
+            	return device;
             }
         }
 
-        return theDevice;
+        return null;
     }
     
     /**
@@ -175,7 +168,6 @@ public class BluetoothUtils
             }
             
             
-            RCLauncherActivity.notifyBluetoothInSocketConnect(true);
             try
             {
                 // On Samsung devices this can hang forever if the previous Bluetooth socket was not properly closed.
@@ -187,8 +179,6 @@ public class BluetoothUtils
                 Log.d(DEBUG_TAG, "Failed to connect to device.", e);
                 socket = null;
             }
-            RCLauncherActivity.notifyBluetoothInSocketConnect(false);
-            RCLauncherActivity.requestUpdateUI();
         }
 
         return socket;

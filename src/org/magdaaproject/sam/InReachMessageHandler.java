@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.servalproject.succinctdata.SuccinctDataQueueDbAdapter;
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 
 import com.delorme.inreachapp.service.InReachEvents;
@@ -18,6 +19,7 @@ import com.delorme.inreachcore.MessageTypes;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import 	android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -43,10 +45,13 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
 	private final Context context;
 	private static final BluetoothAdapter BA = BluetoothAdapter.getDefaultAdapter();
 	private static int bluetoothstate = 0;
-	
+	private final SuccinctDataQueueDbAdapter db;
+
     
     private InReachMessageHandler(Context c) {
     	this.context = c;
+		db = new SuccinctDataQueueDbAdapter(c);
+		db.open();
 	}
 	/**
      * Returns a single instance of the LogEventHandler
@@ -165,11 +170,16 @@ public class InReachMessageHandler extends Handler implements ServiceConnection 
                     type, msg.arg2);
                 addEvent(text);
                 m_queued_count--;                
-                
-                // Tell SuccinctDataQueueService
-                SuccinctDataQueueService.sawInReachMessageConfirmation((long)msg.arg2);                
-                
-                break;
+
+				// update database
+				ContentValues values = new ContentValues();
+				values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_INREACH_SENT);
+				db.update(SuccinctDataQueueDbAdapter.COL_INREACH_ID + " = ? ",
+						new String[]{Integer.toString(msg.arg2)},
+						values);
+				// TODO schedule service again!
+
+				break;
             }
             case InReachEvents.EVENT_MESSAGE_SEND_FAILED:
             {

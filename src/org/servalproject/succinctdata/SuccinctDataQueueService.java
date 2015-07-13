@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -110,54 +111,42 @@ class UploadFormSpecificationTask extends AsyncTask<String, Integer, Long>
 
 public class SuccinctDataQueueService extends Service {
 
-	private String SENT = "SMS_SENT";
-
-	public static int sms_tx_result = -1; 
-	public static PendingIntent sms_tx_pintent = null;
-
-	private static Long pendingInReachMessageId = -1L;
-	private static String pendingInReachMessagePiece = null;
-	
-	private boolean inReachReadyAndAvailable = false;
-	
-	private SuccinctDataQueueDbAdapter db = null;
-	Thread messageSenderThread = null;
-	
+	private static final String SENT = "SMS_SENT";
+	private static final String EXTRA_ROW = "ROWID";
+	private static final String TAG = "SuccinctQueueService";
+	private Thread messageSenderThread = null;
+	private static final long maxSMSQueued=4;
+	private static final long maxInreachQueued=4;
+	public static final String ACTION_QUEUE_UPDATED = "SD_MESSAGE_QUEUE_UPDATED";
 	public static SuccinctDataQueueService instance = null;
 
 	private Handler handler = null;
 	
+	private final BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(SENT) && getResultCode() == Activity.RESULT_OK) {
+				long rowId = intent.getLongExtra(EXTRA_ROW, -1);
+				if (rowId !=-1) {
+					ContentValues values = new ContentValues();
+					values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_SMS_SENT);
+					db.update(rowId, values);
+					// TODO schedule service again!
+				}
+			}
+		}
+	};
+
+	private SuccinctDataQueueDbAdapter db;
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		instance = this;
-		
-		// Create background thread that continuously checks for messages, and sends them if it can
-		final Service theService = this;
-		if (messageSenderThread == null) {
-			messageSenderThread = new Thread(new Runnable() { public void run() { try {
-				messageSenderLoop(theService);
-			} catch (Exception e) {
-				//	TODO Auto-generated catch block
-				e.printStackTrace();
-			} } });
-			messageSenderThread.start();
-		}         
 
-		// Create pending intent and broadcast listener for SMS dispatch if not done 
-		// already
-		if (sms_tx_pintent == null) {	 
-			sms_tx_pintent = PendingIntent.getBroadcast(this, 0,
-					new Intent(SENT), 0);
-
-			//---when the SMS has been sent---
-			registerReceiver(new BroadcastReceiver(){
-				@Override
-				public void onReceive(Context arg0, Intent arg1) {
-					sms_tx_result=getResultCode();
-				}
-			}, new IntentFilter(SENT));
-		}
+		//---when the SMS has been sent---
+		registerReceiver(receiver, new IntentFilter(SENT));
 
 		// Check if the passed intent has a message to queue
 		try {
@@ -182,20 +171,32 @@ public class SuccinctDataQueueService extends Service {
 			// For each piece, create a message in the queue
 			Log.d("SuccinctData","Opening queue database");
 			Log.d("SuccinctData","Opened queue database");
-			if (succinctData != null) {
+			if (succinctData != null && !db.isThingNew(xmlData)) {
+
 				for(int i = 0; i< succinctData.length;i ++) {
 					String piece = succinctData[i];
 					String prefix = piece.substring(0, 10);
 					db.createQueuedMessage(prefix, piece,formname+"/"+formversion,xmlData);
 				}
-				Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-				LocalBroadcastManager lb = LocalBroadcastManager.getInstance(this);
-				lb.sendBroadcastSync(i);
+				db.rememberThing(xmlData);
+				queueUpdated();
 			}
 
 		} catch (Exception e) {
 			String s = e.toString();
-			Log.e("SuccinctDataqQueueService","Exception: " + s);
+			Log.e(TAG,"Exception: " + s);
+		}
+
+		// Create background thread that continuously checks for messages, and sends them if it can
+		final Service theService = this;
+		if (messageSenderThread == null) {
+			messageSenderThread = new Thread(new Runnable() { public void run() { try {
+				Looper.prepare();
+				messageSenderLoop(theService);
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage(), e);
+			} } });
+			messageSenderThread.start();
 		}
 
 		// We want this service to continue running until it is explicitly
@@ -203,10 +204,14 @@ public class SuccinctDataQueueService extends Service {
 		return START_STICKY;
 	}
 
+	private void queueUpdated() {
+		Intent i = new Intent(ACTION_QUEUE_UPDATED);
+		LocalBroadcastManager lb = LocalBroadcastManager.getInstance(this);
+		lb.sendBroadcastSync(i);
+	}
+
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		instance = this;
 		return null;
 	}
 
@@ -214,8 +219,9 @@ public class SuccinctDataQueueService extends Service {
 	// This method by santacrab from:
 	// http://stackoverflow.com/questions/6435861/android-what-is-the-correct-way-of-checking-for-mobile-network-available-no-da
 	public static Boolean isSMSAvailable(Context appcontext) {       
-		TelephonyManager tel = (TelephonyManager) appcontext.getSystemService(Context.TELEPHONY_SERVICE);       
-		return ((tel.getNetworkOperator() != null && tel.getNetworkOperator().equals("")) ? false : true);      
+		TelephonyManager tel = (TelephonyManager) appcontext.getSystemService(Context.TELEPHONY_SERVICE);
+		String network = tel.getNetworkOperator();
+		return network != null && !network.equals("");
 	}
 
 	// Detecting internet access by Alexandre Jasmin from:
@@ -227,7 +233,7 @@ public class SuccinctDataQueueService extends Service {
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
-	private int sendViaCellular(String succinctData)
+	private boolean sendViaCellular(String succinctData)
 	{
 		// XXX make configurable!
 		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
@@ -246,19 +252,17 @@ public class SuccinctDataQueueService extends Service {
 			HttpResponse response = httpclient.execute(httppost);
 			httpStatus = response.getStatusLine().getStatusCode();
 		} catch (Exception e) {
-			return -1;
+			return false;
 		}
 		// Do something with response...
-		if (httpStatus != 200 ) return -1;
-		else return 0;
+		return httpStatus==200;
     }
 	
-	public int sendSMS(String smsnumber,String message)
+	public boolean sendSMS(long rowId, String smsnumber, String message)
 	{
-		SuccinctDataQueueService.sms_tx_result = 0xbeef;
-
+		/* Create Pending Intent */
 		Intent sentIntent = new Intent(SENT);
-		/*Create Pending Intents*/
+		sentIntent.putExtra(EXTRA_ROW, rowId);
 		PendingIntent p = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, sentIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
@@ -269,73 +273,133 @@ public class SuccinctDataQueueService extends Service {
 		try {
 			manager.sendTextMessage(smsnumber, null, message, p, null);
 		} catch (Exception e) {
-			return -1;
+			return false;
 		}
-		
-		// Then wait for pending intent to indicate delivery.
-		// We catch the intent in this class, and then poll the result flag to
-		// see what happened.
-		// Give 60 seconds for the SMS to get sent		
-		for(int i=0;i<60;i++) {
-			if (SuccinctDataQueueService.sms_tx_result == 0xbeef)
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			else if ( SuccinctDataQueueService.sms_tx_result == Activity.RESULT_OK )
-				return 0;				
-		}
-
-		return -1;
+		return true;
 	}
 
-	private int sendInReach(String phonenumber, String [] succinctData, PendingIntent p)
+	private int sendInReach(String phonenumber, String succinctData)
 	{
 		int ms_messageIdentifier = 0;
 		InReachManager manager = InReachMessageHandler.getInstance().getService().getManager();
-		for(int i=0;i<succinctData.length;i++) {
-			final OutboundMessage message = new OutboundMessage();
-			message.setAddressCode(OutboundMessage.AC_FreeForm);
-			message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
-			// Set message identifier to first few bytes of hash of data
-			try {
-				MessageDigest md;
-				md = MessageDigest.getInstance("SHA-1");
-				md.update(succinctData[0].getBytes("iso-8859-1"), 0, succinctData[0].length());
-				byte[] sha1hash = md.digest();
-				ms_messageIdentifier = sha1hash[0] + (sha1hash[1]<<8) + (sha1hash[2]<<16)+ (sha1hash[3]<<24);
-			} catch (Exception e) {
-				Random r = new Random();
-				int i1 = r.nextInt(1000000000);
-				ms_messageIdentifier = i1;
-			}
-			message.setIdentifier(ms_messageIdentifier);
-			message.addAddress(phonenumber);
-			message.setText(succinctData[i]);
+		final OutboundMessage message = new OutboundMessage();
+		message.setAddressCode(OutboundMessage.AC_FreeForm);
+		message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
+		// Set message identifier to first few bytes of hash of data
+		try {
+			MessageDigest md;
+			md = MessageDigest.getInstance("SHA-1");
+			md.update(succinctData.getBytes("iso-8859-1"), 0, succinctData.length());
+			byte[] sha1hash = md.digest();
+			ms_messageIdentifier = sha1hash[0] + (sha1hash[1]<<8) + (sha1hash[2]<<16)+ (sha1hash[3]<<24);
+			if (ms_messageIdentifier == -1)
+				ms_messageIdentifier = 0;
+		} catch (Exception e) {
+			return -1;
+		}
+		message.setIdentifier(ms_messageIdentifier);
+		message.addAddress(phonenumber);
+		message.setText(succinctData);
 
-				
-			// queue the message for sending
-			if (!manager.sendMessage(message))
-			{
-				// Failed
-				return -1;
-			}
-			
-		}        
+		// queue the message for sending
+		if (!manager.sendMessage(message))
+			// Failed
+			return -1;
 		return ms_messageIdentifier;
 	}
-	
+
+	public void sendMessages(Context context){
+		// Get number of messages in database
+		long smsQueued=0;
+		long inreachQueued=0;
+		{
+			Cursor c = db.getMessageCounts();
+			try {
+				while (c.moveToNext()) {
+					String state = c.getString(0);
+					long count = c.getLong(1);
+					if (SuccinctDataQueueDbAdapter.STATUS_SMS_QUEUED.equals(state))
+						smsQueued = count;
+					else if (SuccinctDataQueueDbAdapter.STATUS_INREACH_QUEUED.equals(state))
+						inreachQueued = count;
+				}
+			}finally{
+				c.close();
+			}
+		}
+		String smsnumber = getString(R.string.succinct_data_sms_number);
+
+		Cursor c = db.fetchAllMessages();
+		try {
+
+			int cRowID = c.getColumnIndexOrThrow(SuccinctDataQueueDbAdapter.KEY_ROWID);
+			int cPrefix = c.getColumnIndexOrThrow(SuccinctDataQueueDbAdapter.KEY_PREFIX);
+			int cPiece = c.getColumnIndexOrThrow(SuccinctDataQueueDbAdapter.KEY_SUCCINCTDATA);
+			int cXml = c.getColumnIndexOrThrow(SuccinctDataQueueDbAdapter.KEY_XMLDATA);
+			int cStatus = c.getColumnIndexOrThrow(SuccinctDataQueueDbAdapter.COL_STATUS);
+			int cInreachId = c.getColumnIndexOrThrow(SuccinctDataQueueDbAdapter.COL_INREACH_ID);
+
+			while (c.moveToNext()) {
+				long rowId = c.getLong(cRowID);
+				String prefix = c.getString(cPrefix);
+				String piece = c.getString(cPiece);
+				String xml = c.getString(cXml);
+				String status = c.getString(cStatus);
+				String inreachId = c.getString(cInreachId);
+
+				// If data service is available, try to send messages that way
+				if (isInternetAvailable()) {
+					if (!sendViaCellular(xml))
+						break;
+					db.delete(rowId);
+					queueUpdated();
+					continue;
+				}
+
+				// don't send messages twice via other transports
+				if (status != null)
+					continue;
+
+				// Else, if SMS is available, try to send messages that way
+				if (isSMSAvailable(context)) {
+					if (smsQueued >= maxSMSQueued)
+						break;
+					if (!sendSMS(rowId, smsnumber, piece))
+						break;
+					smsQueued++;
+					ContentValues values = new ContentValues();
+					values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_SMS_QUEUED);
+					db.update(rowId, values);
+					queueUpdated();
+					continue;
+				}
+
+				// Else, if inReach is available, try to send messages that way
+				if (InReachMessageHandler.isInreachAvailable()) {
+					if (inreachQueued >= maxInreachQueued)
+						break;
+					int id = sendInReach(smsnumber, piece);
+					if (id == -1)
+						break;
+					inreachQueued++;
+					ContentValues values = new ContentValues();
+					values.put(SuccinctDataQueueDbAdapter.COL_STATUS, SuccinctDataQueueDbAdapter.STATUS_INREACH_QUEUED);
+					values.put(SuccinctDataQueueDbAdapter.COL_INREACH_ID, Integer.toString(id));
+					db.update(rowId, values);
+					queueUpdated();
+					continue;
+				}
+			}
+		}finally{
+			c.close();
+		}
+	}
+
 	public void messageSenderLoop(Service s)
 	{
 		// XXX - This really is ugly. We should edge detect everything instead of
 		// polling.
 		instance = this;
-
-		Looper.prepare();
-		SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(this);
-		db.open();
-
-		String smsnumber = getString(R.string.succinct_data_sms_number);
 
 		long next_timeout = 5000;
 		
@@ -345,62 +409,10 @@ public class SuccinctDataQueueService extends Service {
 				Thread.sleep(next_timeout);
 			} catch (Exception e) {
 			} 
-
-			// Get number of messages in database
-			Cursor c = db.fetchAllMessages();
-			RCLauncherActivity.set_message_queue_length(c.getCount());
-			if (c.getCount()==0) {
-				// If no queued messages, wait only a few seconds
-				next_timeout = 5000;
-				continue;
-			} 
-
-			c.moveToFirst();
-			while (c.isAfterLast() == false) {
-				String prefix = c.getString(1);
-				String piece = c.getString(4);
-				String xml = c.getString(5);
-
-				// Update inReach status
-				if (InReachMessageHandler.isInreachAvailable() == true) {
-					// inReach is available.
-					// but is there a queued message?
-					inReachReadyAndAvailable = true;
-				}					
-				
-				// If data service is available, try to send messages that way
-				boolean messageSent = false;
-				if ((messageSent==false)&&isInternetAvailable()) {					
-					if (sendViaCellular(piece) == 0) messageSent=true;					
-				} 
-				// Else, if SMS is available, try to send messages that way
-				if ((messageSent==false)&&isSMSAvailable(s)) {
-					if (sendSMS(smsnumber,piece) == 0) messageSent=true;
-				}
-				if ((messageSent==false)&&(inReachReadyAndAvailable==true)) {    		    
-					// Else, if inReach is available, try to send messages that way
-					if (dispatchViaInReach(smsnumber,piece) == 0) {
-						// Mark inreach busy until it confirms handover of the message
-						// to the satellite constellation.
-						inReachReadyAndAvailable = false;
-					}
-				}
-
-				if (messageSent == true) {
-					// Delete message from database
-					db.delete(piece);
-					Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-					LocalBroadcastManager lb = LocalBroadcastManager.getInstance(s);
-					lb.sendBroadcastSync(i);
-				}
-
-				c.moveToNext();
-			}
-			
+			sendMessages(s);
 			// Check if we still have messages queued. If so, there is some problem
 			// with sending them, so hold off for a couple of minutes before trying again.
-			c = db.fetchAllMessages();
-			RCLauncherActivity.set_message_queue_length(c.getCount());
+			Cursor c = db.fetchAllMessages();
 			if (c.getCount()==0) {
 				// If no queued messages, wait only a few seconds
 				next_timeout = 5000;
@@ -409,43 +421,5 @@ public class SuccinctDataQueueService extends Service {
 			}
 
 		}    
-	}
-
-	private int dispatchViaInReach(String smsnumber, String piece) {		
-		// XXX - Need synchronous inReach sending code here				
-		
-		// XXX - tie piece to inReach message ID so that when the inReach
-		// indicates that it has been delivered, we can remove the relevant 
-		// piece from the database, even if it has taken hours for the inReach
-		// to deliver it.
-		
-		Intent sentIntent = new Intent("SUCCINCT_DATA_INREACH_SEND_STATUS");
-		/*Create Pending Intents*/
-		PendingIntent sentPI = PendingIntent.getBroadcast(
-				getApplicationContext(), 0, sentIntent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-		
-		long inReachMessageId = (long)sendInReach(smsnumber, new String[] {piece}, sentPI);
-		
-		rememberPendingInReachMessage(inReachMessageId,piece);
-							
-		return -1;
-	}
-
-	private void rememberPendingInReachMessage(Long inReachMessageId,
-			String piece) {
-		pendingInReachMessageId = inReachMessageId;
-		pendingInReachMessagePiece = piece;		
-	}
-	
-	public static void sawInReachMessageConfirmation(Long inReachMessageId) {
-		if (inReachMessageId == pendingInReachMessageId) {
-			// We know about this one, delete the corresponding piece from the
-			// database.
-			SuccinctDataQueueService.instance.db.delete(pendingInReachMessagePiece);
-			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-			LocalBroadcastManager lb = LocalBroadcastManager.getInstance(SuccinctDataQueueService.instance);
-			lb.sendBroadcastSync(i);
-		}
 	}
 }

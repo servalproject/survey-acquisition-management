@@ -1,6 +1,7 @@
 package org.magdaaproject.sam;
 
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.SuccinctDataQueueDbAdapter;
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 
 import com.delorme.inreachcore.InReachManager;
@@ -10,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -33,9 +35,9 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "RCLauncherActivity";
-	private static long messageQueueLength = 0;
 	public static RCLauncherActivity instance = null;
 	public static boolean upload_form_specifications = false;
+	private SuccinctDataQueueDbAdapter db;
 
 	private Handler mHandler = null;
 	final Runnable mStatusChecker = new Runnable() {
@@ -51,15 +53,23 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	private int upload_knocks =0;
 	long last_upload_knock = 0;
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			updateUI();
+		}
+	};
 
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rc_launcher);
 		
 		mHandler = new Handler();
-		
+		db = new SuccinctDataQueueDbAdapter(this);
+		db.open();
+
 		// setup the buttons
 		Button mButton = (Button) findViewById(R.id.launcher_rc_go_to_regular_launcher);
 		mButton.setOnClickListener(this);
@@ -79,7 +89,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	     * 3. Show inReach status.
 	     * 4. Show number of messages in the queue.
 	     */
-		
+
 		CheckBox mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_inreach);
 		boolean inReachConnected = false;
 		
@@ -120,7 +130,34 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mcheckBox.setChecked(inReachConnected);
 		
 		mTextView = (TextView) findViewById(R.id.launcher_rc_number_of_message_queued);
-		mTextView.setText("" + messageQueueLength + " message(s) waiting to be transmitted.");
+
+		long smsQueued=0;
+		long inreachQueued=0;
+		long smsSent = 0;
+		long inreachSent = 0;
+		long queued=0;
+
+		Cursor c = db.getMessageCounts();
+		try {
+			while (c.moveToNext()) {
+				String state = c.getString(0);
+				long count = c.getLong(1);
+				if (SuccinctDataQueueDbAdapter.STATUS_SMS_QUEUED.equals(state))
+					smsQueued = count;
+				else if (SuccinctDataQueueDbAdapter.STATUS_INREACH_QUEUED.equals(state))
+					inreachQueued = count;
+				else if (SuccinctDataQueueDbAdapter.STATUS_SMS_SENT.equals(state))
+					smsSent = count;
+				else if (SuccinctDataQueueDbAdapter.STATUS_INREACH_SENT.equals(state))
+					inreachSent = count;
+				else
+					queued = count;
+			}
+		}finally{
+			c.close();
+		}
+
+		mTextView.setText("" + queued + " message(s) waiting to be transmitted.");
 		
 		mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
 		mcheckBox.setChecked(SuccinctDataQueueService.isSMSAvailable(this));
@@ -201,11 +238,6 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		}
 	}
 
-	public static void set_message_queue_length(long count) {
-		messageQueueLength = count;
-		requestUpdateUI();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onResume()
@@ -214,29 +246,24 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	public void onResume() {
 		super.onResume();
 		instance = this;
-		updateUI();
 		startRepeatingTask();
 		InReachMessageHandler.getInstance().setListener(this);
+		IntentFilter f = new IntentFilter();
+		f.addAction(SuccinctDataQueueService.ACTION_QUEUE_UPDATED);
+		f.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+		registerReceiver(receiver, f);
+		updateUI();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
+		unregisterReceiver(receiver);
 		InReachMessageHandler.getInstance().setListener(null);
 		stopRepeatingTask();
 		instance = null;
 	}
 	
-	public static void requestUpdateUI() {
-		if (RCLauncherActivity.instance != null) {
-			RCLauncherActivity.instance.runOnUiThread(new Runnable() {
-				public void run() {
-					RCLauncherActivity.instance.updateUI();
-				}
-			});
-		}
-	}
-		
 	private void startRepeatingTask() {
 	    mStatusChecker.run(); 
 	  }
