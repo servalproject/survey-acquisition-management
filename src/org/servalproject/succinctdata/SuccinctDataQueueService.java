@@ -230,7 +230,7 @@ public class SuccinctDataQueueService extends Service {
 	private int sendViaCellular(String succinctData)
 	{
 		// XXX make configurable!
-		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
+ 		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
 
 		HttpClient httpclient = new DefaultHttpClient();
 		
@@ -428,7 +428,7 @@ public class SuccinctDataQueueService extends Service {
 		
 		rememberPendingInReachMessage(inReachMessageId,piece);
 							
-		return -1;
+		return 0;
 	}
 
 	private void rememberPendingInReachMessage(Long inReachMessageId,
@@ -445,6 +445,8 @@ public class SuccinctDataQueueService extends Service {
 			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
 			LocalBroadcastManager lb = LocalBroadcastManager.getInstance(SuccinctDataQueueService.instance);
 			lb.sendBroadcastSync(i);
+		} else {
+			Log.d("inreachtx", "This message id ("+ inReachMessageId+"}) does not match the one we are waiting for ("+pendingInReachMessageId+").");
 		}
 	}
 }
