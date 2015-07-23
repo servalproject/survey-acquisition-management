@@ -281,7 +281,12 @@ public class SuccinctDataQueueService extends Service {
 				} catch (InterruptedException e) {
 				}
 			else if ( SuccinctDataQueueService.sms_tx_result == Activity.RESULT_OK )
-				return 0;				
+				return 0;
+			else if ( SuccinctDataQueueService.sms_tx_result == 1) {
+				// SMS transmission failed -- perhaps phone has a network, but no
+				// credit to send.
+				return -1;
+			}
 		}
 
 		return -1;
