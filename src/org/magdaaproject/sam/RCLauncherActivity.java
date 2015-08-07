@@ -148,8 +148,12 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mTextView = (TextView) findViewById(R.id.launcher_rc_number_of_message_queued);
 		if (messageQueueLength==-1)
 			mTextView.setText("Waiting for message queue to initialise...");
-		else
-			mTextView.setText("" + messageQueueLength + " message(s) waiting to be transmitted.");
+		else if (messageQueueLength==0)
+			mTextView.setText("No messages waiting to be transmitted.");
+		else if  (messageQueueLength==1)
+			mTextView.setText("One message waiting to be transmitted.");
+		else 
+			mTextView.setText("" + messageQueueLength + " messages waiting to be transmitted.");
 		
 		if (RCLauncherActivity.instance != null) {
 			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
