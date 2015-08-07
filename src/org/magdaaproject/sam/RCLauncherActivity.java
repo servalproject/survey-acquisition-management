@@ -33,7 +33,7 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	//private static final boolean sVerboseLog = true;
 	private static final String sLogTag = "RCLauncherActivity";
-	private static long messageQueueLength = 0;
+	private static long messageQueueLength = -1;
 	public static RCLauncherActivity instance = null;
 	private static boolean inReachBluetoothInPotentialBlackhole = false;
 	private static long bluetoothResetTime = 0;	
@@ -56,6 +56,10 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		
 		instance = this;
 		mHandler = new Handler();
+		
+		// Start message queue monitoring service
+		Intent mIntent = new Intent(this, SuccinctDataQueueService.class);
+		startService(mIntent);
 		
 		mStatusChecker = new Runnable() {
 		    private Object RCLaunchActivity;
@@ -142,7 +146,10 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mcheckBox.setChecked(inReachConnected);
 		
 		mTextView = (TextView) findViewById(R.id.launcher_rc_number_of_message_queued);
-		mTextView.setText("" + messageQueueLength + " message(s) waiting to be transmitted.");
+		if (messageQueueLength==-1)
+			mTextView.setText("Waiting for message queue to initialise...");
+		else
+			mTextView.setText("" + messageQueueLength + " message(s) waiting to be transmitted.");
 		
 		if (RCLauncherActivity.instance != null) {
 			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
