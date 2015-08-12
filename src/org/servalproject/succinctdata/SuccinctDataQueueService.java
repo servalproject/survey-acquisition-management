@@ -144,9 +144,14 @@ public class SuccinctDataQueueService extends Service {
 
 		// Create pending intent and broadcast listener for SMS dispatch if not done 
 		// already
-		if (sms_tx_pintent == null) {	 
+		if (sms_tx_pintent == null) {
+			
+			try {
 			sms_tx_pintent = PendingIntent.getBroadcast(this, 0,
 					new Intent(SENT), 0);
+			} catch (Exception e) {
+				// just don't force quit
+			}
 
 			//---when the SMS has been sent---
 			registerReceiver(new BroadcastReceiver(){
@@ -211,9 +216,13 @@ public class SuccinctDataQueueService extends Service {
 	// Detecting cellular service (SMS, not data)
 	// This method by santacrab from:
 	// http://stackoverflow.com/questions/6435861/android-what-is-the-correct-way-of-checking-for-mobile-network-available-no-da
-	public static Boolean isSMSAvailable(Context appcontext) {       
-		TelephonyManager tel = (TelephonyManager) appcontext.getSystemService(Context.TELEPHONY_SERVICE);       
-		return ((tel.getNetworkOperator() != null && tel.getNetworkOperator().equals("")) ? false : true);      
+	public static Boolean isSMSAvailable(Context appcontext) {
+		try {
+			TelephonyManager tel = (TelephonyManager) appcontext.getSystemService(Context.TELEPHONY_SERVICE);       
+			return ((tel.getNetworkOperator() != null && tel.getNetworkOperator().equals("")) ? false : true);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	// Detecting internet access by Alexandre Jasmin from:
@@ -255,6 +264,7 @@ public class SuccinctDataQueueService extends Service {
 	{
 		SuccinctDataQueueService.sms_tx_result = 0xbeef;
 
+		try {
 		Intent sentIntent = new Intent(SENT);
 		/*Create Pending Intents*/
 		PendingIntent p = PendingIntent.getBroadcast(
@@ -266,6 +276,9 @@ public class SuccinctDataQueueService extends Service {
 		
 		try {
 			manager.sendTextMessage(smsnumber, null, message, p, null);
+		} catch (Exception e) {
+			return -1;
+		}
 		} catch (Exception e) {
 			return -1;
 		}
@@ -294,6 +307,7 @@ public class SuccinctDataQueueService extends Service {
 
 	private int sendInReach(String phonenumber, String [] succinctData, PendingIntent p)
 	{
+		try {
 		int ms_messageIdentifier = 0;
 		InReachManager manager = InReachMessageHandler.getInstance().getService().getManager();
 		for(int i=0;i<succinctData.length;i++) {
@@ -326,6 +340,10 @@ public class SuccinctDataQueueService extends Service {
 			
 		}        
 		return ms_messageIdentifier;
+		} catch (Exception e) {
+			// Something bad happened
+			return -1;
+		}
 	}
 	
 	public void messageSenderLoop(Service s)
@@ -430,6 +448,23 @@ public class SuccinctDataQueueService extends Service {
 		long inReachMessageId = (long)sendInReach(smsnumber, new String[] {piece}, sentPI);
 		
 		rememberPendingInReachMessage(inReachMessageId,piece);
+		
+		// XXX - For some reason the inReach messages are not being properly acknowledged via
+		// the messageid, or at least that it is what it seems like, since the messages in the
+		// queue get sent via the inreach again and again and again ...
+		// So for now, we will just delete the queued message from the db as soon as we have
+		// passed it to the inreach.  This makes it possible to lose messages under certain
+		// circumstances.  This is why it is important for now to tell people to flush the
+		// magpi records via the internet as well.  We will work to solve this problem more
+		// permanently in due course.
+		// Delete message from database
+		{
+			db.delete(piece);
+			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
+			LocalBroadcastManager lb = LocalBroadcastManager.getInstance(getApplicationContext());
+			lb.sendBroadcastSync(i);
+		}
+
 							
 		return 0;
 	}
