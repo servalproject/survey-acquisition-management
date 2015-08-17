@@ -456,7 +456,8 @@ public class SuccinctDataQueueService extends Service {
 				// If no queued messages, wait only a few seconds
 				next_timeout = 5000;
 			} else {
-				next_timeout = 120000;
+				// Was 2 minutes
+				next_timeout = 5000;
 			}
 
 		}
