@@ -199,12 +199,16 @@ public class SuccinctDataQueueService extends Service {
 				Log.d("SuccinctData", "Opening queue database");
 				Log.d("SuccinctData", "Opened queue database");
 				if (succinctData != null) {
+					// Send ALL pieces before marking as having been remembered
 					for (int i = 0; i < succinctData.length; i++) {
 						String piece = succinctData[i];
 						String prefix = piece.substring(0, 10);
 						db.createQueuedMessage(prefix, piece, formname + "/"
 								+ formversion, xmlData);
 					}
+					// Mark this record as having been queued so that we don't queue it again
+					db.rememberThing(xmlData);	  
+					
 					Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
 					LocalBroadcastManager lb = LocalBroadcastManager
 							.getInstance(this);

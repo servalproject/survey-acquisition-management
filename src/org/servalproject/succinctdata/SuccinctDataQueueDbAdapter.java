@@ -190,11 +190,7 @@ public class SuccinctDataQueueDbAdapter {
   initialValues.put(KEY_XMLDATA, xmlData);
   
   long result = mDb.insert(SQLITE_TABLE, null, initialValues);  
-  if (result != -1)
-  {
-	  // Mark this record as having been queued so that we don't queue it again
-	  return rememberThing(xmlData);	  
-  } else return -1L;
+  return 0;
  }
  
  public Cursor fetchSuccinctDataByName(String inputText) throws SQLException {
