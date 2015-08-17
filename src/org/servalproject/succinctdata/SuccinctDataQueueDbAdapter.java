@@ -135,22 +135,38 @@ public class SuccinctDataQueueDbAdapter {
 		}	 
  }
  
+ public static String normalise(String thing)
+ {
+	 String normalised = thing.replaceAll("<lastsubmittime>.*</lastsubmittime>", "<lastsubmittime></lastsubmittime>");
+	 normalised = normalised.replaceAll("<lastsubmittime>.*</lastsubmittime>", "<lastsubmittime></lastsubmittime>");
+	 normalised = normalised.replaceAll("<longitude>.*</longitude>","<longitude></longitude>");
+	 normalised = normalised.replaceAll("<latitude>.*</latitude>","<latitude></latitude>");
+	 return normalised;
+ }
+ 
  public long rememberThing(String thing)
  {
-	 String md5sum = stringHash(thing);
+	 String md5sum = stringHash(normalise(thing));
 	  
 	  // Mark this record as having been queued so that we don't queue it again
 	  ContentValues dedup = new ContentValues();
 	  if (md5sum != null) {
 		  dedup.put(KEY_HASH, md5sum);
-		  return mDb.insert(SQLITE_DEDUP_TABLE, null, dedup);
+		  if (mDb.insert(SQLITE_DEDUP_TABLE, null, dedup) == -1L) 
+			  return -1L;
+		  else
+			  return 0L;
 	  } else return -1L;
 
  }
  
+ 
+ 
  public boolean isThingNew(String thing)
  {
-	 String md5sum = stringHash(thing);
+	 String normalised = normalise(thing);
+	 
+	 String md5sum = stringHash(normalised);
 	  
 	 Cursor cursor = mDb.rawQuery("SELECT "+ KEY_HASH +" FROM " + SQLITE_DEDUP_TABLE + " WHERE "+ KEY_HASH +" = '" + md5sum + "'", null);	 
 	 if (cursor.getCount() > 0) 
@@ -173,7 +189,8 @@ public class SuccinctDataQueueDbAdapter {
   initialValues.put(KEY_SUCCINCTDATA, succinctData);
   initialValues.put(KEY_XMLDATA, xmlData);
   
-  if (mDb.insert(SQLITE_TABLE, null, initialValues) == 0)
+  long result = mDb.insert(SQLITE_TABLE, null, initialValues);  
+  if (result != -1)
   {
 	  // Mark this record as having been queued so that we don't queue it again
 	  return rememberThing(xmlData);	  

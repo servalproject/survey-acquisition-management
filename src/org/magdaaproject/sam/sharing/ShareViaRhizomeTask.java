@@ -60,6 +60,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.servalproject.sam.R;
+import org.servalproject.succinctdata.SuccinctDataQueueDbAdapter;
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 import org.servalproject.succinctdata.TransportSelectActivity;
 import org.apache.http.HttpResponse;
@@ -304,6 +305,14 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		String errorstring = null;
 		String okstring = null;
 
+		try {
+			SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(context);
+			db.open();
+			if (db.isThingNew(xmldata) == false) return 0;
+		} catch (Exception e) {
+		
+		}
+		
 		// smac.dat is called smac.png in assets so that it doesn't get
 		// compressed,
 		// and thus fall victim to the 1MB asset size limit bug.
