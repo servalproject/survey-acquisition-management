@@ -4,12 +4,32 @@ set count=1
 set date=`date +%Y%m%d`
 
 set samedate=`grep ${date} res/values/strings.xml | wc -l `
+
+set lastdate=`grep ${date} res/values/strings.xml | head -1 | cut -f1 -d. | sed -e 's/^.*>//'`
+set lastcount=`grep ${date} res/values/strings.xml | head -1 | cut -f2 -d. | cut -f1 -d\<`
+echo "Last date was ${date}.${lastcount}"
+
 if ( $samedate > 0 ) then
-  set lastcount=`grep ${date} res/values/strings.xml | head -1 | cut -f2 -d. | cut -f1 -d\<`
-  echo "Last date was ${date}.${lastcount}"
   @ count = $lastcount + 1 
 endif
 echo "setting date to ${date}.${count}"
 
 cat res/values/strings.xml | sed -e 's/>Succinct Data 20[^\<]*</>Succinct Data '`date +%Y%m%d`.${count}'</g' >newstrings.xml
 mv newstrings.xml res/values/strings.xml
+
+cd jni
+ndk-build
+cd ..
+
+cp libinreachcorelib.so libs/armeabi/
+
+if ( ! -e libs/armeabi/libsmac.so ) then
+  echo "ERROR: libsmac.so not built."
+  exit 3
+endif
+if ( ! -e libs/armeabi/libinreachcorelib.so ) then
+  echo "ERROR: libinreachcorelib.so is missing."
+  exit 3
+endif
+
+echo "OK: Ready to build binary"
