@@ -1,0 +1,15 @@
+#!/bin/csh -f
+
+set count=1
+set date=`date +%Y%m%d`
+
+set samedate=`grep ${date} res/values/strings.xml | wc -l `
+if ( $samedate > 0 ) then
+  set lastcount=`grep ${date} res/values/strings.xml | head -1 | cut -f2 -d. | cut -f1 -d\<`
+  echo "Last date was ${date}.${lastcount}"
+  @ count = $lastcount + 1 
+endif
+echo "setting date to ${date}.${count}"
+
+cat res/values/strings.xml | sed -e 's/>Succinct Data 20[^\<]*</>Succinct Data '`date +%Y%m%d`.${count}'</g' >newstrings.xml
+mv newstrings.xml res/values/strings.xml
