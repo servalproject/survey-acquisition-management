@@ -9,20 +9,6 @@ set lastdate=`grep ${date} res/values/strings.xml | head -1 | cut -f1 -d. | sed 
 set lastcount=`grep ${date} res/values/strings.xml | head -1 | cut -f2 -d. | cut -f1 -d\<`
 echo "Last date was ${date}.${lastcount}"
 
-if ( $samedate > 0 ) then
-  @ count = $lastcount + 1 
-endif
-echo "setting date to ${date}.${count}"
-
-cat res/values/strings.xml | sed -e 's/>Succinct Data 20[^\<]*</>Succinct Data '`date +%Y%m%d`.${count}'</g' >newstrings.xml
-mv newstrings.xml res/values/strings.xml
-
-cd jni
-ndk-build
-cd ..
-
-cp libinreachcorelib.so libs/armeabi/
-
 if ( ! -e libs/armeabi/libsmac.so ) then
   echo "ERROR: libsmac.so not built."
   exit 3
@@ -31,7 +17,11 @@ if ( ! -e libs/armeabi/libinreachcorelib.so ) then
   echo "ERROR: libinreachcorelib.so is missing."
   exit 3
 endif
+if ( ! -e bin/survey-acquisition-management.apk ) then
+  echo "ERROR: bin/survey-acquisition-management.apk is missing."
+  exit 3
+endif
 
-rm bin/survey-acquisition-management.apk
+cp bin/survey-acquisition-management.apk ~/Projects/succinctdata/succinct-data-${lastdate}.${lastcount}.apk
 
-echo "OK: Ready to build binary"
+echo "OK: New version saved as ~/Projects/succinctdata/succinct-data-${lastdate}.${lastcount}.apk"
