@@ -85,10 +85,11 @@ class UploadFormSpecificationTask extends AsyncTask<String, String, Long> {
 						db.close();
 					}
 				} catch (Exception e) {
-					resultMessage = "Failed to upload Magpi form to "
-							+ "Succinct Data server due to exception: "
-							+ e.toString();
-
+					// resultMessage = "Failed to upload Magpi form to "
+					// + "Succinct Data server due to exception: "
+					// 		+ e.toString();
+					// Just return, don't display an error when trying to upload the form
+					return -1L;
 				}
 				// Do something with response...
 				Log.d("succinctdata", resultMessage);
@@ -180,15 +181,17 @@ public class SuccinctDataQueueService extends Service {
 					.getStringExtra("org.servalproject.succinctdata.FORMNAME");
 			String formversion = intent
 					.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
-
+			
 			if (db == null) {
 				db = new SuccinctDataQueueDbAdapter(this);
 				db.open();
 			}
 
-			if (db.isThingNew(xmlData) == true) {
+			if (xmlData != null && db.isThingNew(xmlData) == true) {
 				// Form is new, so process it.
 
+				if (xmlData != null) RCLauncherActivity.sawUniqueMagpiRecord();			
+				
 				if (xmlForm != null && db.isThingNew(xmlForm)) {
 					UploadFormSpecificationTask.handler = handler;
 					UploadFormSpecificationTask.context = getBaseContext();
@@ -202,7 +205,7 @@ public class SuccinctDataQueueService extends Service {
 					// Send ALL pieces before marking as having been remembered
 					for (int i = 0; i < succinctData.length; i++) {
 						String piece = succinctData[i];
-						String prefix = piece.substring(0, 10);
+						String prefix = piece.substring(0, 10);					
 						db.createQueuedMessage(prefix, piece, formname + "/"
 								+ formversion, xmlData);
 					}

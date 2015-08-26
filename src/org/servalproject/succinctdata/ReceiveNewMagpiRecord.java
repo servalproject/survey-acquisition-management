@@ -2,6 +2,7 @@ package org.servalproject.succinctdata;
 
 import java.io.File;
 
+import org.magdaaproject.sam.RCLauncherActivity;
 import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
 
 import android.content.BroadcastReceiver;
@@ -19,6 +20,8 @@ public class ReceiveNewMagpiRecord extends BroadcastReceiver {
 		String completedRecord = intent.getStringExtra("recordData");
 		String recordBundle = intent.getStringExtra("recordBundle");
 		String formSpecification =  intent.getStringExtra("formSpecification");
+		
+		RCLauncherActivity.sawMagpiRecord();			
 		
 		Bundle b = intent.getExtras();
 		

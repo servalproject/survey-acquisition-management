@@ -190,6 +190,9 @@ public class SuccinctDataQueueDbAdapter {
   initialValues.put(KEY_XMLDATA, xmlData);
   
   long result = mDb.insert(SQLITE_TABLE, null, initialValues);  
+  
+  RCLauncherActivity.enqueuedPiece();
+  
   return 0;
  }
  

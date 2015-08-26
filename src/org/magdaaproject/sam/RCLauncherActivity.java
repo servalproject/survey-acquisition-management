@@ -1,5 +1,8 @@
 package org.magdaaproject.sam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.servalproject.sam.R;
 import org.servalproject.succinctdata.SuccinctDataQueueService;
 
@@ -39,6 +42,11 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	private static long bluetoothResetTime = 0;	
 	public static boolean bluetoothReenable = false;
 	public static boolean upload_form_specifications = false;
+	private static int recordsReceivedFromMagpi;
+	private static int uniqueRecordsReceivedFromMagpi;
+	private static int piecesEnqueued;
+	private static List<String> errorList = new ArrayList<String>();
+
 	
 	private Handler mHandler = null;
 	Runnable mStatusChecker = null;
@@ -146,14 +154,27 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		mcheckBox.setChecked(inReachConnected);
 		
 		mTextView = (TextView) findViewById(R.id.launcher_rc_number_of_message_queued);
+		String text = "";
 		if (messageQueueLength==-1)
-			mTextView.setText("Waiting for message queue to initialise...");
+			text = "Waiting for message queue to initialise...";
 		else if (messageQueueLength==0)
-			mTextView.setText("No messages waiting to be transmitted.");
+			text = "No messages waiting to be transmitted.";
 		else if  (messageQueueLength==1)
-			mTextView.setText("One message waiting to be transmitted.");
+			text = "One message waiting to be transmitted.";
 		else 
-			mTextView.setText("" + messageQueueLength + " messages waiting to be transmitted.");
+			text = "" + messageQueueLength + " messages waiting to be transmitted.";
+		
+		text = text + "  " + recordsReceivedFromMagpi 
+				+ " records received from Magpi (" + uniqueRecordsReceivedFromMagpi 
+				+ " unique, consisting of "+ piecesEnqueued +" pieces).";
+		
+		if (errorList.size()>0) {
+			text = text + " " + errorList.size() + " encoding errors have occurred.";
+			text = text + " The most recent encoding error is: "
+					+ errorList.get(errorList.size()-1);
+		}
+		
+		mTextView.setText(text);
 		
 		if (RCLauncherActivity.instance != null) {
 			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_SMS);
@@ -239,8 +260,10 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 	}
 
 	public static void set_message_queue_length(long count) {
-		messageQueueLength = count;
-		RCLauncherActivity.requestUpdateUI();		
+		if (count != messageQueueLength) {
+			messageQueueLength = count;
+			RCLauncherActivity.requestUpdateUI();
+		}
 	}
 
 	/*
@@ -288,6 +311,28 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 
 	private void stopRepeatingTask() {
 	    mHandler.removeCallbacks(mStatusChecker);
+	}
+
+	public static void sawMagpiRecord() {
+		recordsReceivedFromMagpi++;	
+	}
+
+	public static void sawUniqueMagpiRecord() {
+		uniqueRecordsReceivedFromMagpi++;	
+	}
+
+	public static void enqueuedPiece() {
+		piecesEnqueued++;		
+	}
+
+	public static void sawError(String string) {
+		// TODO Auto-generated method stub
+		errorList.add(string);
+		requestUpdateUI();
+	}
+
+	public static List getErrorList() {
+		return errorList;
 	}
 	
 }

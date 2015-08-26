@@ -327,12 +327,17 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 					.xml2succinctfragments(xmldata, xmlformspec, formname,
 							formversion, recipeDir, smacdatfilename, mtu, debug);
 
-			if (res.length < 1) {
+			if ((res.length < 1)
+				||(res[0].compareTo("ERROR") == 0)) {
 
 				// TODO Error producing succinct data -- report
 				// XXX - we really need an error notification here, to say that
 				// succinct data has failed for this!
 				errorstring = "Error making succinct data";
+				if (res.length > 1) {
+					errorstring = errorstring + ": "+ res[1];
+					RCLauncherActivity.sawError(res[1]);
+				}
 			} else {
 				// Pass message to queue
 				Intent intent = new Intent(context,
