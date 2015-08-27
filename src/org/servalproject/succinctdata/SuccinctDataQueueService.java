@@ -14,9 +14,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.magdaaproject.sam.InReachMessageHandler;
 import org.magdaaproject.sam.RCLauncherActivity;
@@ -272,7 +269,7 @@ public class SuccinctDataQueueService extends Service {
 		HttpPost httppost = new HttpPost(url);
 
 		InputStream stream = new ByteArrayInputStream((form+"\n--------------------\n"+record).getBytes());
-		InputStreamEntity reqEntity = new InputStreamEntity(stream,1);
+		InputStreamEntity reqEntity = new InputStreamEntity(stream,-1);
 		reqEntity.setContentType("text/xml");
 	    reqEntity.setChunked(true); // Send in multiple parts if needed
 
