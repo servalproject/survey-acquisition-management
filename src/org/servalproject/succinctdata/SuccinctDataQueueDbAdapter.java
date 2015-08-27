@@ -27,6 +27,9 @@ public class SuccinctDataQueueDbAdapter {
  public static final String KEY_XMLDATA = "xmldata";
  public static final String KEY_HASH = "thinghash";
  
+ public static final String KEY_RECORD = "badrecord";
+
+ 
  private static final String TAG = "SuccinctDataQueueDbAdapter";
  private DatabaseHelper mDbHelper;
  private SQLiteDatabase mDb;
@@ -34,7 +37,8 @@ public class SuccinctDataQueueDbAdapter {
  private static final String DATABASE_NAME = "SuccinctDataQueue";
  private static final String SQLITE_TABLE = "QueuedMessages";
  private static final String SQLITE_DEDUP_TABLE = "SentThings";
- private static final int DATABASE_VERSION = 4;
+ private static final String SQLITE_BADRECORD_TABLE = "IndigestibleRecords";
+ private static final int DATABASE_VERSION = 5;
  
  private final Context mCtx;
  
@@ -53,7 +57,13 @@ public class SuccinctDataQueueDbAdapter {
 		  KEY_ROWID + " integer PRIMARY KEY autoincrement," +
 		  KEY_HASH + "," +
 		  " UNIQUE (" + KEY_HASH +"));";
-		 
+
+ private static final String DATABASE_BADRECORD_CREATE =
+		  "CREATE TABLE if not exists " + SQLITE_BADRECORD_TABLE + " (" +
+		  KEY_ROWID + " integer PRIMARY KEY autoincrement," +
+		  KEY_FORM + "," +
+		  KEY_RECORD + ");";
+		  
  
  private static class DatabaseHelper extends SQLiteOpenHelper {
  
@@ -67,6 +77,7 @@ public class SuccinctDataQueueDbAdapter {
    Log.w(TAG, DATABASE_CREATE);
    db.execSQL(DATABASE_CREATE);
    db.execSQL(DATABASE_DEDUP_CREATE);
+   db.execSQL(DATABASE_BADRECORD_CREATE);
   }
  
   @Override
@@ -75,6 +86,7 @@ public class SuccinctDataQueueDbAdapter {
      + newVersion + ", which will destroy all old data");
    db.execSQL("DROP TABLE IF EXISTS " + SQLITE_TABLE);
    db.execSQL("DROP TABLE IF EXISTS " + SQLITE_DEDUP_TABLE);
+   db.execSQL("DROP TABLE IF EXISTS " + SQLITE_BADRECORD_TABLE);
    onCreate(db);
   }
  }
@@ -250,6 +262,38 @@ public void delete(String piece) {
 	RCLauncherActivity.set_message_queue_length(this.getMessageQueueLength());
 }
  
+public long logBadRecord(String form, String record) {
+
+	 
+ ContentValues initialValues = new ContentValues();
+ initialValues.put(KEY_FORM, form);
+ initialValues.put(KEY_RECORD, record);
+
+ try {
+ long result = mDb.insert(SQLITE_BADRECORD_TABLE, null, initialValues);
+ } catch (Exception e) {
+ 
+ }
+  
+ return 0;
+}
+
+public void deleteBadRecord(String form, String record) {
+	
+	mDb.delete(SQLITE_BADRECORD_TABLE, KEY_FORM+"=? AND "+ KEY_RECORD+"=?", new String[] {form,record});
+}
+
+public Cursor fetchAllBadRecords() {
+	  Cursor mCursor = mDb.query(SQLITE_BADRECORD_TABLE, new String[] {KEY_ROWID,
+			    KEY_FORM, KEY_RECORD}, 
+			    null, null, null, null, null);
+			 
+			  if (mCursor != null) {
+			   mCursor.moveToFirst();
+			  }
+			  return mCursor;
+}
+
 
 	
 }

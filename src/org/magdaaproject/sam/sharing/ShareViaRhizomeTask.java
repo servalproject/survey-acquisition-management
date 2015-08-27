@@ -95,11 +95,70 @@ import android.util.Log;
 import android.widget.Toast;
 import android.content.Intent;
 
+
 /**
  * a class used to archive and share an instance file on the Serval Mesh via
  * Rhizome
  *
  */
+
+class UploadBadRecordTask extends AsyncTask<String, String, Long> {
+	
+	protected Long doInBackground(String... forms) {
+		for (int i = 0; i < forms.length; i++) {
+			String xmlForm = forms[i];
+			String resultMessage = "Unknown error while uploading indigestible Magpi record to Succinct Data server";
+
+			{
+				// Upload bad record to Succinct Data server
+				String url = "http://serval1.csem.flinders.edu.au/succinctdata/bad-record-form.php";
+
+				HttpClient httpclient = new DefaultHttpClient();
+
+				HttpPost httppost = new HttpPost(url);
+
+				InputStream stream = new ByteArrayInputStream(
+						xmlForm.getBytes());
+				InputStreamEntity reqEntity = new InputStreamEntity(stream, -1);
+				reqEntity.setContentType("text/xml");
+				reqEntity.setChunked(true); // Send in multiple parts if needed
+				httppost.setEntity(reqEntity);
+				int httpStatus = -1;
+				try {
+					HttpResponse response = httpclient.execute(httppost);
+					httpStatus = response.getStatusLine().getStatusCode();
+					if (httpStatus != 200) {
+						resultMessage = "Failed to upload indigestible record to Succinct Data server: http result = "
+								+ httpStatus;
+					} else {
+						resultMessage = "Successfully uploaded indigestible record to Succinct Data server: http result = "
+								+ httpStatus;
+					}
+				} catch (Exception e) {
+					// resultMessage = "Failed to upload Magpi form to "
+					// + "Succinct Data server due to exception: "
+					// 		+ e.toString();
+					// Just return, don't display an error when trying to upload the form
+					return -1L;
+				}
+				// Do something with response...
+				Log.d("succinctdata", resultMessage);
+				this.publishProgress(resultMessage);
+			}
+		}
+		Long status = -1L;
+		return status;
+	}
+
+	@Override
+	protected void onProgressUpdate(String... values) {
+		// Toast.makeText(context, values[0], Toast.LENGTH_LONG).show();
+	}
+
+}
+
+
+
 public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 
 	/*
@@ -114,6 +173,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 	// Disable sharing via rhizome for now
 	private static boolean rhizome_enabled = false;
 
+	private Handler handler = null;
+	
 	/*
 	 * private class level variables
 	 */
@@ -309,6 +370,7 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(context);
 			db.open();
 			if (db.isThingNew(xmldata) == false) return 0;
+			db.close();
 		} catch (Exception e) {
 		
 		}
@@ -338,6 +400,18 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 					errorstring = errorstring + ": "+ res[1];
 					RCLauncherActivity.sawError(res[1]);
 				}
+				
+				// Attempt to upload error causing material to SD server.
+				try {
+					SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(context);
+					db.open();
+					if (db.isThingNew(xmldata) == false) return 0;
+					db.logBadRecord(xmlformspec, xmldata);
+					db.close();
+				} catch (Exception e) {
+				
+				}
+				
 			} else {
 				// Pass message to queue
 				Intent intent = new Intent(context,

@@ -8,10 +8,14 @@ import java.security.MessageDigest;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.magdaaproject.sam.InReachMessageHandler;
 import org.magdaaproject.sam.RCLauncherActivity;
@@ -258,6 +262,42 @@ public class SuccinctDataQueueService extends Service {
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
+	private int sendBadRecordViaInternet(String form, String record) {
+		// XXX make configurable!
+		String url = "http://serval1.csem.flinders.edu.au/succinctdata/badrecordupload.php";
+
+		HttpClient httpclient = new DefaultHttpClient();
+
+		HttpPost httppost = new HttpPost(url);
+
+		InputStream formStream = new ByteArrayInputStream(form.getBytes());
+		InputStream recordStream = new ByteArrayInputStream(record.getBytes());
+		// InputStreamEntity reqEntity = 
+		// reqEntity.setContentType("text/xml");
+		// reqEntity.setChunked(true); // Send in multiple parts if needed
+		
+		HttpEntity reqEntity = MultipartEntityBuilder.create()				
+				.addPart("form", (ContentBody) formStream)
+                .addPart("record", (ContentBody) recordStream)
+                .build();
+
+		httppost.setEntity(reqEntity);
+		
+		int httpStatus = -1;
+		try {
+			HttpResponse response = httpclient.execute(httppost);
+			httpStatus = response.getStatusLine().getStatusCode();
+		} catch (Exception e) {
+			return -1;
+		}
+		// Do something with response...
+		if (httpStatus != 200)
+			return -1;
+		else
+			return 0;
+	}
+
+	
 	private int sendViaCellular(String succinctData) {
 		// XXX make configurable!
 		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
@@ -393,6 +433,26 @@ public class SuccinctDataQueueService extends Service {
 			} catch (Exception e) {
 			}
 
+			if (isInternetAvailable()) {
+				// See if we have bad records to upload
+				Cursor c = db.fetchAllBadRecords();
+				if (c.getCount() > 0) {
+					c.moveToFirst();
+					while (c.isAfterLast() == false) {
+						String form = c.getString(1);
+						String record = c.getString(2);
+						
+						// Upload record, and delete if successful
+						
+						if (sendBadRecordViaInternet(form,record) == 0) {
+							db.deleteBadRecord(form,record);
+						}
+						
+						c.moveToNext();
+					}
+				}
+			}
+			
 			// Get number of messages in database
 			Cursor c = db.fetchAllMessages();
 			RCLauncherActivity.set_message_queue_length(c.getCount());
