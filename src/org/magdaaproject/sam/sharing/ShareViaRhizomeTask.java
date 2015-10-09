@@ -90,6 +90,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -385,10 +386,36 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			// This is helpful for debugging SD compression and encryption.
 			int debug = 0;
 			
+			// In case we get a force-quit, we should save the form spec and record to a file
+			// Then when we restart, we can check if those files exist, and if so, send a bug
+			// report to the SD server
+			
+			// Create fail-safe file
+			String failSafeFileName =
+                    Environment.getExternalStorageDirectory().getPath()+
+                    context.getString(R.string.system_file_path_succinct_specification_files_path)+"/failsafe-form.txt";
+			File failSafeFormFile = new File(failSafeFileName);
+			failSafeFileName =
+                    Environment.getExternalStorageDirectory().getPath()+
+                    context.getString(R.string.system_file_path_succinct_specification_files_path)+"/failsafe-record.txt";
+			File failSafeRecordFile = new File(failSafeFileName);
+			if (failSafeFormFile.exists()) failSafeFormFile.delete();
+			if (failSafeRecordFile.exists()) failSafeRecordFile.delete();
+			FileOutputStream stream = new FileOutputStream(failSafeFormFile);
+            stream.write(xmlformspec.getBytes());
+            stream.close();
+			stream = new FileOutputStream(failSafeRecordFile);
+            stream.write(xmldata.getBytes());
+            stream.close();
+            			
 			String[] res = org.servalproject.succinctdata.jni
 					.xml2succinctfragments(xmldata, xmlformspec, formname,
 							formversion, recipeDir, smacdatfilename, mtu, debug);
 
+			// Remove fail-safe file
+			if (failSafeFormFile.exists()) failSafeFormFile.delete();
+			if (failSafeRecordFile.exists()) failSafeRecordFile.delete();
+			
 			if ((res.length < 1)
 				||(res[0].compareTo("ERROR") == 0)) {
 
@@ -400,6 +427,11 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 					errorstring = errorstring + ": "+ res[1];
 					RCLauncherActivity.sawError(res[1]);
 				}
+				
+				// Long vibrate for bad records
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				 // Vibrate for 500 milliseconds
+				 v.vibrate(1500);
 				
 				// Attempt to upload error causing material to SD server.
 				try {
@@ -429,6 +461,11 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				// Now tell the user it has happened
 				okstring = "Succinct data message spooled";
 
+				// Short vibrate for good records
+				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+				 // Vibrate for 500 milliseconds
+				 v.vibrate(500);
+				
 			}
 
 			final String e = errorstring;

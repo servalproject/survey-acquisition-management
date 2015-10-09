@@ -2,6 +2,7 @@ package org.servalproject.succinctdata;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -78,7 +79,7 @@ class UploadFormSpecificationTask extends AsyncTask<String, String, Long> {
 						resultMessage = "Successfully uploaded Magpi form to Succinct Data server: http result = "
 								+ httpStatus;
 						// Remember uploaded form so that we don't try to send
-						// it again after we have
+						// it again after we have 
 						// done so once.
 						SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(
 								UploadFormSpecificationTask.context);
@@ -418,13 +419,51 @@ public class SuccinctDataQueueService extends Service {
 
 		long next_timeout = 5000;
 
+		// On startup, look for fail-safe file to upload in case we force-quit
+		if (isInternetAvailable()) {
+			String failSafeFileName =
+					Environment.getExternalStorageDirectory().getPath()+
+                    getBaseContext().getString(R.string.system_file_path_succinct_specification_files_path)+"/failsafe-form.txt";
+			File failSafeFormFile = new File(failSafeFileName);
+			failSafeFileName =
+                    Environment.getExternalStorageDirectory().getPath()+
+                    getBaseContext().getString(R.string.system_file_path_succinct_specification_files_path)+"/failsafe-record.txt";
+			File failSafeRecordFile = new File(failSafeFileName);
+			if (failSafeFormFile.exists()&&failSafeRecordFile.exists()) {
+				try {
+				// Upload record, and delete if successful
+				FileInputStream fileInputStream = new FileInputStream(failSafeFormFile);
+				int bytesAvailable = fileInputStream.available();
+				byte[] buffer = new byte[bytesAvailable];
+				int bytesRead = fileInputStream.read(buffer,0,bytesAvailable);				
+				String form = buffer.toString();
+				fileInputStream.close();
+				
+				fileInputStream = new FileInputStream(failSafeRecordFile);
+				bytesAvailable = fileInputStream.available();
+				buffer = new byte[bytesAvailable];
+				bytesRead = fileInputStream.read(buffer,0,bytesAvailable);				
+				String record= buffer.toString();
+				fileInputStream.close();
+				
+				if (sendBadRecordViaInternet(form,record) == 0) {
+					failSafeFormFile.delete();
+					failSafeRecordFile.delete();
+				}
+				} catch(Exception e) {
+				
+				}
+				}
+			}
+
+		
 		while (true) {
 			// Wait a little while before trying again
 			try {
 				Thread.sleep(next_timeout);
 			} catch (Exception e) {
-			}
-
+			}			
+			
 			if (isInternetAvailable()) {
 				// See if we have bad records to upload
 				Cursor c = db.fetchAllBadRecords();
@@ -443,6 +482,7 @@ public class SuccinctDataQueueService extends Service {
 						c.moveToNext();
 					}
 				}
+				
 			}
 			
 			// Get number of messages in database

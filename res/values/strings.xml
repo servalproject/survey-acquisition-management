@@ -43,11 +43,11 @@
 <resources>
 
     <!-- application wide strings -->
-    <string name="system_application_name">Succinct Data 20150827.3</string>
-    <string name="system_application_default_label">Succinct Data 20150827.3</string>
+    <string name="system_application_name">Succinct Data 20151009.1</string>
+    <string name="system_application_default_label">Succinct Data 20151009.1</string>
     
     <!-- launcher activity screen -->
-    <string name="launcher_ui_lbl_header">Succinct Data 20150827.3</string>
+    <string name="launcher_ui_lbl_header">Succinct Data 20151009.1</string>
     
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email Serval</string>
