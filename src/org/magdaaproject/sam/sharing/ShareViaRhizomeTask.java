@@ -391,6 +391,12 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 			// report to the SD server
 			
 			// Create fail-safe file
+			String failSafeDirName = Environment.getExternalStorageDirectory().getPath()+
+                    context.getString(R.string.system_file_path_succinct_specification_files_path);
+			File failSafeDir = new File(failSafeDirName);
+			if ( failSafeDir.exists() == false) { 
+				boolean result = failSafeDir.mkdirs();
+			}
 			String failSafeFileName =
                     Environment.getExternalStorageDirectory().getPath()+
                     context.getString(R.string.system_file_path_succinct_specification_files_path)+"/failsafe-form.txt";
