@@ -370,8 +370,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		try {
 			SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(context);
 			db.open();
-//			if (db.isThingNew(xmldata) == false) 
-//				return 0;
+			if (db.isThingNew(xmldata) == false) 
+				return 0;
 			db.close();
 		} catch (Exception e) {
 		
