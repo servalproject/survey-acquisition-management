@@ -370,7 +370,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		try {
 			SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(context);
 			db.open();
-			if (db.isThingNew(xmldata) == false) return 0;
+//			if (db.isThingNew(xmldata) == false) 
+//				return 0;
 			db.close();
 		} catch (Exception e) {
 		
@@ -418,10 +419,6 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 					.xml2succinctfragments(xmldata, xmlformspec, formname,
 							formversion, recipeDir, smacdatfilename, mtu, debug);
 
-			// Remove fail-safe file
-			if (failSafeFormFile.exists()) failSafeFormFile.delete();
-			if (failSafeRecordFile.exists()) failSafeRecordFile.delete();
-			
 			if ((res.length < 1)
 				||(res[0].compareTo("ERROR") == 0)) {
 
@@ -451,6 +448,11 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				}
 				
 			} else {
+				
+				// Remove fail-safe file
+				if (failSafeFormFile.exists()) failSafeFormFile.delete();
+				if (failSafeRecordFile.exists()) failSafeRecordFile.delete();				
+				
 				// Pass message to queue
 				Intent intent = new Intent(context,
 						SuccinctDataQueueService.class);
