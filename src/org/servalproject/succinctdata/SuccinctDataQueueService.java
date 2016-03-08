@@ -1,11 +1,17 @@
 package org.servalproject.succinctdata;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -18,6 +24,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.magdaaproject.sam.InReachMessageHandler;
 import org.magdaaproject.sam.RCLauncherActivity;
+import org.magdaaproject.sam.sharing.ShareViaRhizomeTask;
 import org.servalproject.sam.R;
 
 import com.delorme.inreachcore.InReachManager;
@@ -464,6 +471,8 @@ public class SuccinctDataQueueService extends Service {
 			} catch (Exception e) {
 			}			
 			
+			scanForNewMagpiExports();
+			
 			if (isInternetAvailable()) {
 				// See if we have bad records to upload
 				Cursor c = db.fetchAllBadRecords();
@@ -481,8 +490,7 @@ public class SuccinctDataQueueService extends Service {
 						
 						c.moveToNext();
 					}
-				}
-				
+				}				
 			}
 			
 			// Get number of messages in database
@@ -557,7 +565,131 @@ public class SuccinctDataQueueService extends Service {
 
 		}
 	}
+	
+	// from http://stackoverflow.com/questions/189094/how-to-scan-a-folder-in-java
+	static void addTree(File file, Collection<File> all) {
+	    File[] children = file.listFiles();
+	    if (children != null) {
+	        for (File child : children) {
+	            all.add(child);
+	            addTree(child, all);
+	        }
+	    }
+	}
+	
+	private void scanForNewMagpiExports() {
+		// Scan Magpi export directories for new files.
+		// XXX - This is a work-around for the problems we have encountered in MAR16
+		// where we first encountered records too big to send via Android intents.
+		// This typically happens with records that include photos. The problem is that
+		// when this happens, it causes the SD service to stop and start as Android gets
+		// upset, even though the data never makes it to SD.
+		// A better long-term solution is to have Magpi pass a file name / content URI
+		// and we stream it. However, in the meantime, we can work around this by regularly
+		// scanning Magpi's export directory on the sd-card, and receiving the records that way.
+		// the only user change then is that the user must use the normal "export" function as well
+		// as the "export succinct" options in Magpi.
+		
+		// XXX A big problem here is that we can't get the form specification this
+		// way.  So we can't really use it.
+		
+		String scanDir =
+                Environment.getExternalStorageDirectory().getPath()+"magpiFiles/";
 
+		scanTreeForNewMagpiExports(scanDir);
+		
+		return;
+	}
+	
+	void scanTreeForNewMagpiExports(String scanDir)
+	{	
+		Collection<File> all = new ArrayList<File>();
+		addTree(new File(scanDir), all);
+		
+		for (Iterator<File> iterator = all.iterator(); iterator.hasNext();) {
+			File file = iterator.next();
+
+			// Check this file
+			considerMagpiFile(file);
+		}
+	}
+	
+	void considerMagpiFile(File file)
+	{
+		try {
+			
+			// Read record from the file
+			FileInputStream fis = new FileInputStream(file);
+			byte[] data = new byte[(int) file.length()];
+			fis.read(data);
+			fis.close();
+			String completeRecord = new String(data, "UTF-8");
+			
+			// First, is it new? If not, then skip
+			SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(getBaseContext());
+			db.open();
+			if (db.isThingNew(completeRecord) == false) 
+				return;
+			db.close();
+			
+			// Get form ID number from record, so that we can try to pull up the form spec from
+			// assets.
+			int formIdOffset=completeRecord.indexOf("<formid>");
+			int formIdEndOffset=completeRecord.indexOf("</formid>");
+			if ((formIdOffset>0)&&(formIdEndOffset>0)) {
+				String formId = 
+						completeRecord.substring(formIdOffset+"<formid>".length(),
+												 formIdEndOffset);
+				
+				final String formSpecification = 
+						loadAssetTextAsString(getBaseContext(),formId+".xhtml");
+			
+				int result = ShareViaRhizomeTask.enqueueSuccinctData(getBaseContext(), 
+						completeRecord, formSpecification,
+						null, null, null, 160, null);
+				if ( result != 0) {
+				// 	Error queueing SD
+					Log.e("SuccinctData", "Failed to enqueue succinct data received from magpi.");
+				}
+			}
+		} catch	 (Exception e) {
+			;	
+		}					
+	}
+
+	private String loadAssetTextAsString(Context context, String name) {
+        BufferedReader in = null;
+        try {
+            StringBuilder buf = new StringBuilder();
+            InputStream is = context.getAssets().open(name);
+            in = new BufferedReader(new InputStreamReader(is));
+
+            String str;
+            boolean isFirst = true;
+            while ( (str = in.readLine()) != null ) {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    buf.append('\n');
+                buf.append(str);
+            }
+            return buf.toString();
+        } catch (IOException e) {
+            Log.e("sd", "Error opening asset " + name);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    Log.e("sd", "Error closing asset " + name);
+                }
+            }
+        }
+
+        return null;
+    }
+
+	
 	private int dispatchViaInReach(String smsnumber, String piece) {
 		// XXX - Need synchronous inReach sending code here
 
