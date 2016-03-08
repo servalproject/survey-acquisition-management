@@ -200,6 +200,10 @@ public class SuccinctDataQueueService extends Service {
 			Log.e("SuccinctDataqQueueService", "Exception: " + s);
 		}
 
+		// Each time we think that there might be new content from magpi, also
+		// scan through magpi's export folders.
+		scanForNewMagpiExports();
+		
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return START_STICKY;
@@ -477,9 +481,7 @@ public class SuccinctDataQueueService extends Service {
 			try {
 				Thread.sleep(next_timeout);
 			} catch (Exception e) {
-			}			
-			
-			scanForNewMagpiExports();
+			}						
 			
 			if (isInternetAvailable()) {
 				// See if we have bad records to upload
