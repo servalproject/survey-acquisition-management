@@ -1,0 +1,440 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:dd="http://datadyne.org/javarosa"
+     xmlns:jr="http://openrosa.org/javarosa"
+     xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+     <head>
+          <meta>
+               <userid/>
+               <deviceid/>
+               <timestartrecorded/>
+               <timeendrecorded/>
+          </meta>
+          <title>SD_Testing_Form_1A</title>
+          <xf:model dd:formid="9214105166" dd:geotag="off" id="SD_Testing_Form_1A">
+               <xf:instance>
+                    <data>
+                         <Elderly_female_under_55__copy/>
+                         <Enumerator_ID/>
+                         <Island/>
+                         <Community/>
+                         <Name_/>
+                         <Babies_female/>
+                         <Babies_male/>
+                         <Children_female/>
+                         <Children_male/>
+                         <Youth_female/>
+                         <Youth_male/>
+                         <Adults_female_under_55/>
+                         <Adults_male_under_55/>
+                         <Elderly_female_under_55/>
+                         <Elderly_male_under_55/>
+                         <Elderly_female_under_55__copy_copyprompt__1444611684526/>
+                         <Pregnant_/>
+                         <Blind_female/>
+                         <Blind_male/>
+                         <Not_mobile_female/>
+                         <Not_mobile_male_/>
+                         <Mental_disabled_female/>
+                         <Single_parent_female/>
+                         <Single_parent_male/>
+                         <prompt__1456691724407/>
+                         <What_is_the_state_of_this_fami/>
+                         <Household_utilities_damage/>
+                         <Does_the_family_/>
+                         <Please_detail_what_other_type_/>
+                         <Likely_needs/>
+                         <Write_down_what_other_needs_/>
+                         <image_copy/>
+                         <Stand_outside_and_take_the_GPS_location_of_the_house/>
+                         <prompt__1456696875852/>
+                    </data>
+               </xf:instance>
+               <bind id="Elderly_female_under_55__copy"
+                    nodeset="/data/Elderly_female_under_55__copy" type="xsd:information"/>
+               <bind id="Enumerator_ID" nodeset="/data/Enumerator_ID" type="xsd:string"/>
+               <bind id="Island" nodeset="/data/Island"
+                    required="true()" type="xsd:radio"/>
+               <bind id="Community" nodeset="/data/Community" type="xsd:string"/>
+               <bind id="Name_" nodeset="/data/Name_" required="true()" type="xsd:string"/>
+               <bind id="Babies_female" nodeset="/data/Babies_female"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Babies_male" nodeset="/data/Babies_male"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Children_female"
+                    nodeset="/data/Children_female" required="true()" type="xsd:integer"/>
+               <bind id="Children_male" nodeset="/data/Children_male"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Youth_female" nodeset="/data/Youth_female"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Youth_male" nodeset="/data/Youth_male"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Adults_female_under_55"
+                    nodeset="/data/Adults_female_under_55"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Adults_male_under_55"
+                    nodeset="/data/Adults_male_under_55"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Elderly_female_under_55"
+                    nodeset="/data/Elderly_female_under_55"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Elderly_male_under_55"
+                    nodeset="/data/Elderly_male_under_55"
+                    required="true()" type="xsd:integer"/>
+               <bind
+                    id="Elderly_female_under_55__copy_copyprompt__1444611684526"
+                    nodeset="/data/Elderly_female_under_55__copy_copyprompt__1444611684526" type="xsd:information"/>
+               <bind id="Pregnant_" nodeset="/data/Pregnant_"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Blind_female" nodeset="/data/Blind_female"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Blind_male" nodeset="/data/Blind_male"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Not_mobile_female"
+                    nodeset="/data/Not_mobile_female" required="true()" type="xsd:integer"/>
+               <bind id="Not_mobile_male_"
+                    nodeset="/data/Not_mobile_male_" required="true()" type="xsd:integer"/>
+               <bind id="Mental_disabled_female"
+                    nodeset="/data/Mental_disabled_female"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Single_parent_female"
+                    nodeset="/data/Single_parent_female"
+                    required="true()" type="xsd:integer"/>
+               <bind id="Single_parent_male"
+                    nodeset="/data/Single_parent_male" required="true()" type="xsd:integer"/>
+               <bind id="prompt__1456691724407"
+                    nodeset="/data/prompt__1456691724407" type="xsd:information"/>
+               <bind id="What_is_the_state_of_this_fami"
+                    nodeset="/data/What_is_the_state_of_this_fami" type="xsd:radio"/>
+               <bind id="Household_utilities_damage"
+                    nodeset="/data/Household_utilities_damage" type="xsd:checkbox"/>
+               <bind id="Does_the_family_"
+                    nodeset="/data/Does_the_family_" type="xsd:radio"/>
+               <bind id="Please_detail_what_other_type_"
+                    nodeset="/data/Please_detail_what_other_type_"
+                    relevant="not( isblank( /data/Does_the_family_ ) ) and not( selected( /data/Does_the_family_ , 'Own_the_house_but_rent_the_land' ) ) and not( selected( /data/Does_the_family_ , 'Own_the_house_and_the_land' ) ) and not( selected( /data/Does_the_family_ , 'Rent_the_land_and_house' ) )" type="xsd:string"/>
+               <bind id="Likely_needs" nodeset="/data/Likely_needs" type="xsd:checkbox"/>
+               <bind id="Write_down_what_other_needs_"
+                    nodeset="/data/Write_down_what_other_needs_" type="xsd:string"/>
+               <bind id="image_copy" nodeset="/data/image_copy" type="xsd:image"/>
+               <bind
+                    id="Stand_outside_and_take_the_GPS_location_of_the_house"
+                    nodeset="/data/Stand_outside_and_take_the_GPS_location_of_the_house" type="jr:geopoint"/>
+               <bind id="prompt__1456696875852"
+                    nodeset="/data/prompt__1456696875852" type="xsd:information"/>
+          </xf:model>
+     </head>
+     <body>
+          <xf:output bind="Elderly_female_under_55__copy">
+               <xf:label>Welcome to the FRCS Disaster Needs Assessment Form 1-A.  Please complete all questions inside this form before you open a new form. Swipe left to go to the next question. Swipe right to review your answers.</xf:label>
+               <hint/>
+          </xf:output>
+          <xf:input bind="Enumerator_ID">
+               <xf:label>Your name (Ennumerator ID)</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:select1 bind="Island">
+               <xf:label>Name of district or island you are assessing?</xf:label>
+               <hint/>
+               <xf:item>
+                    <xf:label>Ba</xf:label>
+                    <xf:value>Ba</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Tavua</xf:label>
+                    <xf:value>Tavua</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Rakiraki</xf:label>
+                    <xf:value>Rakiraki</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Nalawa</xf:label>
+                    <xf:value>Nalawa</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Korovou</xf:label>
+                    <xf:value>Korovou</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Lautoka</xf:label>
+                    <xf:value>Lautoka</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Nadi</xf:label>
+                    <xf:value>Nadi</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Savusavu</xf:label>
+                    <xf:value>Savusavu</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Nabouwalu</xf:label>
+                    <xf:value>Nabouwalu</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Taveuni</xf:label>
+                    <xf:value>Taveuni</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Yasawa</xf:label>
+                    <xf:value>Yasawa</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Ovalau</xf:label>
+                    <xf:value>Ovalau</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Koro</xf:label>
+                    <xf:value>Koro</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Gau</xf:label>
+                    <xf:value>Gau</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Batiki</xf:label>
+                    <xf:value>Batiki</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Nairai</xf:label>
+                    <xf:value>Nairai</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Vanuabalavu</xf:label>
+                    <xf:value>Vanuabalavu</xf:value>
+               </xf:item>
+          </xf:select1>
+          <xf:input bind="Community">
+               <xf:label>Name of community or settlement you are assessing.</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Name_">
+               <xf:label>Name of head of household</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Babies_female">
+               <xf:label>How many female babies between ages 0-2 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Babies_male">
+               <xf:label>How many male babies between ages 0-2 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Children_female">
+               <xf:label>How many female children between ages 3-18 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Children_male">
+               <xf:label>How many male children between ages 3-18 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Youth_female">
+               <xf:label>How many female unmarried youth between ages 18-30 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Youth_male">
+               <xf:label>How many male unmarried youth between ages 18-30 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Adults_female_under_55">
+               <xf:label>How many adult female between ages 30-55 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Adults_male_under_55">
+               <xf:label>How many adult male between ages 30-55 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Elderly_female_under_55">
+               <xf:label>How many elderly female over 55 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Elderly_male_under_55">
+               <xf:label>How many elderly male over 55 years sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:output bind="Elderly_female_under_55__copy_copyprompt__1444611684526">
+               <xf:label>In this section.  You are required to ask questions about sensitive information.  Ensure that you ask these questions in the most appropriate and compassionate manner.</xf:label>
+               <hint/>
+          </xf:output>
+          <xf:input bind="Pregnant_">
+               <xf:label>How many pregnant women sleep in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Blind_female">
+               <xf:label>How many blind women in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Blind_male">
+               <xf:label>How many blind man in the house?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Not_mobile_female">
+               <xf:label>How many females in the house have problems walking?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Not_mobile_male_">
+               <xf:label>How many males in the house have problems walking?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Mental_disabled_female">
+               <xf:label>How many females with mental disability</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Single_parent_female">
+               <xf:label>How many females are a single parent?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Single_parent_male">
+               <xf:label>How many males are a single parent?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:output bind="prompt__1456691724407">
+               <xf:label>In this section. Please ensure that you answer questions based both the answers given to you and on your personal observation.</xf:label>
+               <hint/>
+          </xf:output>
+          <xf:select1 bind="What_is_the_state_of_this_fami">
+               <xf:label>What is the state of this family's shelter?</xf:label>
+               <hint/>
+               <xf:item>
+                    <xf:label>No damage</xf:label>
+                    <xf:value>No_damage</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Minor damage - repairs required but livable</xf:label>
+                    <xf:value>Minor_damage</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Major damage - structural damage, not livable</xf:label>
+                    <xf:value>Major_damage</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Destroyed</xf:label>
+                    <xf:value>Destroyed</xf:value>
+               </xf:item>
+          </xf:select1>
+          <xf:select bind="Household_utilities_damage">
+               <xf:label>Have the following household utilities been affected?</xf:label>
+               <hint/>
+               <xf:item>
+                    <xf:label>Toilet</xf:label>
+                    <xf:value>Toilet</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Kitchen</xf:label>
+                    <xf:value>Kitchen</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Electricity</xf:label>
+                    <xf:value>Electricity</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Water</xf:label>
+                    <xf:value>Water</xf:value>
+               </xf:item>
+          </xf:select>
+          <xf:select1 bind="Does_the_family_">
+               <xf:label>Does the family:</xf:label>
+               <hint/>
+               <xf:item>
+                    <xf:label>Own the house and the land</xf:label>
+                    <xf:value>Own_the_house_and_the_land</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Own the house but rent the land</xf:label>
+                    <xf:value>Own_the_house_but_rent_the_land</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Rent the land and house</xf:label>
+                    <xf:value>Rent_the_land_and_house</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Other</xf:label>
+                    <xf:value>Other</xf:value>
+               </xf:item>
+          </xf:select1>
+          <xf:input bind="Please_detail_what_other_type_">
+               <xf:label>Please detail what other type of house or land arrangement?</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:select bind="Likely_needs">
+               <xf:label>From your observation, what will be PRIORITY EMERGENCY NEEDS of this family? Select ONLY, if most needed.</xf:label>
+               <hint/>
+               <xf:item>
+                    <xf:label>Emotional support</xf:label>
+                    <xf:value>Psychological_support</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Tarpaulin</xf:label>
+                    <xf:value>Tarpaulin</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Shelter toolkit</xf:label>
+                    <xf:value>Shelter_toolkit</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Hygiene kit</xf:label>
+                    <xf:value>Hygiene_kit</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Dignity kit</xf:label>
+                    <xf:value>Dignity_kit</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Cooking set</xf:label>
+                    <xf:value>Cooking_set</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Clothing</xf:label>
+                    <xf:value>Clothing</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Baby care items</xf:label>
+                    <xf:value>Baby_pack</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Mosquito nets</xf:label>
+                    <xf:value>Mosquito_needs</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>First aid and medical support</xf:label>
+                    <xf:value>First_aid_and_medical_support</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Lighting</xf:label>
+                    <xf:value>Lighting</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Cleaning equipment</xf:label>
+                    <xf:value>Cleaning_equipment</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Water</xf:label>
+                    <xf:value>Water</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Water containers</xf:label>
+                    <xf:value>Water_containers</xf:value>
+               </xf:item>
+               <xf:item>
+                    <xf:label>Other</xf:label>
+                    <xf:value>Other</xf:value>
+               </xf:item>
+          </xf:select>
+          <xf:input bind="Write_down_what_other_needs_">
+               <xf:label>Write down any other needs this household may have.</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="image_copy">
+               <xf:label>Ask the the person whom you are interviewing if you can take a picture of the damaged shelter.</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:input bind="Stand_outside_and_take_the_GPS_location_of_the_house">
+               <xf:label>Stand outside and take the GPS location of the house.</xf:label>
+               <hint/>
+          </xf:input>
+          <xf:output bind="prompt__1456696875852">
+               <xf:label>Thank the person very much for assisting with this assessment then move on to the next household.</xf:label>
+               <hint/>
+          </xf:output>
+     </body>
+</html>
