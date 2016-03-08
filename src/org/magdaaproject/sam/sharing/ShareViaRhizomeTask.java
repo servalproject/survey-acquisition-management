@@ -441,7 +441,8 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 					SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(context);
 					db.open();
 					if (db.isThingNew(xmldata) == false) return 0;
-					db.logBadRecord(xmlformspec, xmldata);
+					db.logBadRecord(xmlformspec,
+							xmldata);
 					db.close();
 				} catch (Exception e) {
 				

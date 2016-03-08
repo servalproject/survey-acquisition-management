@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:dd="http://datadyne.org/javarosa"
+     xmlns:jr="http://openrosa.org/javarosa"
+     xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+     <head>
+          <meta>
+               <userid/>
+               <deviceid/>
+               <timestartrecorded/>
+               <timeendrecorded/>
+          </meta>
+          <title>NZRCTraining_Test_form</title>
+          <xf:model dd:formid="9214105055" dd:geotag="off" id="NZRCTraining_Test_form">
+               <xf:instance>
+                    <data>
+                         <prompt__1457222755768/>
+                         <Device/>
+                    </data>
+               </xf:instance>
+               <bind id="prompt__1457222755768"
+                    nodeset="/data/prompt__1457222755768" type="xsd:information"/>
+               <bind id="Device" nodeset="/data/Device" type="xsd:string"/>
+          </xf:model>
+     </head>
+     <body>
+          <xf:output bind="prompt__1457222755768">
+               <xf:label>Test Form</xf:label>
+               <hint/>
+          </xf:output>
+          <xf:input bind="Device">
+               <xf:label>Which Device is this?</xf:label>
+               <hint/>
+          </xf:input>
+     </body>
+</html>

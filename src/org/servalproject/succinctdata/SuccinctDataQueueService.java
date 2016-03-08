@@ -654,6 +654,10 @@ public class SuccinctDataQueueService extends Service {
 					Log.e("SuccinctData", "Failed to enqueue succinct data received from magpi.");
 				}
 			}
+			
+			// We have tried to process it, so now delete it.
+			// This will stop us trying to do stuff with it again and again.
+			file.delete();
 		} catch	 (Exception e) {
 			;	
 		}					
