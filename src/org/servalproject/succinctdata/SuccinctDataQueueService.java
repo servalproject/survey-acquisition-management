@@ -130,12 +130,12 @@ public class SuccinctDataQueueService extends Service {
 	private boolean inReachReadyAndAvailable = false;
 
 	private SuccinctDataQueueDbAdapter db = null;
-	Thread messageSenderThread = null;
+	public Thread messageSenderThread = null;
 
 	public static SuccinctDataQueueService instance = null;
 
 	private Handler handler = null;
-
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -191,8 +191,9 @@ public class SuccinctDataQueueService extends Service {
 					.getStringExtra("org.servalproject.succinctdata.FORMNAME");
 			String formversion = intent
 					.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
-
-			tryQueuingRecord(succinctData,xmlData,xmlForm,formname,formversion);
+			
+			if (succinctData != null)
+				tryQueuingRecord(succinctData,xmlData,xmlForm,formname,formversion);
 						
 		} catch (Exception e) {
 			String s = e.toString();

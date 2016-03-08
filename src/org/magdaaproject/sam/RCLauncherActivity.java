@@ -186,6 +186,11 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			mcheckBox.setChecked(isInternetAvailable());
 		}
 
+		if ( SuccinctDataQueueService.instance == null) {
+			Intent intent = new Intent(this, SuccinctDataQueueService.class);
+			startService(intent); 
+		}
+		
 		return;
 	}
 	
