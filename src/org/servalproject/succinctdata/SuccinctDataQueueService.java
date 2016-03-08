@@ -594,7 +594,7 @@ public class SuccinctDataQueueService extends Service {
 		// way.  So we can't really use it.
 		
 		String scanDir =
-                Environment.getExternalStorageDirectory().getPath()+"magpiFiles/";
+                Environment.getExternalStorageDirectory().getPath()+"/magpiFiles/";
 
 		scanTreeForNewMagpiExports(scanDir);
 		
@@ -644,6 +644,8 @@ public class SuccinctDataQueueService extends Service {
 				final String formSpecification = 
 						loadAssetTextAsString(getBaseContext(),formId+".xhtml");
 			
+				if ( formSpecification == null ) return;
+				
 				int result = ShareViaRhizomeTask.enqueueSuccinctData(getBaseContext(), 
 						completeRecord, formSpecification,
 						null, null, null, 160, null);
