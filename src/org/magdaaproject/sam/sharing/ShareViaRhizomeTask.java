@@ -455,7 +455,10 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				if (failSafeRecordFile.exists()) failSafeRecordFile.delete();				
 				
 				// Pass message to queue
-				Intent intent = new Intent(context,
+				// Don't use an intent, as intents suffer from size limits
+				if ( SuccinctDataQueueService.instance != null ) {
+					SuccinctDataQueueService.instance.tryQueuingRecord(res, xmldata, xmlformspec, formname, formversion);
+/*				Intent intent = new Intent(context,
 						SuccinctDataQueueService.class);
 				intent.putExtra("org.servalproject.succinctdata.SUCCINCT", res);
 				intent.putExtra("org.servalproject.succinctdata.XML", xmldata);
@@ -466,9 +469,13 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 				intent.putExtra("org.servalproject.succinctdata.FORMVERSION",
 						formversion);
 				context.startService(intent);
-
+*/
+				
 				// Now tell the user it has happened
 				okstring = "Succinct data message spooled";
+				} else {
+					okstring = "FAILED to spool message (couldn't find SD Queue Service instance)";
+				}
 
 				// Short vibrate for good records
 				Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -545,6 +552,18 @@ public class ShareViaRhizomeTask extends AsyncTask<Void, Void, Integer> {
 		return 0;
 	}
 
+	private static String removeImages(String string) {
+		// Cut any <encodedString>...</encodedString> tags from the magpi record
+		int start = string.indexOf("<encodedString>");
+		while (start>-1) {
+			int end = string.indexOf("</encodedString>");
+			string = string.substring(0,start-1) + string.substring(end+"</encodedString>".length());
+			
+			start = string.indexOf("<encodedString>");
+		}
+		return string;
+	}
+	
 	private static String assetToFilename(Context context, String assetName) {
 		// XXX - Should check if file exists, and if so, not extract again.
 

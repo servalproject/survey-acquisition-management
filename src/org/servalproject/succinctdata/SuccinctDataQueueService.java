@@ -191,43 +191,9 @@ public class SuccinctDataQueueService extends Service {
 					.getStringExtra("org.servalproject.succinctdata.FORMNAME");
 			String formversion = intent
 					.getStringExtra("org.servalproject.succinctdata.FORMVERSION");
-			
-			if (db == null) {
-				db = new SuccinctDataQueueDbAdapter(this);
-				db.open();
-			}
 
-			if (xmlData != null && db.isThingNew(xmlData) == true) {
-				// Form is new, so process it.
-
-				if (xmlData != null) RCLauncherActivity.sawUniqueMagpiRecord();			
-				
-				if (xmlForm != null && db.isThingNew(xmlForm)) {
-					UploadFormSpecificationTask.handler = handler;
-					UploadFormSpecificationTask.context = getBaseContext();
-					new UploadFormSpecificationTask().execute(xmlForm);
-				}
-
-				// For each piece, create a message in the queue
-				Log.d("SuccinctData", "Opening queue database");
-				Log.d("SuccinctData", "Opened queue database");
-				if (succinctData != null) {
-					// Send ALL pieces before marking as having been remembered
-					for (int i = 0; i < succinctData.length; i++) {
-						String piece = succinctData[i];
-						String prefix = piece.substring(0, 10);					
-						db.createQueuedMessage(prefix, piece, formname + "/"
-								+ formversion, xmlData);
-					}
-					// Mark this record as having been queued so that we don't queue it again
-					db.rememberThing(xmlData);	  
-					
-					Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
-					LocalBroadcastManager lb = LocalBroadcastManager
-							.getInstance(this);
-					lb.sendBroadcastSync(i);
-				}
-			}
+			tryQueuingRecord(succinctData,xmlData,xmlForm,formname,formversion);
+						
 		} catch (Exception e) {
 			String s = e.toString();
 			Log.e("SuccinctDataqQueueService", "Exception: " + s);
@@ -237,6 +203,47 @@ public class SuccinctDataQueueService extends Service {
 		// stopped, so return sticky.
 		return START_STICKY;
 	}
+
+	public void tryQueuingRecord(String[] succinctData, String xmlData,
+			String xmlForm, String formname, String formversion) {
+		if (db == null) {
+			db = new SuccinctDataQueueDbAdapter(this);
+			db.open();
+		}
+
+		if (xmlData != null && db.isThingNew(xmlData) == true) {
+			// Form is new, so process it.
+
+			if (xmlData != null) RCLauncherActivity.sawUniqueMagpiRecord();			
+
+			if (xmlForm != null && db.isThingNew(xmlForm)) {
+				UploadFormSpecificationTask.handler = handler;
+				UploadFormSpecificationTask.context = getBaseContext();
+				new UploadFormSpecificationTask().execute(xmlForm);
+			}
+
+			// For each piece, create a message in the queue
+			Log.d("SuccinctData", "Opening queue database");
+			Log.d("SuccinctData", "Opened queue database");
+			if (succinctData != null) {
+				// Send ALL pieces before marking as having been remembered
+				for (int i = 0; i < succinctData.length; i++) {
+					String piece = succinctData[i];
+					String prefix = piece.substring(0, 10);					
+					db.createQueuedMessage(prefix, piece, formname + "/"
+							+ formversion, xmlData);
+				}
+				// Mark this record as having been queued so that we don't queue it again
+				db.rememberThing(xmlData);	  
+
+				Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
+				LocalBroadcastManager lb = LocalBroadcastManager
+						.getInstance(this);
+				lb.sendBroadcastSync(i);
+			}
+		}		
+	}
+
 
 	@Override
 	public IBinder onBind(Intent intent) {
