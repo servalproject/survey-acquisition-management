@@ -80,6 +80,14 @@
         android:text="inReach"
         android:clickable="false" />
 
+    <CheckBox
+        android:id="@+id/launcher_rc_notify_ui_sdgateway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/launcher_rc_notify_ui_sdgateway"
+        android:text="inReach connected to nearby phone"
+        android:clickable="false" />
+    
     <Button
         android:id="@+id/launcher_rc_message_queue_heading"
         style="@style/ui_elem_btn_border_red"
