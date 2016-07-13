@@ -482,11 +482,17 @@ public class SuccinctDataQueueService extends Service {
 				byte[] rxbuf = new byte[1500];
 				DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
 				byte [] expectedHeader = "SDSend:1:0:".getBytes();
-				byte [] replyHeader = "SDAck:1:0:".getBytes();				
+				byte [] replyHeader = "SDAck:1:0:".getBytes();		
+				byte [] announceHeader = "SDGateway:1:0:".getBytes();
 				sDGatewaySocket.setSoTimeout(10); // 10ms timeout
 				try {
 					while (true) {
 						sDGatewaySocket.receive(packet);
+						
+						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,announceHeader.length),
+								announceHeader)) {
+							lastSDGatewayAnnounceTime = System.currentTimeMillis();
+						}
 						
 						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,expectedHeader.length),
 								expectedHeader)) {
