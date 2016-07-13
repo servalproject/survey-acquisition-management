@@ -186,6 +186,12 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 			mcheckBox.setChecked(isInternetAvailable());
 		}
 
+		{
+			mcheckBox = (CheckBox) findViewById(R.id.launcher_rc_notify_ui_sdgateway);
+			mcheckBox.setChecked(isSDGatewayAvailable());
+		}
+
+		
 		if ( SuccinctDataQueueService.instance == null) {
 			Intent intent = new Intent(this, SuccinctDataQueueService.class);
 			startService(intent); 
@@ -203,6 +209,9 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
+	public boolean isSDGatewayAvailable() {
+		return SuccinctDataQueueService.isSDGatewayAvailable(instance);
+	}
 	
 	/*
 	 * (non-Javadoc)
