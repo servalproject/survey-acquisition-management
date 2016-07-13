@@ -324,6 +324,14 @@ public class SuccinctDataQueueService extends Service {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager
 				.getActiveNetworkInfo();
+		// Ignore wifi connections to Mesh Extenders
+		if (activeNetworkInfo != null ) {
+			String extra = activeNetworkInfo.getExtraInfo();
+			extra = extra.substring(1, extra.length()-2);
+			Boolean me = extra.startsWith("me-");
+			Boolean sp = extra.endsWith("servalproject.org");
+			if (me||sp) return false;
+		}
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
@@ -640,6 +648,8 @@ public class SuccinctDataQueueService extends Service {
 				Thread.sleep(next_timeout);
 			} catch (Exception e) {
 			}						
+			
+			pollSDGateway(s);			
 			
 			if (isInternetAvailable()) {
 				// See if we have bad records to upload
