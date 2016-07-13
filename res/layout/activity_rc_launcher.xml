@@ -84,7 +84,7 @@
         android:id="@+id/launcher_rc_notify_ui_sdgateway"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_rc_notify_ui_sdgateway"
+        android:layout_below="@id/launcher_rc_notify_ui_inreach"
         android:text="inReach connected to nearby phone"
         android:clickable="false" />
     
@@ -93,7 +93,7 @@
         style="@style/ui_elem_btn_border_red"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/launcher_rc_notify_ui_inreach"
+        android:layout_below="@id/launcher_rc_notify_ui_sdgateway"
         android:text="Succinct Data Transmission Queue" />
     
     <TextView
