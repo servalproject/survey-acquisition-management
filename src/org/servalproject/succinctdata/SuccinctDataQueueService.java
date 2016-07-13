@@ -7,9 +7,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
@@ -134,6 +140,9 @@ public class SuccinctDataQueueService extends Service {
 
 	public static SuccinctDataQueueService instance = null;
 
+	private static long lastSDGatewayAnnounceTime = 0;
+	private static DatagramSocket sDGatewaySocket = null;
+
 	private Handler handler = null;
 	
 	@Override
@@ -249,6 +258,33 @@ public class SuccinctDataQueueService extends Service {
 		}		
 	}
 
+	public boolean queuePieceReceivedByGateway(String piece)
+	{
+		if (piece!= null) {
+			if (db == null) {
+				db = new SuccinctDataQueueDbAdapter(this);
+				db.open();
+			}
+			
+			// Return success, if we have seen it before
+			if (!db.isThingNew(piece)) return true;
+			
+			// Send piece, then mark as being remembered			
+			String prefix = piece.substring(0, 10);					
+			db.createQueuedMessage(prefix, piece, "via gateway","via gateway");
+			
+			// Mark this record as having been queued so that we don't queue it again
+			db.rememberThing(piece);	  
+
+			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
+			LocalBroadcastManager lb = LocalBroadcastManager
+					.getInstance(this);
+			lb.sendBroadcastSync(i);
+			return true;
+		}
+		return false;
+	}
+	
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -257,6 +293,17 @@ public class SuccinctDataQueueService extends Service {
 		return null;
 	}
 
+	public static Boolean isSDGatewayAvailable(Context appcontext) {
+		// Is a Succinct Data gateway available?
+		// SD Gateways are other SD instances running, that have one or
+		// more data transports available. They are recognised by their
+		// emitting regular announce packets on UDP port 21316 ( = $5344
+		// = "SD").
+		if ((System.currentTimeMillis() - lastSDGatewayAnnounceTime )<5000) {
+			return true;
+		} else return false;
+	}
+	
 	// Detecting cellular service (SMS, not data)
 	// This method by santacrab from:
 	// http://stackoverflow.com/questions/6435861/android-what-is-the-correct-way-of-checking-for-mobile-network-available-no-da
@@ -382,6 +429,109 @@ public class SuccinctDataQueueService extends Service {
 		return -1;
 	}
 
+	private void sendToSDGateway(String piece)
+	{
+		try {
+			if (sDGatewaySocket == null) {
+				try {
+					sDGatewaySocket = new DatagramSocket(21316,InetAddress.getByName("0.0.0.0"));
+					sDGatewaySocket.setBroadcast(true);
+				} catch (SocketException e) {
+					if (sDGatewaySocket != null) sDGatewaySocket.close();				
+					sDGatewaySocket = null;
+				}
+			}
+			if (sDGatewaySocket != null)  {
+				byte[] buf = ("SDSend:1:0:"+piece).getBytes();
+				DatagramPacket pack = new DatagramPacket(buf, buf.length,
+						InetAddress.getByName("255.255.255.255"),21316 );
+				sDGatewaySocket.send(pack);
+			}
+		} catch (Exception e) {
+			
+		}
+
+	}
+	
+	private void pollSDGateway(Context c) {
+		// 
+		try {
+			if (sDGatewaySocket == null) {
+				try {
+					sDGatewaySocket = new DatagramSocket(21316,InetAddress.getByName("0.0.0.0"));
+					sDGatewaySocket.setBroadcast(true);
+				} catch (SocketException e) {
+					if (sDGatewaySocket != null) sDGatewaySocket.close();				
+					sDGatewaySocket = null;
+				}
+			}
+			if (sDGatewaySocket != null)  {
+				
+				// Announce ourselves as a gateway if we have an inReach connected,
+				// or we have some other transport available.
+				if (InReachMessageHandler.isInreachAvailable()
+						|| isInternetAvailable()
+						|| isSMSAvailable(c)
+						) {
+					byte[] buf = "SDGateway:1:0:".getBytes();
+					DatagramPacket pack = new DatagramPacket(buf, buf.length,
+							InetAddress.getByName("255.255.255.255"),21316 );
+					sDGatewaySocket.send(pack);
+				}
+				
+				byte[] rxbuf = new byte[1500];
+				DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
+				byte [] expectedHeader = "SDSend:1:0:".getBytes();
+				byte [] replyHeader = "SDAck:1:0:".getBytes();				
+				sDGatewaySocket.setSoTimeout(10); // 10ms timeout
+				try {
+					while (true) {
+						sDGatewaySocket.receive(packet);
+						
+						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,expectedHeader.length),
+								expectedHeader)) {
+							// This is a request to gate a piece to the outside world.
+							// Attempt to process it only if we have a link to the outside world.
+							if (InReachMessageHandler.isInreachAvailable()
+									|| isInternetAvailable()
+									|| isSMSAvailable(c)
+									) {
+								// This packet is a request to send an SD piece via our inReach
+								byte [] piece = Arrays.copyOfRange(packet.getData(),expectedHeader.length,
+										packet.getData().length);
+								String pieceAsString = piece.toString();
+								if (queuePieceReceivedByGateway(pieceAsString)) {							
+									// Send reply packet to requester
+									// (unicast, not broadcast, since some phones may have trouble
+									//  receiving broadcast).
+									byte[] replybuf = ("SDAck:1:0:"+pieceAsString).getBytes();
+									DatagramPacket replypack = new DatagramPacket(replybuf, replybuf.length,
+											packet.getAddress(),21316 );
+									sDGatewaySocket.send(replypack);
+								}
+							}
+						}
+						
+						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,replyHeader.length),
+								replyHeader)) {
+							// This is acknowledgement of accepting a piece by a gateway.
+							byte [] piece = Arrays.copyOfRange(packet.getData(),replyHeader.length,
+									packet.getData().length);
+							String pieceAsString = piece.toString();
+							db.delete(pieceAsString);
+							
+						}
+						
+					}
+				} catch (Exception e) {
+					// Socket timeout etc. Just stop asking for packets
+				}
+			}
+		} catch (Exception e) {
+			
+		}
+	}
+		
 	private int sendInReach(String phonenumber, String[] succinctData,
 			PendingIntent p) {
 		try {
@@ -535,6 +685,13 @@ public class SuccinctDataQueueService extends Service {
 				if ((messageSent == false) && isSMSAvailable(s)) {
 					if (sendSMS(smsnumber, piece) == 0)
 						messageSent = true;
+				}
+				if ((messageSent == false) && isSDGatewayAvailable(s)) {
+					// Try sending message to SD gateway.
+					// The gateway will acknowledge when it has sent the piece.
+					// In the meantime, we will just keep repeatedly trying to give the
+					// same piece to them.  The gateway side supresses duplicate requests.
+					sendToSDGateway(piece);
 				}
 				if ((messageSent == false)
 						&& (inReachReadyAndAvailable == true)) {
