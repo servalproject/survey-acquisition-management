@@ -299,7 +299,7 @@ public class SuccinctDataQueueService extends Service {
 		// more data transports available. They are recognised by their
 		// emitting regular announce packets on UDP port 21316 ( = $5344
 		// = "SD").
-		if ((System.currentTimeMillis() - lastSDGatewayAnnounceTime )<5000) {
+		if ((System.currentTimeMillis() - lastSDGatewayAnnounceTime )<15000) {
 			return true;
 		} else return false;
 	}
@@ -594,6 +594,8 @@ public class SuccinctDataQueueService extends Service {
 
 		long next_timeout = 5000;
 
+		pollSDGateway(s);
+		
 		// On startup, look for fail-safe file to upload in case we force-quit
 		if (isInternetAvailable()) {
 			String failSafeFileName =
