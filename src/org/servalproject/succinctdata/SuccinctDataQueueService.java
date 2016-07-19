@@ -24,6 +24,7 @@ import java.util.Scanner;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.InputStreamEntity;
@@ -141,6 +142,7 @@ public class SuccinctDataQueueService extends Service {
 	public static SuccinctDataQueueService instance = null;
 
 	private static long lastSDGatewayAnnounceTime = 0;
+	private static String sDGatewayIP = null;
 	private static DatagramSocket sDGatewaySocket = null;
 
 	private Handler handler = null;
@@ -335,6 +337,22 @@ public class SuccinctDataQueueService extends Service {
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 
+	public boolean isMeshExtenderAvailable() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		// Ignore wifi connections to Mesh Extenders
+		if (activeNetworkInfo != null ) {
+			String extra = activeNetworkInfo.getExtraInfo();
+			extra = extra.substring(1, extra.length()-2);
+			Boolean me = extra.startsWith("me-");
+			Boolean sp = extra.endsWith("servalproject.org");
+			if (me||sp) return true;
+		}
+		return false;
+	}
+
+	
 	private int sendBadRecordViaInternet(String form, String record) {
 		// XXX make configurable!
 		String url = "http://serval1.csem.flinders.edu.au/succinctdata/badrecordupload.php";
@@ -449,10 +467,10 @@ public class SuccinctDataQueueService extends Service {
 					sDGatewaySocket = null;
 				}
 			}
-			if (sDGatewaySocket != null)  {
+			if ((sDGatewaySocket != null)&&(sDGatewayIP!=null))  {
 				byte[] buf = ("SDSend:1:0:"+piece).getBytes();
 				DatagramPacket pack = new DatagramPacket(buf, buf.length,
-						InetAddress.getByName("255.255.255.255"),21316 );
+						InetAddress.getByName(sDGatewayIP),21316 );
 				sDGatewaySocket.send(pack);
 			}
 		} catch (Exception e) {
@@ -473,6 +491,12 @@ public class SuccinctDataQueueService extends Service {
 					sDGatewaySocket = null;
 				}
 			}
+			
+			// Make sure that UI updates sufficiently regularly to reflect presence/absence of remote
+			// inreach devices.
+			// XXX - Would be better to have this edge triggered on events
+			RCLauncherActivity.requestUpdateUI();
+			
 			if (sDGatewaySocket != null)  {
 				
 				// Announce ourselves as a gateway if we have an inReach connected,
@@ -495,11 +519,37 @@ public class SuccinctDataQueueService extends Service {
 				sDGatewaySocket.setSoTimeout(10); // 10ms timeout
 				try {
 					while (true) {
-						sDGatewaySocket.receive(packet);
 						
+						if (isMeshExtenderAvailable()) {
+							// Use Mesh Extender to detect inReach relay, if phones don't support
+							// receiving broadcast UDP packets (this is a common problem on Android).
+							// We rely on Mesh Extenders implementing a DNS-based captive portal to
+							// catch the following request.
+							String url = "http://inreachgateway.no.such.domain:21506/inreachgateway/query";
+							if (InReachMessageHandler.isInreachAvailable())
+								url = "http://inreachgateway.no.such.domain:21506/inreachgateway/register";
+							DefaultHttpClient httpclient = new DefaultHttpClient();
+							HttpGet httprequest = new HttpGet(url);
+							HttpResponse response = httpclient.execute(httprequest);
+							if (response.getStatusLine().getStatusCode() == 200) {
+								HttpEntity body = response.getEntity();
+								String bodytext = body.getContent().toString();
+								sDGatewayIP = bodytext;								
+								lastSDGatewayAnnounceTime = System.currentTimeMillis();
+							}
+							
+						}						
+						
+						sDGatewaySocket.receive(packet);						
+						if ((! InReachMessageHandler.isInreachAvailable())
+								&& (! isInternetAvailable())
+								&& (! isSMSAvailable(c))
+								)
 						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,announceHeader.length),
 								announceHeader)) {
 							lastSDGatewayAnnounceTime = System.currentTimeMillis();
+							sDGatewayIP = packet.getAddress().toString();
+							RCLauncherActivity.requestUpdateUI();
 						}
 						
 						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,expectedHeader.length),
