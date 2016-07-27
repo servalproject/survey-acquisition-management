@@ -7,12 +7,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +49,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
@@ -55,6 +58,7 @@ import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -525,13 +529,34 @@ public class SuccinctDataQueueService extends Service {
 							// receiving broadcast UDP packets (this is a common problem on Android).
 							// We rely on Mesh Extenders implementing a DNS-based captive portal to
 							// catch the following request.
-							String url = "http://inreachgateway.no.such.domain:21506/inreachgateway/query";
+							
+							
+							String hostName = "inreachgateway.no.such.domain";
+
+							// In case DHCP doesn't allow DNS to resolve properly, get the IP address
+							// of the Wi-Fi interface, and use that directly.
+							// (Mesh Extenders are currently IPv4 only, so the following is okay.
+							// It will need to support IPv6 if we ever make Mesh Extenders IPv6.)
+							try {
+								WifiManager wifiManager = (WifiManager) c.getSystemService(WIFI_SERVICE);
+							    int ip = wifiManager.getConnectionInfo().getIpAddress();
+							    if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+							    	ip = Integer.reverseBytes(ip);
+							    	byte [] ipBytes = BigInteger.valueOf(ip).toByteArray();
+							    	ipBytes[3]=1; //  Use .1 address on subnet
+							    	hostName = InetAddress.getByAddress(ipBytes).getHostAddress();
+							    }
+							} catch (Exception e) {
+								Log.e("SuccinctData","Couldn't resolve Mesh Extender IP address.");
+							}
+							String url = "http://"+hostName+":21506/inreachgateway/query";
 							if (InReachMessageHandler.isInreachAvailable())
-								url = "http://inreachgateway.no.such.domain:21506/inreachgateway/register";
+								url = "http://"+hostName+":21506/inreachgateway/register";
 							DefaultHttpClient httpclient = new DefaultHttpClient();
 							HttpGet httprequest = new HttpGet(url);
 							HttpResponse response = httpclient.execute(httprequest);
-							if (response.getStatusLine().getStatusCode() == 200) {
+							int statusCode = response.getStatusLine().getStatusCode(); 
+							if (statusCode == 200) {
 								HttpEntity body = response.getEntity();
 								String bodytext = body.getContent().toString();
 								sDGatewayIP = bodytext;								
