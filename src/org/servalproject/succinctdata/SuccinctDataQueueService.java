@@ -146,7 +146,7 @@ public class SuccinctDataQueueService extends Service {
 	public static SuccinctDataQueueService instance = null;
 
 	private static long lastSDGatewayAnnounceTime = 0;
-	private static String sDGatewayIP = null;
+	public static String sDGatewayIP = null;
 	private static DatagramSocket sDGatewaySocket = null;
 
 	private Handler handler = null;
@@ -555,12 +555,15 @@ public class SuccinctDataQueueService extends Service {
 							DefaultHttpClient httpclient = new DefaultHttpClient();
 							HttpGet httprequest = new HttpGet(url);
 							HttpResponse response = httpclient.execute(httprequest);
+							long contentLength = response.getEntity().getContentLength();
 							int statusCode = response.getStatusLine().getStatusCode(); 
 							if (statusCode == 200) {
 								HttpEntity body = response.getEntity();
-								String bodytext = body.getContent().toString();
+								String bodytext = new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine();
+								// String bodytext = body.getContent().toString();
 								sDGatewayIP = bodytext;								
 								lastSDGatewayAnnounceTime = System.currentTimeMillis();
+								Log.i("SuccinctData",sDGatewayIP + " has an inReach we can use.");
 							}
 							
 						}						

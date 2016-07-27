@@ -126,7 +126,10 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		boolean inReachConnected = false;
 		
 		TextView mTextView = (TextView) findViewById(R.id.launcher_rc_connection_to_inreach);
-		if (InReachMessageHandler.getInReachNumber() < 1){
+		if (SuccinctDataQueueService.isSDGatewayAvailable(getBaseContext())) {
+			mTextView.setText("Using the inReach that is paired to the nearby phone with IP address "+SuccinctDataQueueService.sDGatewayIP+".");
+		}
+		else if (InReachMessageHandler.getInReachNumber() < 1){
 			mTextView.setText("There is no paired inReach device." +
 					"\nIf this message persists, please pair to an inReach device and restart the application");
 		} else if (InReachMessageHandler.getInReachNumber() > 1){
