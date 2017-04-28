@@ -214,9 +214,11 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		if (activeNetworkInfo != null ) {
 			String extra = activeNetworkInfo.getExtraInfo();
 			if (extra != null ) {
-				extra = extra.substring(1, extra.length()-2);
+				// On old versions of android we had to remove quotes from this string
+				// extra = extra.substring(1, extra.length()-2);
+				extra.replaceAll("\"'","");
 				Boolean me = extra.startsWith("me-");
-				Boolean sp = extra.endsWith("servalproject.org");
+				Boolean sp = extra.contains("servalproject.org");
 				if (me||sp) return false;
 			}
 		}

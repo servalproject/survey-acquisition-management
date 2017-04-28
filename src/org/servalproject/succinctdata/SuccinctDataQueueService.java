@@ -350,9 +350,9 @@ public class SuccinctDataQueueService extends Service {
 		// Ignore wifi connections to Mesh Extenders
 		if (activeNetworkInfo != null ) {
 			String extra = activeNetworkInfo.getExtraInfo();
-			extra = extra.substring(1, extra.length()-2);
+			extra = extra.replaceAll("\"'","");
 			Boolean me = extra.startsWith("me-");
-			Boolean sp = extra.endsWith("servalproject.org");
+			Boolean sp = extra.contains("servalproject.org");
 			if (me||sp) return true;
 		}
 		return false;
@@ -552,7 +552,8 @@ public class SuccinctDataQueueService extends Service {
 								Log.e("SuccinctData","Couldn't resolve Mesh Extender IP address.");
 							}
 							String url = "http://"+hostName+":21506/inreachgateway/query";
-							if (InReachMessageHandler.isInreachAvailable())
+							boolean haveInReach = InReachMessageHandler.isInreachAvailable();
+							if (haveInReach)
 								url = "http://"+hostName+":21506/inreachgateway/register";
 							DefaultHttpClient httpclient = new DefaultHttpClient();
 							HttpGet httprequest = new HttpGet(url);
