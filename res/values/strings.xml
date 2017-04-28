@@ -43,11 +43,11 @@
 <resources>
 
     <!-- application wide strings -->
-    <string name="system_application_name">Succinct Data 20170428.3</string>
-    <string name="system_application_default_label">Succinct Data 20170428.3</string>
+    <string name="system_application_name">Succinct Data 20170428.6</string>
+    <string name="system_application_default_label">Succinct Data 20170428.6</string>
     
     <!-- launcher activity screen -->
-    <string name="launcher_ui_lbl_header">Succinct Data 20170428.3</string>
+    <string name="launcher_ui_lbl_header">Succinct Data 20170428.6</string>
     
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email Serval</string>
@@ -175,6 +175,6 @@
     <string name="system_acknowledgments_uri">http://developer.servalproject.org</string>
 
     <string name="succinct_data_message_queue_title">Succinct Data Queued Messages</string>
-    <string name="succinct_data_sms_number">+61481070732</string>
+    <string name="succinct_data_sms_number">+61406322172</string>
     
 </resources>
