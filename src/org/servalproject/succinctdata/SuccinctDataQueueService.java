@@ -333,10 +333,12 @@ public class SuccinctDataQueueService extends Service {
 		// Ignore wifi connections to Mesh Extenders
 		if (activeNetworkInfo != null ) {
 			String extra = activeNetworkInfo.getExtraInfo();
-			extra = extra.substring(1, extra.length()-2);
-			Boolean me = extra.startsWith("me-");
-			Boolean sp = extra.endsWith("servalproject.org");
-			if (me||sp) return false;
+			if (extra != null) {
+				extra = extra.substring(1, extra.length()-2);
+				Boolean me = extra.startsWith("me-");
+				Boolean sp = extra.endsWith("servalproject.org");
+				if (me||sp) return false;
+			}
 		}
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
@@ -994,6 +996,10 @@ public class SuccinctDataQueueService extends Service {
 		// permanently in due course.
 		// Delete message from database
 		{
+			if (db == null) {
+				db = new SuccinctDataQueueDbAdapter(this);
+				db.open();
+			}
 			db.delete(piece);
 			Intent i = new Intent("SD_MESSAGE_QUEUE_UPDATED");
 			LocalBroadcastManager lb = LocalBroadcastManager
