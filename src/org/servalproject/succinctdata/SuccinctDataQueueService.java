@@ -333,11 +333,9 @@ public class SuccinctDataQueueService extends Service {
 		// Ignore wifi connections to Mesh Extenders
 		if (activeNetworkInfo != null ) {
 			String extra = activeNetworkInfo.getExtraInfo();
-			if (extra != null) {
-				extra = extra.substring(1, extra.length()-2);
-				Boolean me = extra.startsWith("me-");
-				Boolean sp = extra.endsWith("servalproject.org");
-				if (me||sp) return false;
+			if (extra != null) {				
+				Boolean sp = extra.contains("servalproject.org");
+				if (sp) return false;
 			}
 		}
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
@@ -474,8 +472,11 @@ public class SuccinctDataQueueService extends Service {
 				}
 			}
 			if ((sDGatewaySocket != null)&&(sDGatewayIP!=null))  {
-				byte[] buf = ("SDSend:1:0:"+piece).getBytes();
-				DatagramPacket pack = new DatagramPacket(buf, buf.length,
+				String hex_len = String.format("%04X", piece.length());
+				String assembled = "SDSend:1:0:"+hex_len + piece; 
+				byte[] buf = assembled.getBytes();
+				int len=buf.length;
+				DatagramPacket pack = new DatagramPacket(buf, len,
 						InetAddress.getByName(sDGatewayIP),21316 );
 				sDGatewaySocket.send(pack);
 			}
@@ -507,6 +508,8 @@ public class SuccinctDataQueueService extends Service {
 				
 				// Announce ourselves as a gateway if we have an inReach connected,
 				// or we have some other transport available.
+				// XXX - We don't need this any more, as we use LBARD to relay gateway notifications
+				if (false) {
 				if (InReachMessageHandler.isInreachAvailable()
 						|| isInternetAvailable()
 						|| isSMSAvailable(c)
@@ -515,6 +518,7 @@ public class SuccinctDataQueueService extends Service {
 					DatagramPacket pack = new DatagramPacket(buf, buf.length,
 							InetAddress.getByName("255.255.255.255"),21316 );
 					sDGatewaySocket.send(pack);
+				}
 				}
 				
 				byte[] rxbuf = new byte[1500];
@@ -553,7 +557,9 @@ public class SuccinctDataQueueService extends Service {
 							}
 							String url = "http://"+hostName+":21506/inreachgateway/query";
 							boolean haveInReach = InReachMessageHandler.isInreachAvailableOrQueued();
-							if (haveInReach||isInternetAvailable()||isSMSAvailable(c))
+							boolean haveInternet = isInternetAvailable();
+							boolean haveSMS = isSMSAvailable(c);
+							if (haveInReach||haveInternet||haveSMS)
 								url = "http://"+hostName+":21506/inreachgateway/register";
 							DefaultHttpClient httpclient = new DefaultHttpClient();
 							HttpGet httprequest = new HttpGet(url);
@@ -593,14 +599,20 @@ public class SuccinctDataQueueService extends Service {
 									|| isSMSAvailable(c)
 									) {
 								// This packet is a request to send an SD piece via our inReach
-								byte [] piece = Arrays.copyOfRange(packet.getData(),expectedHeader.length,
-										packet.getData().length);
+								byte [] hex_bytes = Arrays.copyOfRange(packet.getData(),expectedHeader.length,expectedHeader.length+4);
+								String hex = new String(hex_bytes);
+								int data_length = Integer.parseInt(hex,16);
+								if (data_length>packet.getData().length-4-expectedHeader.length)
+									data_length=packet.getData().length-4-expectedHeader.length;
+								byte [] piece = Arrays.copyOfRange(packet.getData(),expectedHeader.length+4,expectedHeader.length+4+data_length);										
 								String pieceAsString = new String(piece);
 								if (queuePieceReceivedByGateway(pieceAsString)) {							
 									// Send reply packet to requester
 									// (unicast, not broadcast, since some phones may have trouble
 									//  receiving broadcast).
-									byte[] replybuf = ("SDAck:1:0:"+pieceAsString).getBytes();
+									String hex_len = String.format("%04X", pieceAsString.length());
+									String assembly = "SDAck:1:0:"+hex_len+pieceAsString;
+									byte[] replybuf = assembly.getBytes();
 									DatagramPacket replypack = new DatagramPacket(replybuf, replybuf.length,
 											packet.getAddress(),21316 );
 									sDGatewaySocket.send(replypack);
@@ -611,9 +623,17 @@ public class SuccinctDataQueueService extends Service {
 						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,replyHeader.length),
 								replyHeader)) {
 							// This is acknowledgement of accepting a piece by a gateway.
-							byte [] piece = Arrays.copyOfRange(packet.getData(),replyHeader.length,
-									packet.getData().length);
+							byte [] hex_bytes = Arrays.copyOfRange(packet.getData(),replyHeader.length,replyHeader.length+4);
+							String hex = new String(hex_bytes);
+							int data_length = Integer.parseInt(hex,16);
+							if (data_length>packet.getData().length-4-replyHeader.length)
+								data_length=packet.getData().length-4-replyHeader.length;
+							byte [] piece = Arrays.copyOfRange(packet.getData(),replyHeader.length+4,replyHeader.length+4+data_length);							
 							String pieceAsString = new String(piece);
+							if (db == null) {
+								db = new SuccinctDataQueueDbAdapter(this);
+								db.open();
+							}
 							db.delete(pieceAsString);
 							
 						}
@@ -621,6 +641,8 @@ public class SuccinctDataQueueService extends Service {
 					}
 				} catch (Exception e) {
 					// Socket timeout etc. Just stop asking for packets
+					String error = e.toString();
+					Log.d("succinctdata",error);
 				}
 			}
 		} catch (Exception e) {
@@ -786,11 +808,12 @@ public class SuccinctDataQueueService extends Service {
 					if (sendSMS(smsnumber, piece) == 0)
 						messageSent = true;
 				}
-				if ((messageSent == false) && isSDGatewayAvailable(s)) {
+				boolean sdGatewayAvailable = isSDGatewayAvailable(s);
+				if ((messageSent == false) && sdGatewayAvailable) {
 					// Try sending message to SD gateway.
 					// The gateway will acknowledge when it has sent the piece.
 					// In the meantime, we will just keep repeatedly trying to give the
-					// same piece to them.  The gateway side supresses duplicate requests.
+					// same piece to them.  The gateway side suppresses duplicate requests.
 					sendToSDGateway(piece);
 				}
 				if ((messageSent == false)

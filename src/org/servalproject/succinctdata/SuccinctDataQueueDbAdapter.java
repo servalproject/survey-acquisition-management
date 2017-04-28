@@ -258,6 +258,30 @@ public void delete(String piece) {
 	// (the query to find out if this is the last piece of this record should be possible as a nested query)
 	// XXX - This is not yet implemented. 
 	
+	Cursor mCursor = mDb.query(SQLITE_TABLE, new String[] {KEY_SUCCINCTDATA}, 
+		    null, null, null, null, null);
+		 
+		  if (mCursor != null) {
+		   mCursor.moveToFirst();
+		   String sd = mCursor.getString(0);
+		   int piece_len=piece.length();
+		   int sd_len=sd.length();
+		   do  {			   
+			   int i,differences=0;
+			   for(i=0;i<sd.length();i++) {
+				   int s_c = sd.charAt(i);
+				   int p_c = piece.charAt(i);
+				   if (sd.charAt(i)!=piece.charAt(i)) {
+					   differences++; break;
+				   }
+			   }
+			   boolean diff = sd.equals(piece);
+			   sd = mCursor.getString(0);
+			   if (!mCursor.isLast()) mCursor.moveToNext();
+		   } while (!mCursor.isLast());
+		  }
+		  
+		 
 	mDb.delete(SQLITE_TABLE, "SUCCINCTDATA=?", new String[] {piece});
 	RCLauncherActivity.set_message_queue_length(this.getMessageQueueLength());
 }
