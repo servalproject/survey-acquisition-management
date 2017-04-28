@@ -56,6 +56,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -163,11 +164,16 @@ public class SuccinctDataQueueService extends Service {
 		if (messageSenderThread == null) {
 			messageSenderThread = new Thread(new Runnable() {
 				public void run() {
-					try {
-						messageSenderLoop(theService);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					Looper.prepare();					
+					while(true) {
+						try {
+							messageSenderLoop(theService);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							// Wait a few seconds before restarting the message sender loop
+							SystemClock.sleep(5000);
+						}
 					}
 				}
 			});
@@ -699,7 +705,6 @@ public class SuccinctDataQueueService extends Service {
 		// polling.
 		instance = this;
 
-		Looper.prepare();
 		SuccinctDataQueueDbAdapter db = new SuccinctDataQueueDbAdapter(this);
 		db.open();
 
