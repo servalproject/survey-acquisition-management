@@ -318,7 +318,7 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 			public void run() {
 				try {
 					// XXX make configurable!
-					String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
+					String url = getResources().getString(R.string.record_upload_url);
 
 					HttpClient httpclient = new DefaultHttpClient();
 

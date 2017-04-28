@@ -43,11 +43,11 @@
 <resources>
 
     <!-- application wide strings -->
-    <string name="system_application_name">Succinct Data 20170428.8</string>
-    <string name="system_application_default_label">Succinct Data 20170428.8</string>
+    <string name="system_application_name">Succinct Data 20170429.1</string>
+    <string name="system_application_default_label">Succinct Data 20170429.1</string>
     
     <!-- launcher activity screen -->
-    <string name="launcher_ui_lbl_header">Succinct Data 20170428.8</string>
+    <string name="launcher_ui_lbl_header">Succinct Data 20170429.1</string>
     
     <string name="launcher_ui_btn_settings">Preferences</string>
     <string name="launcher_ui_btn_contact">Email Serval</string>
@@ -176,5 +176,9 @@
 
     <string name="succinct_data_message_queue_title">Succinct Data Queued Messages</string>
     <string name="succinct_data_sms_number">+61481070732</string>
+    <string name="record_upload_url">http://ec2-35-166-16-235.us-west-2.compute.amazonaws.com/sd-upload-record.php</string>
+    <string name="form_upload_url">http://ec2-35-166-16-235.us-west-2.compute.amazonaws.com/sd-upload-form.php</string>
+    <string name="badrecord_form_upload_url">http://ec2-35-166-16-235.us-west-2.compute.amazonaws.com/sd-bad-record-form-upload.php</string>
+    <string name="badrecord_upload_url">http://ec2-35-166-16-235.us-west-2.compute.amazonaws.com/sd-bad-record-upload.php</string>
     
 </resources>

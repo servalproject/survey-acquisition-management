@@ -365,10 +365,6 @@ public class LauncherActivity extends FragmentActivity implements OnClickListene
 			
 			//****************** changes ends *******************************************
 			break;
-		case R.id.launcher_ui_btn_update_forms:
-			mIntent = new Intent(this, org.servalproject.succinctdata.DownloadForms.class);
-			startActivity(mIntent);
-			break;
 		case R.id.launcher_ui_btn_view_queue:
 			mIntent = new Intent(this, org.servalproject.succinctdata.SuccinctDataQueueListViewActivity.class);
 			startActivity(mIntent);			

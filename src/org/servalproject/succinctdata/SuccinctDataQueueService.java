@@ -46,6 +46,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -74,7 +75,7 @@ class UploadFormSpecificationTask extends AsyncTask<String, String, Long> {
 
 			{
 				// Upload form specification to Succinct Data server
-				String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload-form.php";
+				String url = Resources.getSystem().getString(R.string.form_upload_url);
 
 				HttpClient httpclient = new DefaultHttpClient();
 
@@ -359,7 +360,7 @@ public class SuccinctDataQueueService extends Service {
 	
 	private int sendBadRecordViaInternet(String form, String record) {
 		// XXX make configurable!
-		String url = "http://serval1.csem.flinders.edu.au/succinctdata/badrecordupload.php";
+		String url = getResources().getString(R.string.badrecord_upload_url);
 
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -389,7 +390,7 @@ public class SuccinctDataQueueService extends Service {
 	
 	private int sendViaCellular(String succinctData) {
 		// XXX make configurable!
-		String url = "http://serval1.csem.flinders.edu.au/succinctdata/upload.php";
+		String url = Resources.getSystem().getString(R.string.record_upload_url);
 
 		HttpClient httpclient = new DefaultHttpClient();
 

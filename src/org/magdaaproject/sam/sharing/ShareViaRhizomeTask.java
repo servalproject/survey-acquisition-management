@@ -84,6 +84,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -112,7 +113,7 @@ class UploadBadRecordTask extends AsyncTask<String, String, Long> {
 
 			{
 				// Upload bad record to Succinct Data server
-				String url = "http://serval1.csem.flinders.edu.au/succinctdata/bad-record-form.php";
+				String url = Resources.getSystem().getString(R.string.badrecord_form_upload_url);
 
 				HttpClient httpclient = new DefaultHttpClient();
 
