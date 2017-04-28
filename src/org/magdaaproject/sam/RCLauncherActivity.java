@@ -213,10 +213,12 @@ public class RCLauncherActivity extends FragmentActivity implements OnClickListe
 		// Ignore wifi connections to Mesh Extenders
 		if (activeNetworkInfo != null ) {
 			String extra = activeNetworkInfo.getExtraInfo();
-			extra = extra.substring(1, extra.length()-2);
-			Boolean me = extra.startsWith("me-");
-			Boolean sp = extra.endsWith("servalproject.org");
-			if (me||sp) return false;
+			if (extra != null ) {
+				extra = extra.substring(1, extra.length()-2);
+				Boolean me = extra.startsWith("me-");
+				Boolean sp = extra.endsWith("servalproject.org");
+				if (me||sp) return false;
+			}
 		}
 			
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
