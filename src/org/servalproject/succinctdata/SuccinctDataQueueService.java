@@ -552,8 +552,8 @@ public class SuccinctDataQueueService extends Service {
 								Log.e("SuccinctData","Couldn't resolve Mesh Extender IP address.");
 							}
 							String url = "http://"+hostName+":21506/inreachgateway/query";
-							boolean haveInReach = InReachMessageHandler.isInreachAvailable();
-							if (haveInReach)
+							boolean haveInReach = InReachMessageHandler.isInreachAvailableOrQueued();
+							if (haveInReach||isInternetAvailable()||isSMSAvailable(c))
 								url = "http://"+hostName+":21506/inreachgateway/register";
 							DefaultHttpClient httpclient = new DefaultHttpClient();
 							HttpGet httprequest = new HttpGet(url);
@@ -572,29 +572,30 @@ public class SuccinctDataQueueService extends Service {
 						}						
 						
 						sDGatewaySocket.receive(packet);						
-						if ((! InReachMessageHandler.isInreachAvailable())
+						if ((! InReachMessageHandler.isInreachAvailableOrQueued())
 								&& (! isInternetAvailable())
 								&& (! isSMSAvailable(c))
-								)
-						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,announceHeader.length),
-								announceHeader)) {
-							lastSDGatewayAnnounceTime = System.currentTimeMillis();
-							sDGatewayIP = packet.getAddress().toString();
-							RCLauncherActivity.requestUpdateUI();
+								) {
+							if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,announceHeader.length),
+									announceHeader)) {
+								lastSDGatewayAnnounceTime = System.currentTimeMillis();
+								sDGatewayIP = packet.getAddress().toString();
+								RCLauncherActivity.requestUpdateUI();
+							}
 						}
 						
 						if (Arrays.equals(Arrays.copyOfRange(packet.getData(),0,expectedHeader.length),
 								expectedHeader)) {
 							// This is a request to gate a piece to the outside world.
 							// Attempt to process it only if we have a link to the outside world.
-							if (InReachMessageHandler.isInreachAvailable()
+							if (InReachMessageHandler.isInreachAvailableOrQueued()
 									|| isInternetAvailable()
 									|| isSMSAvailable(c)
 									) {
 								// This packet is a request to send an SD piece via our inReach
 								byte [] piece = Arrays.copyOfRange(packet.getData(),expectedHeader.length,
 										packet.getData().length);
-								String pieceAsString = piece.toString();
+								String pieceAsString = new String(piece);
 								if (queuePieceReceivedByGateway(pieceAsString)) {							
 									// Send reply packet to requester
 									// (unicast, not broadcast, since some phones may have trouble
@@ -612,7 +613,7 @@ public class SuccinctDataQueueService extends Service {
 							// This is acknowledgement of accepting a piece by a gateway.
 							byte [] piece = Arrays.copyOfRange(packet.getData(),replyHeader.length,
 									packet.getData().length);
-							String pieceAsString = piece.toString();
+							String pieceAsString = new String(piece);
 							db.delete(pieceAsString);
 							
 						}
