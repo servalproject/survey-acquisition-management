@@ -277,7 +277,7 @@ public class TransportSelectActivity extends Activity implements OnClickListener
 			final OutboundMessage message = new OutboundMessage();
 			message.setAddressCode(OutboundMessage.AC_FreeForm);
 			message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
-			message.setTrackInterval(message.getTrackInterval());
+			
 			// Set message identifier to first few bytes of hash of data
 			int ms_messageIdentifier = 0;
 			try {

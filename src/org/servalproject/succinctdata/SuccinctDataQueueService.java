@@ -268,7 +268,9 @@ public class SuccinctDataQueueService extends Service {
 						.getInstance(this);
 				lb.sendBroadcastSync(i);
 			}
-		}		
+		}	
+		db.close();
+		db=null;
 	}
 
 	public boolean queuePieceReceivedByGateway(String piece)
@@ -293,8 +295,12 @@ public class SuccinctDataQueueService extends Service {
 			LocalBroadcastManager lb = LocalBroadcastManager
 					.getInstance(this);
 			lb.sendBroadcastSync(i);
+			db.close();
+			db=null;
 			return true;
 		}
+		db.close();
+		db=null;
 		return false;
 	}
 	
@@ -642,7 +648,8 @@ public class SuccinctDataQueueService extends Service {
 								db.open();
 							}
 							db.delete(pieceAsString);
-							
+							db.close();
+							db=null;
 						}
 						
 					}
@@ -667,8 +674,7 @@ public class SuccinctDataQueueService extends Service {
 				final OutboundMessage message = new OutboundMessage();
 				message.setAddressCode(OutboundMessage.AC_FreeForm);
 				message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
-				message.setTrackInterval(message.getTrackInterval());
-		        
+				
 				// Set message identifier to first few bytes of hash of data
 				try {
 					MessageDigest md;
@@ -1038,6 +1044,8 @@ public class SuccinctDataQueueService extends Service {
 			LocalBroadcastManager lb = LocalBroadcastManager
 					.getInstance(getApplicationContext());
 			lb.sendBroadcastSync(i);
+			db.close();
+			db=null;
 		}
 
 		return 0;
