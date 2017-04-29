@@ -76,7 +76,7 @@ class UploadFormSpecificationTask extends AsyncTask<String, String, Long> {
 
 			{
 				// Upload form specification to Succinct Data server
-				String url = Resources.getSystem().getString(R.string.form_upload_url);
+				String url = context.getResources().getString(R.string.form_upload_url);
 
 				HttpClient httpclient = new DefaultHttpClient();
 
@@ -364,9 +364,9 @@ public class SuccinctDataQueueService extends Service {
 	}
 
 	
-	private int sendBadRecordViaInternet(String form, String record) {
+	private int sendBadRecordViaInternet(Context context, String form, String record) {
 		// XXX make configurable!
-		String url = getResources().getString(R.string.badrecord_upload_url);
+		String url = context.getResources().getString(R.string.badrecord_upload_url);
 
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -396,7 +396,7 @@ public class SuccinctDataQueueService extends Service {
 	
 	private int sendViaCellular(String succinctData) {
 		// XXX make configurable!
-		String url = Resources.getSystem().getString(R.string.record_upload_url);
+		String url = getBaseContext().getResources().getString(R.string.record_upload_url);
 
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -667,6 +667,8 @@ public class SuccinctDataQueueService extends Service {
 				final OutboundMessage message = new OutboundMessage();
 				message.setAddressCode(OutboundMessage.AC_FreeForm);
 				message.setMessageCode(OutboundMessage.MC_FreeTextMessage);
+				message.setTrackInterval(message.getTrackInterval());
+		        
 				// Set message identifier to first few bytes of hash of data
 				try {
 					MessageDigest md;
@@ -741,7 +743,7 @@ public class SuccinctDataQueueService extends Service {
 				String record= buffer.toString();
 				fileInputStream.close();
 				
-				if (sendBadRecordViaInternet(form,record) == 0) {
+				if (sendBadRecordViaInternet(getBaseContext(),form,record) == 0) {
 					failSafeFormFile.delete();
 					failSafeRecordFile.delete();
 				}
@@ -772,7 +774,7 @@ public class SuccinctDataQueueService extends Service {
 						
 						// Upload record, and delete if successful
 						
-						if (sendBadRecordViaInternet(form,record) == 0) {
+						if (sendBadRecordViaInternet(getBaseContext(),form,record) == 0) {
 							db.deleteBadRecord(form,record);
 						}
 						
